@@ -1,0 +1,31 @@
+
+body {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+div#title-box {
+  width: 100%;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+span#title {
+  font-size: 1.5em;
+}
+
+div#container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
+
+div#options-box {
+  width: 20em;
+  border: solid;
+}
+
+div#preview-box {
+  border: solid;
+}
