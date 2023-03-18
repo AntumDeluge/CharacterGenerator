@@ -15,11 +15,6 @@ window.main = {};
 
 
 main.init = function() {
-  console.log("this document is a work-in-progress");
-  const tmp = document.createElement("div");
-  tmp.innerText = "this document is a work-in-progress";
-  document.body.appendChild(tmp);
-
   // initialize the layer manager
   LayerManager.init();
 };
