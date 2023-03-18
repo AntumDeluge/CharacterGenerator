@@ -23,8 +23,8 @@
 
   <div id="container">
     <div id="input" class="left-column">
-      <span class="box-caption">Options:</span>
-      <div id="options-box">
+      <span class="box-caption">Main Options:</span>
+      <div id="options-main" class="box options-box">
         <div class="option-label">Size:</div>
         <select id="select-size" class="option">
           <option value="">--</option>
@@ -39,7 +39,10 @@
         <select id="select-type" class="option">
           <option value="">--</option>
         </select>
+      </div> <!-- options-main -->
 
+      <span class="box-caption">Base Layers:</span>
+      <div id="options-base" class="box options-box">
         <div class="option-label">Body:</div>
         <select id="select-body" class="option">
           <option value="">--</option>
@@ -64,14 +67,14 @@
         <select id="select-eyes" class="option">
           <option value="">--</option>
         </select>
-      </div> <!-- options-box -->
+      </div> <!-- options-base -->
     </div> <!-- input -->
 
     <div class="column-spacer"></div> <!-- spacer -->
 
     <div id="output" class="right-column">
       <span class="box-caption">Preview:</span>
-      <div id="preview-box">
+      <div id="preview-box" class="box">
         <canvas id="preview"/>
         <canvas id="animated-preview"/>
       </div>
