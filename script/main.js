@@ -19,24 +19,11 @@ main.init = function() {
   LayerManager.init();
 };
 
-main.onLayerDataLoaded = function() {
+main.onSelection = function(data) {
   // DEBUG:
-  console.log("creating proof-of-concept preview");
-  SpriteGenerator.set({
-    "race": "human_elf",
-    "type": "adult",
-    "dimensions": {"width": 48, "height": 64},
-    "layers": {
-      "base": {
-        "body": 0,
-        "arms": 0,
-        "head": 0,
-        "ears": 0,
-        "eyes": 0
-      },
-      "outfit": {}
-    }
-  });
+  console.log("generating preview for selection");
+
+  SpriteGenerator.set(data);
   SpriteGenerator.renderPreview();
 };
 
