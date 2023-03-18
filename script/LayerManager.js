@@ -28,7 +28,7 @@ export const LayerManager = {
     JSONLoader.loadFile((data) => {
       this.layers = data;
       main.onLayerDataLoaded();
-    }, "/assets/layers.json");
+    }, "assets/layers.json");
   },
 
   /**
