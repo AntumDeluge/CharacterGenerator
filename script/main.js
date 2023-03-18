@@ -8,12 +8,22 @@
 
 "use strict";
 
+import { LayerManager } from "./LayerManager.js";
 
-function main() {
+window.main = {};
+
+
+main.init = function() {
   console.log("this document is a work-in-progress");
   const tmp = document.createElement("div");
   tmp.innerText = "this document is a work-in-progress";
   document.body.appendChild(tmp);
-}
 
-window.onload = main;
+  // initialize the layer manager
+  LayerManager.init();
+};
+
+main.onLayerDataLoaded = function() {
+};
+
+window.onload = main.init();
