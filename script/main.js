@@ -15,33 +15,15 @@ window.main = {};
 
 
 main.init = function() {
-  console.log("this document is a work-in-progress");
-  const tmp = document.createElement("div");
-  tmp.innerText = "this document is a work-in-progress";
-  document.body.appendChild(tmp);
-
   // initialize the layer manager
   LayerManager.init();
 };
 
-main.onLayerDataLoaded = function() {
+main.onSelection = function(data) {
   // DEBUG:
-  console.log("creating proof-of-concept preview");
-  SpriteGenerator.set({
-    "race": "human_elf",
-    "type": "adult",
-    "dimensions": {"width": 48, "height": 64},
-    "layers": {
-      "base": {
-        "body": 0,
-        "arms": 0,
-        "head": 0,
-        "ears": 0,
-        "eyes": 0
-      },
-      "outfit": {}
-    }
-  });
+  console.log("generating preview for selection");
+
+  SpriteGenerator.set(data);
   SpriteGenerator.renderPreview();
 };
 

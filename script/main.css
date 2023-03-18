@@ -2,6 +2,7 @@
 body {
   margin-left: 50px;
   margin-right: 50px;
+  background-image: url("/data/background.png");
 }
 
 div#title-box {
@@ -26,6 +27,20 @@ div#options-box {
   border: solid;
 }
 
+div#options-list {
+  display: block;
+}
+
+div#options-list div.option {
+  margin-top: 5px;
+}
+
 div#preview-box {
   border: solid;
+}
+
+div#footer {
+  margin-top: 50px;
+  text-align: center;
+  font-size: small;
 }
