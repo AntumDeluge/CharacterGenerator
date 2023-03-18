@@ -5,4 +5,4 @@ A sprite generator based on [Cabbit's original bases](https://opengameart.org/no
 
 Licensing: [MIT](LICENSE.txt)
 
-For list of individual assets licensing & sources see [doc/sources.md](doc/sources.md).
+For list of individual assets licensing & sources see [assets/README.md](assets/README.md).
