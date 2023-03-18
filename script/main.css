@@ -1,14 +1,11 @@
 
 body {
-  margin-left: 50px;
-  margin-right: 50px;
+  margin: 50px;
   background-image: url("../data/background.png");
 }
 
 div#title-box {
   width: 100%;
-  margin-top: 50px;
-  margin-bottom: 50px;
   text-align: center;
 }
 
@@ -56,17 +53,38 @@ div#output {
 span.box-caption {
 }
 
-div.box {
+div.box, span.button {
   border: solid;
   border-radius: 5px;
+}
+
+div.options-box, span.button {
+  background-color: #ffffff1f;
+  padding: 5px;
 }
 
 div.options-box {
   display: grid;
   grid-template-columns: auto auto;
   margin-bottom: 10px;
-  padding: 5px;
-  background-color: #ffffff1f;
+}
+
+div.button-container {
+  display: flex;
+  width: 100%;
+}
+
+span.button {
+  display: inline-block;
+}
+
+span.button:hover {
+  cursor: pointer;
+  background-color: #ffffffff;
+}
+
+span#button-download {
+  margin: 10px auto 0;
 }
 
 div.option-label {
