@@ -115,10 +115,31 @@ export const SpriteGenerator = {
     // DEBUG:
     console.log("frame dimensions: " + dim);
 
+    // preserve order that images should be drawn
+    const imageLayers = [];
     for (const layer in this.layers.base) {
-      const img = SpriteStore.getBaseImage(dim, this.race, this.body, layer, this.layers.base[layer]);
+      imageLayers.push(SpriteStore.getBaseImage(dim, this.race, this.body, layer, this.layers.base[layer]));
+    }
+    // flag to prevent redrawing
+    let drawComplete = false;
+    for (const img of imageLayers) {
       img.onload = () => {
-        this.drawLayer(img);
+        if (drawComplete) {
+          return;
+        }
+        let allLoaded = true;
+        for (const i2 of imageLayers) {
+          if (!i2.complete || i2.naturalWidth === 0) {
+            allLoaded = false;
+            break;
+          }
+        }
+        if (allLoaded) {
+          for (const i2 of imageLayers) {
+            this.drawLayer(i2);
+          }
+          drawComplete = true;
+        }
       };
     }
   },
