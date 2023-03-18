@@ -33,7 +33,18 @@
         "body": 1,
         "arms": 2,
         "head": 1,
+        "head-rear": [0],
         "ears": 2,
+        "eyes": 1
+      }
+    },
+    "dwarf": {
+      "adult": {
+        "body": 1,
+        "arms": 1,
+        "head": 2,
+        "head-rear": [0, 1],
+        "ears": 1,
         "eyes": 1
       }
     }

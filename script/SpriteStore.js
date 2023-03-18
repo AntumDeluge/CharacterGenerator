@@ -76,12 +76,17 @@ export const SpriteStore = {
    *   Layer name (e.g. head, body, eyes, etc.).
    * @param idx
    *   Layer index.
+   * @param suffix
+   *   Optional suffix to append to filename.
    * @return
    *   HTMLImageElement.
    */
-  getBaseImage: function(dim, race, body, layer, idx) {
-    const filepath = this.joinPath(dim, "base", race, body, layer, this.getIndexString(idx) + ".png");
-    return this.getImage(filepath);
+  getBaseImage: function(dim, race, body, layer, idx, suffix=undefined) {
+    let filepath = this.joinPath(dim, "base", race, body, layer, this.getIndexString(idx));
+    if (typeof(suffix) !== "undefined") {
+      filepath += "-" + suffix;
+    }
+    return this.getImage(filepath + ".png");
   },
 
   /**
@@ -97,11 +102,16 @@ export const SpriteStore = {
    *   Layer name (e.g. torso, legs, hair, etc.).
    * @param idx
    *   Layer index.
+   * @param suffix
+   *   Optional suffix to append to filename.
    * @return
    *   HTMLImageElement.
    */
-  getOutfitImage: function(dim, race, body, layer, idx) {
-    const filepath = this.joinPath(dim, "outfit", race, body, layer, this.getIndexString(idx) + ".png");
-    return this.getImage(filepath);
+  getOutfitImage: function(dim, race, body, layer, idx, suffix=undefined) {
+    const filepath = this.joinPath(dim, "outfit", race, body, layer, this.getIndexString(idx));
+    if (typeof(suffix) !== "undefined") {
+      filepath += "-" + suffix;
+    }
+    return this.getImage(filepath + ".png");
   }
 }
