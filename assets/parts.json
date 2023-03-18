@@ -9,6 +9,13 @@
         "eyes": 1,
         "head": 2
       },
+      "adult_heavy": {
+        "arms": 1,
+        "body": 2,
+        "ears": 3,
+        "eyes": 1,
+        "head": 1
+      },
       "child": {
         "arms": 2,
         "body": 1,
