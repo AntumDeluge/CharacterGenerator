@@ -31,7 +31,34 @@ export const LayerManager = {
     }, "/assets/layers.json");
   },
 
-  getLayerData: function() {
-    return this.layers;
+  /**
+   * Retrieves available layer indexes.
+   *
+   * @param dim
+   *   Desired dimensions (available: 24x32, 48x64).
+   * @param race
+   *   Race identifier (available: human_elf).
+   * @param type
+   *   Body type (e.g. adult, elder, child).
+   * @return
+   *   Table of available indexes indexed by layer name.
+   */
+  getBaseIndexes: function(dim, race, type) {
+    let data = this.layers[dim];
+    if (typeof(data) === "undefined") {
+      alert("Invalid dimensions requested: " + dim);
+      return undefined;
+    }
+    data = data[race];
+    if (typeof(data) === "undefined") {
+      alert("Invalid race requested: " + race);
+      return undefined;
+    }
+    data = data[type];
+    if (typeof(data) === "undefined") {
+      alert("Invalid body type requested: " + type);
+      return undefined;
+    }
+    return data;
   }
 };
