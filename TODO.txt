@@ -1,0 +1,8 @@
+
+TODO:
+- add dwarf base assets
+- add outfit assets
+- create full preview
+- create animated preview
+- create download
+- create sidebar for customizing layers
