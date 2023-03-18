@@ -22,74 +22,61 @@
   </div>
 
   <div id="container">
-    <div id="options-box">
-      <span id="options-caption">Options:</span>
+    <div id="input" class="left-column">
+      <span class="box-caption">Options:</span>
+      <div id="options-box">
+        <div class="option-label">Size:</div>
+        <select id="select-size" class="option">
+          <option value="">--</option>
+        </select>
 
-      <div id="options-list">
-        <div class="option">
-          <label for="select-size">Size:</label>
-          <select id="select-size">
-            <option value="">--</option>
-          </select>
-        </div>
+        <div class="option-label">Race:</div>
+        <select id="select-race" class="option">
+          <option value="">--</option>
+        </select>
 
-        <div class="option">
-          <label for="select-race">Race:</label>
-          <select id="select-race">
-            <option value="">--</option>
-          </select>
-        </div>
+        <div class="option-label">Type:</div>
+        <select id="select-type" class="option">
+          <option value="">--</option>
+        </select>
 
-        <div class="option">
-          <label for="select-type">Type:</label>
-          <select id="select-type">
-            <option value="">--</option>
-          </select>
-        </div>
+        <div class="option-label">Body:</div>
+        <select id="select-body" class="option">
+          <option value="">--</option>
+        </select>
 
-        <div class="option">
-          <label for="select-body">Body:</label>
-          <select id="select-body">
-            <option value="">--</option>
-          </select>
-        </div>
+        <div class="option-label">Arms:</div>
+        <select id="select-arms" class="option">
+          <option value="">--</option>
+        </select>
 
-        <div class="option">
-          <label for="select-arms">Arms:</label>
-          <select id="select-arms">
-            <option value="">--</option>
-          </select>
-        </div>
+        <div class="option-label">Head:</div>
+        <select id="select-head" class="option">
+          <option value="">--</option>
+        </select>
 
-        <div class="option">
-          <label for="select-head">Head:</label>
-          <select id="select-head">
-            <option value="">--</option>
-          </select>
-        </div>
+        <div class="option-label">Ears:</div>
+        <select id="select-ears" class="option">
+          <option value="">--</option>
+        </select>
 
-        <div class="option">
-          <label for="select-ears">Ears:</label>
-          <select id="select-ears">
-            <option value="">--</option>
-          </select>
-        </div>
+        <div class="option-label">Eyes:</div>
+        <select id="select-eyes" class="option">
+          <option value="">--</option>
+        </select>
+      </div> <!-- options-box -->
+    </div> <!-- input -->
 
-        <div class="option">
-          <label for="select-eyes">Eyes:</label>
-          <select id="select-eyes">
-            <option value="">--</option>
-          </select>
-        </div>
-      </div> <!-- options-list -->
-    </div>
+    <div class="column-spacer"></div> <!-- spacer -->
 
-    <div id="preview-box">
-      <span id="preview-caption">Preview:</span>
-      <canvas id="preview"/>
-      <canvas id="animated-preview"/>
-    </div>
-  </div>
+    <div id="output" class="right-column">
+      <span class="box-caption">Preview:</span>
+      <div id="preview-box">
+        <canvas id="preview"/>
+        <canvas id="animated-preview"/>
+      </div>
+    </div> <!-- output -->
+  </div> <!-- container -->
 
   <div id="footer">
     <p>Character Sprite Generator by Jordan Irwin licensed under <a href="LICENSE.txt">MIT</a></p>
