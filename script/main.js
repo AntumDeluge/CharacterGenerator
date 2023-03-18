@@ -6,6 +6,9 @@
  * See: LICENSE.txt for details.                    *
  ****************************************************/
 
+"use strict";
+
+
 function main() {
   console.log("this document is a work-in-progress");
   const tmp = document.createElement("div");
