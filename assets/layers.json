@@ -65,6 +65,13 @@
         "ears": 2,
         "eyes": 1
       },
+      "adult_tall": {
+        "body": 3,
+        "arms": 3,
+        "head": 1,
+        "ears": 2,
+        "eyes": 1
+      },
       "child": {
         "body": 1,
         "arms": 2,
