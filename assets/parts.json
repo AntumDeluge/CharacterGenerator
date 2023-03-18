@@ -8,6 +8,13 @@
         "ears": 3,
         "eyes": 1,
         "head": 2
+      },
+      "elder" {
+        "arms": 2,
+        "body": 1,
+        "ears": 2,
+        "eyes": 1,
+        "head": 1
       }
     }
   }
