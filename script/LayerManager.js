@@ -15,6 +15,9 @@ export const LayerManager = {
   initialized: false,
   layers: {},
 
+  /**
+   * Loads layer information from JSON file.
+   */
   init: function() {
     if (this.initialized) {
       console.warn("Tried to re-initialize LayerManager");
