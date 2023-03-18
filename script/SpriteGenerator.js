@@ -141,6 +141,8 @@ export const SpriteGenerator = {
           drawComplete = true;
         }
       };
+      // call 'onload' manually in case image was cached
+      img.onload();
     }
   },
 
