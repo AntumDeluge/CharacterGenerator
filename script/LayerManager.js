@@ -267,7 +267,9 @@ export const LayerManager = {
     const type = this.getSelectedBodyType(size, race);
 
     const layers = {
-      "base": {},
+      "base": {
+        "head-rear": this.layers[size][race][type]["head-rear"] || []
+      },
       "outfit": {}
     };
 

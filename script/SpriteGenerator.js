@@ -117,9 +117,23 @@ export const SpriteGenerator = {
 
     // preserve order that images should be drawn
     const imageLayers = [];
+    let headIdx = -1;
     for (const layer in this.layers.base) {
-      imageLayers.push(SpriteStore.getBaseImage(dim, this.race, this.body, layer, this.layers.base[layer]));
+      const idx = this.layers.base[layer];
+      if (layer.endsWith("-rear")) {
+        continue;
+      } else if (layer === "head") {
+        headIdx = idx;
+      }
+      imageLayers.push(SpriteStore.getBaseImage(dim, this.race, this.body, layer, idx));
     }
+
+    // check for head indexes requiring a "rear" layer
+    if (this.layers.base["head-rear"].indexOf(headIdx) > -1) {
+      imageLayers.splice(0, 0,
+          SpriteStore.getBaseImage(dim, this.race, this.body, "head", headIdx, "rear"));
+    }
+
     // flag to prevent redrawing
     let drawComplete = false;
     for (const img of imageLayers) {
