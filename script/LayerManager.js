@@ -175,8 +175,7 @@ export const LayerManager = {
    */
   onRaceChanged: function() {
     const size = this.getSelectedSize();
-    const sel = document.getElementById("select-race");
-    const race = sel.options[sel.selectedIndex].text;
+    const race = this.getSelectedRace();
     this.setBodyTypes(size, race);
   },
 
@@ -218,9 +217,8 @@ export const LayerManager = {
    */
   onBodyTypeChanged: function() {
     const size = this.getSelectedSize();
-    const race = this.getSelectedRace(size);
-    const sel = document.getElementById("select-type");
-    const type = sel.options[sel.selectedIndex].text;
+    const race = this.getSelectedRace();
+    const type = this.getSelectedBodyType();
     this.setLayers(size, race, type);
   },
 
