@@ -48,5 +48,16 @@
         "eyes": 1
       }
     }
+  },
+  "24x32": {
+    "human_elf": {
+      "adult": {
+        "body": 3,
+        "arms": 2,
+        "head": 1,
+        "ears": 2,
+        "eyes": 1
+      }
+    }
   }
 }
