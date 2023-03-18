@@ -57,6 +57,13 @@
         "head": 1,
         "ears": 2,
         "eyes": 1
+      },
+      "child": {
+        "body": 1,
+        "arms": 2,
+        "head": 1,
+        "ears": 2,
+        "eyes": 1
       }
     }
   }
