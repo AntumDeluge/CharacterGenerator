@@ -16,27 +16,74 @@ span#title {
   font-size: 1.5em;
 }
 
+div#description {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  width: 75%;
+}
+
 div#container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
   width: 100%;
 }
 
-div#options-box {
+div.column-spacer {
+  margin-left: 5em;
+}
+
+div.left-column div.right-column {
+  display: block;
+}
+
+div.left-column {
+  margin-left: auto;
+}
+
+div.right-column {
+  margin-right: auto;
+}
+
+div#input {
   width: 20em;
+}
+
+div#output {
+}
+
+span.box-caption {
+}
+
+div#options-box {
+  display: grid;
+  grid-template-columns: auto auto;
   border: solid;
 }
 
+div.option-label {
+  float: left;
+  clear: left;
+}
+
 div#options-list {
-  display: block;
+  display: flex;
 }
 
 div#options-list div.option {
   margin-top: 5px;
 }
 
+select.option {
+  float: left;
+  clear: left;
+}
+
 div#preview-box {
+  display: block;
   border: solid;
+  background-color: darkgreen;
 }
 
 div#footer {
