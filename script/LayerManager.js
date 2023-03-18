@@ -84,16 +84,22 @@ export const LayerManager = {
    *   Identifier prefix.
    * @param suffix
    *   Identifier suffix.
+   * @param text
+   *   Alternative text to display.
    * @return
    *   HTMLOptionElement.
    */
-  getOption: function(prefix, suffix) {
+  getOption: function(prefix, suffix, text=undefined) {
     const id = "opt-" + prefix + "-" + suffix;
     let opt = document.getElementById(id);
     if (opt == null) {
       opt = document.createElement("option");
       opt.id = id;
-      opt.text = suffix;
+      opt.value = suffix;
+      if (typeof(text) === "undefined") {
+        text = suffix;
+      }
+      opt.text = text;
     }
     return opt;
   },
@@ -115,7 +121,7 @@ export const LayerManager = {
    */
   getSelectedSize: function() {
     const sel = document.getElementById("select-size");
-    return sel.options[sel.selectedIndex].text;
+    return sel.options[sel.selectedIndex].value;
   },
 
   /**
@@ -123,7 +129,7 @@ export const LayerManager = {
    */
   getSelectedRace: function() {
     const sel = document.getElementById("select-race");
-    return sel.options[sel.selectedIndex].text;
+    return sel.options[sel.selectedIndex].value;
   },
 
   /**
@@ -131,7 +137,7 @@ export const LayerManager = {
    */
   getSelectedBodyType() {
     const sel = document.getElementById("select-type");
-    return sel.options[sel.selectedIndex].text;;
+    return sel.options[sel.selectedIndex].value;
   },
 
   /**
@@ -235,7 +241,7 @@ export const LayerManager = {
       this.clearSelector(sel);
       const idxCount = this.layers[size][race][type][layer];
       for (let idx = 0; idx < idxCount; idx++) {
-        const opt = this.getOption("layer-" + layer, idx);
+        const opt = this.getOption("layer-" + layer, idx, idx + 1);
         sel.add(opt);
       }
       sel.selectedIndex = "0";
