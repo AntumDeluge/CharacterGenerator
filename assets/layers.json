@@ -36,6 +36,15 @@
         "ears": 2,
         "eyes": 1
       }
+    },
+    "dwarf": {
+      "adult": {
+        "body": 1,
+        "arms": 1,
+        "head": 2,
+        "ears": 1,
+        "eyes": 1
+      }
     }
   }
 }
