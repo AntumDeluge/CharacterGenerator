@@ -23,7 +23,7 @@ jobs:
       - name: Stage
         run: |
           mkdir -p stage/
-          cp -v index.html info LICENSE.txt stage/
+          cp -v index.html info.html LICENSE.txt stage/
           cp -vr assets/ data/ doc/ script/ stage/
           sed -i -e "s/\"asset-info\":\(.*\?\)\/master\//\"asset-info\":\1\/${{ github.ref_name }}\//" stage/script/config.js
 
