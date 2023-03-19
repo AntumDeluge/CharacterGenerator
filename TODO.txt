@@ -6,3 +6,4 @@ TODO:
 - simulate hyperlink behavior with custom div button elements
 - remove eyes that are similar
 - add 24x32 assets
+- use browser session storage to preserve selections
