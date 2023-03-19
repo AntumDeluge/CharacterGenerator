@@ -11,7 +11,7 @@
 import { SpriteStore } from "./SpriteStore.js";
 
 
-export const SpriteGenerator = {
+export const PreviewGenerator = {
   previewCanvas: document.getElementById("preview"),
   animationCanvas: document.getElementById("animated-preview"),
   framesX: 3, // horizonal frame count

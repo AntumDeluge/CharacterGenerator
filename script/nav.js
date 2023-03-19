@@ -8,7 +8,7 @@
 
 "use strict";
 
-import { SpriteGenerator } from "./SpriteGenerator.js";
+import { PreviewGenerator } from "./PreviewGenerator.js";
 import { config } from "./config.js";
 
 
@@ -19,7 +19,7 @@ window.onNavButton = function(href="/") {
 window.onDownload = function() {
   // prepare image
   const anchor = document.createElement("a");
-  anchor.href = SpriteGenerator.buildPNG();
+  anchor.href = PreviewGenerator.buildPNG();
   anchor.download = "character_sheet.png";
   // simulate click
   anchor.click();
