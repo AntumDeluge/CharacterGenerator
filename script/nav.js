@@ -20,7 +20,7 @@ window.onDownload = function() {
   // prepare image
   const anchor = document.createElement("a");
   anchor.href = SpriteGenerator.buildPNG();
-  anchor.download = "sprite.png";
+  anchor.download = "character_sheet.png";
   // simulate click
   anchor.click();
 }
