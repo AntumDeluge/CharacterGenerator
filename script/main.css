@@ -115,3 +115,12 @@ div#footer {
   text-align: center;
   font-size: small;
 }
+
+p.section {
+  font-size: large;
+  text-decoration: underline;
+}
+
+p.small {
+  font-size: small;
+}

@@ -12,13 +12,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Stage
+        run: |
+          mkdir -p stage/
+          cp -v index.html info LICENSE.txt stage/
+          cp -vr assets/ data/ doc/ script/ stage/
+          sed -i -e "s/\"asset-info\":\(.*\?\)\/master\//\"asset-info\":\1\/${{ github.ref_name }}\//" stage/script/config.js
+
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: stage/
