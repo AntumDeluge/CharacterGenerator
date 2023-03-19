@@ -74,13 +74,17 @@ div.button-container {
   width: 100%;
 }
 
-span.button {
+span.button, canvas#preview {
   display: inline-block;
 }
 
 span.button:hover {
   cursor: pointer;
   background-color: #ffffffff;
+}
+
+canvas#preview {
+  margin: 0 auto 0;
 }
 
 span#button-download {
@@ -106,8 +110,9 @@ select.option {
 }
 
 div#preview-box {
-  display: block;
+  display: flex;
   background-color: darkgreen;
+  padding-bottom: 5px;
 }
 
 div#footer {

@@ -9,7 +9,7 @@
 "use strict";
 
 import { LayerManager } from "./LayerManager.js";
-import { SpriteGenerator } from "./SpriteGenerator.js";
+import { PreviewGenerator } from "./PreviewGenerator.js";
 
 window.main = {};
 
@@ -23,8 +23,8 @@ main.onSelection = function(data) {
   // DEBUG:
   console.log("generating preview for selection");
 
-  SpriteGenerator.set(data);
-  SpriteGenerator.renderPreview();
+  PreviewGenerator.set(data);
+  PreviewGenerator.renderPreview();
 };
 
 window.onload = main.init();

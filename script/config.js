@@ -10,5 +10,5 @@
 
 
 export const config = {
-  "asset-info": "https://github.com/AntumDeluge/CharacterGenerator/blob/v0.1-alpha6/assets/README.md"
+  "asset-info": "https://github.com/AntumDeluge/CharacterGenerator/blob/v0.1-alpha7/assets/README.md"
 };
