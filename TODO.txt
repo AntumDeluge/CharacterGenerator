@@ -1,6 +1,0 @@
-
-TODO:
-- add outfit assets
-- create download
-- add option to convert to SWEN format
-- add option to change skin color

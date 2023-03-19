@@ -38,6 +38,13 @@ export const SpriteGenerator = {
   },
 
   /**
+   * Creates an image resource from preview.
+   */
+  buildPNG: function() {
+    return this.previewCanvas.toDataURL("image/png");
+  },
+
+  /**
    * Sets layer information to be drawn.
    *
    * @param data
