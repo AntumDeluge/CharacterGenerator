@@ -4,3 +4,5 @@ TODO:
 - add option to convert to SWEN format
 - add option to change skin color
 - simulate hyperlink behavior with custom div button elements
+- remove eyes that are similar
+- add 24x32 assets
