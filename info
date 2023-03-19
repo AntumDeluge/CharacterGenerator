@@ -11,7 +11,7 @@
 
 <body>
   <a name="top">
-  <span id="button-back" class="button" onclick="onNavButton()">Back</span>
+  <span id="button-back" class="button" onclick="onNavButton('../')">Back</span>
   </a>
 
   <a name="top">
