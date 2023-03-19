@@ -26,10 +26,9 @@ window.onDownload = function() {
 }
 
 const formatLinks = function() {
-  for (const element of document.getElementsByClassName("asset-info")) {
-    if (element instanceof HTMLAnchorElement) {
-      // link to tag for release
-      element.href = config["asset-info"];
+  for (const anchor of document.getElementsByTagName("a")) {
+    if (anchor.id && typeof(config[anchor.id]) !== "undefined") {
+      anchor.href = config[anchor.id];
     }
   }
 }
