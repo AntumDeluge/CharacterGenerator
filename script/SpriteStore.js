@@ -81,7 +81,7 @@ export const SpriteStore = {
    */
   getBaseImage: function(size, body, layer, idx, suffix=undefined) {
     let filepath;
-    if (body === "elder" || ["arms", "body"].indexOf(layer) > -1) {
+    if (["arms", "body"].indexOf(layer) > -1) {
       // unique layers
       filepath = this.joinPath(size, "base/body", body, layer, this.getIndexString(idx));
     } else {

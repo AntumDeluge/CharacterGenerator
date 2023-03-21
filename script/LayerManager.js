@@ -35,10 +35,6 @@ export const LayerManager = {
           for (const layer of ["head", "ears", "eyes"]) {
             const lcount = tmp[layer] || 0;
             for (const btype of Object.keys(bodytypes)) {
-              if (btype === "elder") {
-                // 'elder' body type has unique head, ears, & eyes
-                continue;
-              }
               bodytypes[btype][layer] = lcount;
             }
           }

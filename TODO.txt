@@ -5,7 +5,6 @@ TODO:
 - simulate hyperlink behavior with custom div button elements
 - use browser session storage to preserve selections
 - add more eyes for 24x32 sizes
-- use horizontal offset for elder body type
 - add options to change colors for:
   - skin
   - eyes
