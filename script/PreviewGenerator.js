@@ -132,13 +132,12 @@ export const PreviewGenerator = {
       imageLayers.push(img);
     }
 
-    // check for head indexes requiring a "rear" layer
-    const headIdx = this.layers.base["head"];
-    if (typeof(rearIndexes["head"]) !== "undefined" && rearIndexes["head"].indexOf(headIdx) > -1) {
-      const img = SpriteStore.getBaseImage(sizeSt, this.race, this.body, "head", headIdx, "rear");
-      img.offset = offset["head"][this.body] || {x: 0, y: 0};
-      imageLayers.splice(0, 0, img);
-    }
+    // head layers have a separate "rear" layer
+    const headR = SpriteStore.getBaseImage(sizeSt, this.race, this.body, "head",
+        this.layers.base["head"], "rear");
+    headR.offset = {x: 0, y: 0};
+    imageLayers.splice(0, 0, headR);
+
 
     for (const layer in this.layers.outfit) {
       const idx = this.layers.outfit[layer];
