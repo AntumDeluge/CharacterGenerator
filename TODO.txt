@@ -11,3 +11,6 @@ TODO:
   - eyes
   - eyebrows
   - hair
+- add option to hide base layers
+- increment base layers filename indexes by 1
+- scale without blur
