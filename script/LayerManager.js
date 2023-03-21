@@ -228,9 +228,7 @@ export const LayerManager = {
       "size": {"width": size[0], "height": size[1]},
       "type": type,
       "layers": {
-        "base": {
-          "head-rear": this.baseLayers[sizeSt][type]["head-rear"] || []
-        },
+        "base": {},
         "outfit": {}
       }
     };
