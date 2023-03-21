@@ -80,7 +80,14 @@ export const SpriteStore = {
    *   HTMLImageElement.
    */
   getBaseImage: function(size, body, layer, idx, suffix=undefined) {
-    let filepath = this.joinPath(size, "base", body, layer, this.getIndexString(idx));
+    let filepath;
+    if (body === "elder" || ["arms", "body"].indexOf(layer) > -1) {
+      // unique layers
+      filepath = this.joinPath(size, "base/body", body, layer, this.getIndexString(idx));
+    } else {
+      // common layers
+      filepath = this.joinPath(size, "base", layer, this.getIndexString(idx));
+    }
     if (typeof(suffix) !== "undefined") {
       filepath += "-" + suffix;
     }

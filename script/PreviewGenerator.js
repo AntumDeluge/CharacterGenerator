@@ -113,6 +113,8 @@ export const PreviewGenerator = {
     const offset = {
       "head": {
         "child": {x: 0, y: Math.floor(6 * (size.height / 64))},
+        "dwarf": {x: 0, y: Math.floor(4 * (size.height / 64))},
+        //~ "elder": {x: 0, y: Math.floor(5 * (size.height / 64))},
         "tall": {x: 0, y: Math.floor(-5 * (size.height / 64))}
       }
     };
@@ -127,14 +129,20 @@ export const PreviewGenerator = {
         continue;
       }
       const img = SpriteStore.getBaseImage(sizeSt, this.body, layer, idx);
-      img.offset = {x: 0, y: 0};
+      if (["arms", "body"].indexOf(layer) > -1) {
+        // unique layers
+        img.offset = {x: 0, y: 0};
+      } else {
+        // common layers
+        img.offset = offset["head"][this.body] || {x: 0, y: 0};
+      }
       imageLayers.push(img);
     }
 
     // head layers have a separate "rear" layer
-    const headR = SpriteStore.getBaseImage(sizeSt, this.body, "head",
-        this.layers.base["head"], "rear");
-    headR.offset = {x: 0, y: 0};
+    const headR = SpriteStore.getBaseImage(sizeSt, this.body, "head", this.layers.base["head"],
+        "rear");
+    headR.offset = offset["head"][this.body] || {x: 0, y: 0};
     imageLayers.splice(0, 0, headR);
 
 

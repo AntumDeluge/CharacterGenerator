@@ -29,10 +29,23 @@ export const LayerManager = {
 
     JSONLoader.loadFile((data) => {
       for (const size of Object.keys(data)) {
-        if (typeof(data[size]["base"]) !== "undefined") {
-          this.baseLayers[size] = data[size]["base"];
+        let tmp = data[size]["base"];
+        if (typeof(tmp) !== "undefined" && typeof(tmp["body"]) !== "undefined") {
+          const bodytypes = tmp["body"];
+          for (const layer of ["head", "ears", "eyes"]) {
+            const lcount = tmp[layer] || 0;
+            for (const btype of Object.keys(bodytypes)) {
+              if (btype === "elder") {
+                // 'elder' body type has unique head, ears, & eyes
+                continue;
+              }
+              bodytypes[btype][layer] = lcount;
+            }
+          }
+          this.baseLayers[size] = bodytypes;
         }
-        if (typeof(data[size]["outfit"]) !== "undefined") {
+        if (typeof(this.baseLayers[size]) !== "undefined"
+            && typeof(data[size]["outfit"]) !== "undefined") {
           this.outfitLayers[size] = data[size]["outfit"];
         }
       }
