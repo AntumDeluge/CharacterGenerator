@@ -13,3 +13,4 @@ TODO:
 - add option to hide base layers
 - increment base layers filename indexes by 1
 - scale without blur
+- fix ears being drawn under hair
