@@ -2,9 +2,13 @@
 TODO:
 - add outfit assets
 - add option to convert to SWEN format
-- add option to change skin color
 - simulate hyperlink behavior with custom div button elements
 - use browser session storage to preserve selections
 - add third ear type for 24x32 sizes
 - add more eyes for 24x32 sizes
 - use horizontal offset for elder body type
+- add options to change colors for:
+  - skin
+  - eyes
+  - eyebrows
+  - hair
