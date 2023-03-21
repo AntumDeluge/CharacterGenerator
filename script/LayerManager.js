@@ -215,7 +215,7 @@ export const LayerManager = {
       const options = [];
       const indexes = this.baseLayers[size][type][layer] || 0;
       for (let idx = 0; idx < indexes; idx++) {
-        options.push(this.getOption(layer, idx, idx+1));
+        options.push(this.getOption(layer, idx+1));
       }
       this.updateSelector(layer, options);
     }
