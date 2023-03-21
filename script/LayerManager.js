@@ -85,6 +85,11 @@ export const LayerManager = {
       });
     }
 
+    // checkbox for upscaling
+    document.getElementById("upscale").addEventListener("change", (evt) => {
+      this.onLayerChanged();
+    });
+
     // initialize preview with default values
     this.onSizeChanged();
   },
@@ -253,7 +258,7 @@ export const LayerManager = {
       data["layers"]["outfit"][layer] = parseInt(this.getSelectedValue(layer), 10);
     }
 
-    PreviewGenerator.set(data);
+    PreviewGenerator.set(data, document.getElementById("upscale").checked);
     PreviewGenerator.renderPreview();
   }
 };

@@ -21,7 +21,7 @@
 
     <p>
       For licensing, attribution, and sources information of assets provided here, see the
-      <a class="asset-info" href="">provided README</a>.
+      <a class="asset-info" href="">accompanying README</a>.
     </p>
 
     <p>
@@ -114,7 +114,11 @@
     <div class="column-spacer"></div> <!-- spacer -->
 
     <div id="output" class="right-column">
-      <span class="box-caption">Preview:</span>
+      <span class="box-caption">
+        Preview:
+        <input id="upscale" type="checkbox">
+        <label for="upscale">scale x2</label>
+      </span>
       <div id="preview-box" class="box">
         <canvas id="preview"/>
         <canvas id="animated-preview"/>

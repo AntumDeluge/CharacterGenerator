@@ -16,6 +16,7 @@ export const PreviewGenerator = {
   animationCanvas: document.getElementById("animated-preview"),
   framesX: 3, // horizonal frame count
   framesY: 4, // vertical frame count
+  upscale: false,
 
   body: undefined,
 
@@ -48,8 +49,10 @@ export const PreviewGenerator = {
    *
    * @param data
    *   Layer information.
+   * @param upscale
    */
-  set: function(data) {
+  set: function(data, upscale=false) {
+    this.upscale = upscale;
     this.setFrameSize(data["size"]);
     this.body = data["type"];
     this.layers = data["layers"];
@@ -62,6 +65,10 @@ export const PreviewGenerator = {
    *   Frame dimensions.
    */
   setFrameSize: function(dim) {
+    if (this.upscale) {
+      dim["width"] = dim["width"] * 2;
+      dim["height"] = dim["height"] * 2;
+    }
     this.previewCanvas.width = dim["width"] * this.framesX;
     this.previewCanvas.height = dim["height"] * this.framesY;
   },
@@ -84,6 +91,10 @@ export const PreviewGenerator = {
    */
   getFrameSize: function() {
     const csize = this.getCanvasSize();
+    if (this.upscale) {
+      csize.width = csize.width / 2;
+      csize.height = csize.height / 2;
+    }
     return {width: csize.width / this.framesX, height: csize.height / this.framesY};
   },
 
@@ -97,7 +108,12 @@ export const PreviewGenerator = {
     // DEBUG:
     console.log("drawing layer: " + img.src);
 
-    this.getContext().drawImage(img, 0+img.offset.x, 0+img.offset.y);
+    if (this.upscale) {
+      this.getContext().drawImage(img, 0, 0, img.width, img.height,
+        0+(img.offset.x*2), 0+(img.offset.y*2), this.previewCanvas.width, this.previewCanvas.height);
+    } else {
+      this.getContext().drawImage(img, 0+img.offset.x, 0+img.offset.y);
+    }
   },
 
   /**
