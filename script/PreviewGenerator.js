@@ -199,12 +199,16 @@ export const PreviewGenerator = {
         continue;
       }
       const img = SpriteStore.getOutfitImage(sizeSt, layer, idx);
-      if (layer === "hair") {
+      if (["hair", "mask", "hat"].indexOf(layer) > -1) {
+        // layers on head
         img.offset = offset["head"][this.body] || {x: 0, y: 0};
+      } else {
+        img.offset = {x: 0, y: 0};
+      }
+      if (layer === "hair") {
         // draw hair under ears
         imageLayers.splice(5, 0, img);
       } else {
-        img.offset = {x: 0, y: 0};
         imageLayers.push(img);
       }
     }
