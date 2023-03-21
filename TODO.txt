@@ -12,4 +12,4 @@ TODO:
   - hair
 - add option to hide base layers
 - use Scale2x algorithm for upscaling
-- fix missing arms layers for heavy 48x64 body
+- touch up scaled layers
