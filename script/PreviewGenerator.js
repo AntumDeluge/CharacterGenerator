@@ -166,7 +166,7 @@ export const PreviewGenerator = {
 
     // preserve order that images should be drawn
     const imageLayers = [];
-    const rearIndexes = {};
+    const rearIndexes = {}; // unused?
     for (const layer in this.layers.base) {
       const idx = this.layers.base[layer];
       if (layer.endsWith("-rear")) {
@@ -200,10 +200,12 @@ export const PreviewGenerator = {
       const img = SpriteStore.getOutfitImage(sizeSt, layer, idx);
       if (layer === "hair") {
         img.offset = offset["head"][this.body] || {x: 0, y: 0};
+        // draw hair under ears
+        imageLayers.splice(5, 0, img);
       } else {
         img.offset = {x: 0, y: 0};
+        imageLayers.push(img);
       }
-      imageLayers.push(img);
     }
 
     // flag to prevent redrawing

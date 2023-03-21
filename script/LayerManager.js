@@ -122,7 +122,7 @@ export const LayerManager = {
    * Retrieves usable base layer names.
    */
   getBaseLayerNames: function() {
-    return ["body", "arms", "head", "ears", "eyes"];
+    return ["body", "arms", "head", "eyes", "ears"];
   },
 
   /**
