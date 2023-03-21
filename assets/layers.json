@@ -47,7 +47,7 @@
   "24x32": {
     "base": {
       "head": 2,
-      "ears": 2,
+      "ears": 3,
       "eyes": 1,
       "body": {
         "standard": {
@@ -70,7 +70,7 @@
           "body": 1,
           "arms": 2,
           "head": 1,
-          "ears": 2,
+          "ears": 3,
           "eyes": 1
         },
         "dwarf": {
