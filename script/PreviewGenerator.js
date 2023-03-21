@@ -185,11 +185,12 @@ export const PreviewGenerator = {
     }
 
     // head layers have a separate "rear" layer
-    const headR = SpriteStore.getBaseImage(sizeSt, this.body, "head", this.layers.base["head"],
-        "rear");
-    headR.offset = offset["head"][this.body] || {x: 0, y: 0};
-    imageLayers.splice(0, 0, headR);
-
+    for (const layer of ["ears", "head"]) {
+      const img = SpriteStore.getBaseImage(sizeSt, this.body, layer, this.layers.base[layer],
+          "rear");
+      img.offset = offset["head"][this.body] || {x: 0, y: 0};
+      imageLayers.splice(0, 0, img);
+    }
 
     for (const layer in this.layers.outfit) {
       const idx = this.layers.outfit[layer];
