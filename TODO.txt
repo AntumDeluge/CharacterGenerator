@@ -13,3 +13,4 @@ TODO:
 - add option to hide base layers
 - fix ears being drawn under hair
 - use Scale2x algorithm for upscaling
+- fix missing arms layers for heavy 48x64 body
