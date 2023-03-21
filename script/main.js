@@ -9,7 +9,6 @@
 "use strict";
 
 import { LayerManager } from "./LayerManager.js";
-import { PreviewGenerator } from "./PreviewGenerator.js";
 
 window.main = {};
 
@@ -17,14 +16,6 @@ window.main = {};
 main.init = function() {
   // initialize the layer manager
   LayerManager.init();
-};
-
-main.onSelection = function(data) {
-  // DEBUG:
-  console.log("generating preview for selection");
-
-  PreviewGenerator.set(data);
-  PreviewGenerator.renderPreview();
 };
 
 window.onload = main.init();

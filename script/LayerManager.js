@@ -9,11 +9,13 @@
 "use strict";
 
 import { JSONLoader } from "./JSONLoader.js";
+import { PreviewGenerator } from "./PreviewGenerator.js";
 
 
 export const LayerManager = {
   initialized: false,
-  layers: {},
+  baseLayers: {},
+  outfitLayers: {},
 
   /**
    * Loads layer information from JSON file.
@@ -26,7 +28,14 @@ export const LayerManager = {
     this.initialized = true;
 
     JSONLoader.loadFile((data) => {
-      this.layers = data;
+      for (const size of Object.keys(data)) {
+        if (typeof(data[size]["base"]) !== "undefined") {
+          this.baseLayers[size] = data[size]["base"];
+        }
+        if (typeof(data[size]["outfit"]) !== "undefined") {
+          this.outfitLayers[size] = data[size]["outfit"];
+        }
+      }
       this.onInit();
     }, "assets/layers.json");
   },
@@ -36,7 +45,7 @@ export const LayerManager = {
    */
   onInit: function() {
     let sel = document.getElementById("select-size");
-    const sizes = Object.keys(this.layers);
+    const sizes = Object.keys(this.baseLayers);
     if (sizes.length < 1) {
       alert("ERROR: no layer information available");
       return;
@@ -59,7 +68,7 @@ export const LayerManager = {
       this.onBodyTypeChanged();
     });
 
-    for (const layer of this.getLayerNames()) {
+    for (const layer of [...this.getBaseLayerNames(), ...this.getOutfitLayerNames()]) {
       sel = document.getElementById("select-" + layer);
       sel.addEventListener("change", (evt) => {
         this.onLayerChanged();
@@ -71,10 +80,45 @@ export const LayerManager = {
   },
 
   /**
-   * Retrieves usable layer names.
+   * Removes all options from a select element.
+   *
+   * @param sel
+   *   Element to be cleared.
    */
-  getLayerNames: function() {
+  clearSelector: function(sel) {
+    for (let idx = sel.length-1; idx >= 0; idx--) {
+      sel.remove(idx);
+    }
+  },
+
+  /**
+   * Sets selector options.
+   *
+   * @param id
+   *   Selector string identifier.
+   * @param options
+   *   List of options to add to selector.
+   */
+  updateSelector: function(id, options) {
+    const sel = document.getElementById("select-" + id);
+    this.clearSelector(sel);
+    for (const opt of options) {
+      sel.add(opt);
+    }
+  },
+
+  /**
+   * Retrieves usable base layer names.
+   */
+  getBaseLayerNames: function() {
     return ["body", "arms", "head", "ears", "eyes"];
+  },
+
+  /**
+   * Retrieves usable outfit layer names.
+   */
+  getOutfitLayerNames: function() {
+    return ["shoes", "legs", "torso", "mask", "hair", "hat", "detail"];
   },
 
   /**
@@ -105,190 +149,121 @@ export const LayerManager = {
   },
 
   /**
-   * Removes all options from a select element.
+   * Retrieves value of a selection.
    *
-   * @param sel
-   *   Element to be cleared.
+   * @param id
+   *   Selector string identifier.
+   * @return
+   *   String value of selector index.
    */
-  clearSelector: function(sel) {
-    for (let idx = sel.length-1; idx >= 0; idx--) {
-      sel.remove(idx);
+  getSelectedValue: function(id) {
+    const sel = document.getElementById("select-" + id);
+    if (sel.options) {
+      const opt = sel.options[sel.selectedIndex];
+      if (typeof(opt) !== "undefined") {
+        return opt.value;
+      }
     }
+    return undefined;
   },
 
   /**
-   * Retrieves selected size.
+   * Retrieves text of a selection.
+   *
+   * @param id
+   *   Selector string identifier.
+   * @return
+   *   Text representation of selector index.
    */
-  getSelectedSize: function() {
-    const sel = document.getElementById("select-size");
-    return sel.options[sel.selectedIndex].value;
+  getSelectedText: function(id) {
+    const sel = document.getElementById("select-" + id);
+    return sel.options[sel.selectedIndex].text;
   },
 
   /**
-   * Retrieves selected race.
-   */
-  getSelectedRace: function() {
-    const sel = document.getElementById("select-race");
-    return sel.options[sel.selectedIndex].value;
-  },
-
-  /**
-   * Retrieves selected body type.
-   */
-  getSelectedBodyType() {
-    const sel = document.getElementById("select-type");
-    return sel.options[sel.selectedIndex].value;
-  },
-
-  /**
-   * Action(s) when size is selected.
+   * Updates preview & selector when size is changed.
    */
   onSizeChanged: function() {
-    this.setRaces(this.getSelectedSize());
-  },
-
-  /**
-   * Retrieves available races.
-   *
-   * @param size
-   *   The desired sprite dimensions.
-   * @return
-   *   List of races.
-   */
-  getRaces: function(size) {
-    return Object.keys(this.layers[size]) || [];
-  },
-
-  /**
-   * Sets available races for selection.
-   *
-   * @param size
-   *   Selected size.
-   */
-  setRaces: function(size) {
-    const sel = document.getElementById("select-race");
-    this.clearSelector(sel);
-    for (const race of this.getRaces(size)) {
-      const opt = this.getOption("race", race);
-      sel.add(opt);
+    const size = this.getSelectedValue("size");
+    // update races
+    const options = [];
+    for (const race of Object.keys(this.baseLayers[size])) {
+      options.push(this.getOption("race", race));
     }
-    sel.selectedIndex = "0";
+    this.updateSelector("race", options);
     this.onRaceChanged();
   },
 
   /**
-   * Action(s) when race is selected.
+   * Updates preview & selectors when race is changed.
    */
   onRaceChanged: function() {
-    const size = this.getSelectedSize();
-    const race = this.getSelectedRace();
-    this.setBodyTypes(size, race);
-  },
-
-  /**
-   * Retrieves available body types.
-   *
-   * @param size
-   *   The desired sprite dimensions.
-   * @param race
-   *   The race name.
-   * @return
-   *   List of body types.
-   */
-  getBodyTypes(size, race) {
-    return Object.keys(this.layers[size][race]) || [];
-  },
-
-  /**
-   * Sets available body types for selection.
-   *
-   * @param size
-   *   Selected size.
-   * @param race
-   *   Selected race.
-   */
-  setBodyTypes: function(size, race) {
-    const sel = document.getElementById("select-type");
-    this.clearSelector(sel);
-    for (const type of this.getBodyTypes(size, race)) {
-      const opt = this.getOption("type", type);
-      sel.add(opt);
+    const size = this.getSelectedValue("size");
+    const race = this.getSelectedValue("race");
+    // update layers
+    const options = [];
+    for (const type of Object.keys(this.baseLayers[size][race])) {
+      options.push(this.getOption("type", type));
     }
-    sel.selectedIndex = "0";
+    this.updateSelector("type", options);
     this.onBodyTypeChanged();
   },
 
   /**
-   * Action(s) when body type is selected.
+   * Updates preview & selectors when body type is changed.
    */
   onBodyTypeChanged: function() {
-    const size = this.getSelectedSize();
-    const race = this.getSelectedRace();
-    const type = this.getSelectedBodyType();
-    this.setLayers(size, race, type);
-  },
-
-  /**
-   * Sets values for layer selectors.
-   *
-   * @param size
-   * @param race
-   * @param type
-   */
-  setLayers: function(size, race, type) {
-    for (const layer of this.getLayerNames()) {
-      const sel = document.getElementById("select-" + layer);
-      this.clearSelector(sel);
-      const idxCount = this.layers[size][race][type][layer];
-      for (let idx = 0; idx < idxCount; idx++) {
-        const opt = this.getOption("layer-" + layer, idx, idx + 1);
-        sel.add(opt);
+    const size = this.getSelectedValue("size");
+    const race = this.getSelectedValue("race");
+    const type = this.getSelectedValue("type");
+    for (const layer of this.getBaseLayerNames()) {
+      const options = [];
+      const indexes = this.baseLayers[size][race][type][layer] || 0;
+      for (let idx = 0; idx < indexes; idx++) {
+        options.push(this.getOption(layer, idx, idx+1));
       }
-      sel.selectedIndex = "0";
+      this.updateSelector(layer, options);
+    }
+    for (const layer of this.getOutfitLayerNames()) {
+      const options = [this.getOption(layer, 0)]; // first index of outfit layers is empty
+      const indexes = this.outfitLayers[size][layer] || 0;
+      for (let idx = 0; idx < indexes; idx++) {
+        options.push(this.getOption(layer, idx+1))
+      }
+      this.updateSelector(layer, options);
     }
     this.onLayerChanged();
   },
 
   /**
-   * Retrieves the selected index for layer.
-   *
-   * @param layer
-   *   The layer name.
-   * @return
-   *   Selected index.
-   */
-  getSelectedLayer: function(layer) {
-    const sel = document.getElementById("select-" + layer);
-    return parseInt(sel.selectedIndex, 10);
-  },
-
-  /**
-   * Action(s) when layer is selected.
+   * Updates preview when a layer option is changed.
    */
   onLayerChanged: function() {
-    const size = this.getSelectedSize();
-    const race = this.getSelectedRace(size);
-    const type = this.getSelectedBodyType(size, race);
+    const sizeSt = this.getSelectedValue("size");
+    const size = sizeSt.split("x");
+    const race = this.getSelectedValue("race");
+    const type = this.getSelectedValue("type");
 
-    const layers = {
-      "base": {
-        "head-rear": this.layers[size][race][type]["head-rear"] || []
-      },
-      "outfit": {}
-    };
-
-    for (const layer of this.getLayerNames()) {
-      layers["base"][layer] = this.getSelectedLayer(layer);
-    }
-
-    const dim = size.split("x");
-
-    const selected = {
-      "dimensions": {"width": parseInt(dim[0], 10), "height": parseInt(dim[1], 10)},
+    const data = {
+      "size": {"width": size[0], "height": size[1]},
       "race": race,
       "type": type,
-      "layers": layers
+      "layers": {
+        "base": {
+          "head-rear": this.baseLayers[sizeSt][race][type]["head-rear"] || []
+        },
+        "outfit": {}
+      }
     };
-    main.onSelection(selected);
-  },
+
+    for (const layer of this.getBaseLayerNames()) {
+      data["layers"]["base"][layer] = parseInt(this.getSelectedValue(layer), 10);
+    }
+    for (const layer of this.getOutfitLayerNames()) {
+      data["layers"]["outfit"][layer] = parseInt(this.getSelectedValue(layer), 10);
+    }
+
+    PreviewGenerator.set(data);
+    PreviewGenerator.renderPreview();
+  }
 };

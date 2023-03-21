@@ -66,7 +66,7 @@ export const SpriteStore = {
   /**
    * Retrieves a base image layer.
    *
-   * @param dim
+   * @param size
    *   Image dimensions string (e.g. 48x64).
    * @param race
    *   Race identifier (e.g. human_elf, dwarf, etc.).
@@ -81,8 +81,8 @@ export const SpriteStore = {
    * @return
    *   HTMLImageElement.
    */
-  getBaseImage: function(dim, race, body, layer, idx, suffix=undefined) {
-    let filepath = this.joinPath(dim, "base", race, body, layer, this.getIndexString(idx));
+  getBaseImage: function(size, race, body, layer, idx, suffix=undefined) {
+    let filepath = this.joinPath(size, "base", race, body, layer, this.getIndexString(idx));
     if (typeof(suffix) !== "undefined") {
       filepath += "-" + suffix;
     }
@@ -92,7 +92,7 @@ export const SpriteStore = {
   /**
    * Retrieves an outfit image layer.
    *
-   * @param dim
+   * @param size
    *   Image dimensions string (e.g. 48x64).
    * @param race
    *   Race identifier (e.g. human_elf, dwarf, etc.).
@@ -107,8 +107,8 @@ export const SpriteStore = {
    * @return
    *   HTMLImageElement.
    */
-  getOutfitImage: function(dim, race, body, layer, idx, suffix=undefined) {
-    const filepath = this.joinPath(dim, "outfit", race, body, layer, this.getIndexString(idx));
+  getOutfitImage: function(size, layer, idx, suffix=undefined) {
+    let filepath = this.joinPath(size, "outfit", layer, this.getIndexString(idx));
     if (typeof(suffix) !== "undefined") {
       filepath += "-" + suffix;
     }
