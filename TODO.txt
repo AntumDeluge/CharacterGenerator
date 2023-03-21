@@ -11,5 +11,5 @@ TODO:
   - eyebrows
   - hair
 - add option to hide base layers
-- scale without blur
 - fix ears being drawn under hair
+- use Scale2x algorithm for upscaling

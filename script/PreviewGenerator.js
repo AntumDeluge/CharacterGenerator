@@ -108,6 +108,9 @@ export const PreviewGenerator = {
     // DEBUG:
     console.log("drawing layer: " + img.src);
 
+    const ctx = this.getContext();
+    ctx.imageSmoothingEnabled = false;
+
     if (img.offset.x != 0) {
       const fsize = this.getFrameSize();
       // slice layer into 4 parts to offset east/west facing frames
@@ -128,16 +131,16 @@ export const PreviewGenerator = {
           sheight *= 2;
         }
 
-        this.getContext().drawImage(img,
+        ctx.drawImage(img,
             0, slice*fsize.height, img.width, fsize.height,
             offsetX, (slice*sheight)+offsetY, swidth, sheight);
       }
     } else {
       if (this.upscale) {
-        this.getContext().drawImage(img, 0, 0, img.width, img.height,
+        ctx.drawImage(img, 0, 0, img.width, img.height,
           0+(img.offset.x*2), 0+(img.offset.y*2), this.previewCanvas.width, this.previewCanvas.height);
       } else {
-        this.getContext().drawImage(img, 0+img.offset.x, 0+img.offset.y);
+        ctx.drawImage(img, 0+img.offset.x, 0+img.offset.y);
       }
     }
   },
