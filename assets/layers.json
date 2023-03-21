@@ -1,102 +1,92 @@
 {
   "48x64": {
-    "human_elf": {
-      "adult": {
-        "body": 3,
-        "arms": 2,
-        "head": 2,
-        "ears": 3,
-        "eyes": 53
-      },
-      "adult_heavy": {
-        "body": 2,
-        "arms": 1,
-        "head": 1,
-        "ears": 3,
-        "eyes": 1
-      },
-      "adult_tall": {
-        "body": 3,
-        "arms": 2,
-        "head": 1,
-        "ears": 2,
-        "eyes": 1
-      },
-      "child": {
-        "body": 1,
-        "arms": 2,
-        "head": 1,
-        "ears": 3,
-        "eyes": 1
-      },
-      "elder": {
-        "body": 1,
-        "arms": 2,
-        "head": 1,
-        "head-rear": [0],
-        "ears": 2,
-        "eyes": 1
+    "base": {
+      "head": 3,
+      "ears": 3,
+      "eyes": 32,
+      "body": {
+        "standard": {
+          "body": 3,
+          "arms": 2
+        },
+        "heavy": {
+          "body": 2,
+          "arms": 1
+        },
+        "tall": {
+          "body": 3,
+          "arms": 2
+        },
+        "child": {
+          "body": 1,
+          "arms": 2
+        },
+        "elder": {
+          "body": 1,
+          "arms": 2,
+          "head": 1,
+          "ears": 3,
+          "eyes": 1
+        },
+        "dwarf": {
+          "body": 1,
+          "arms": 1
+        }
       }
     },
-    "dwarf": {
-      "adult": {
-        "body": 1,
-        "arms": 1,
-        "head": 2,
-        "head-rear": [0, 1],
-        "ears": 1,
-        "eyes": 1
-      }
+    "outfit": {
+      "shoes": 0,
+      "legs": 0,
+      "torso": 0,
+      "mask": 0,
+      "hair": 2,
+      "hat": 0,
+      "detail": 0
     }
   },
   "24x32": {
-    "human_elf": {
-      "adult": {
-        "body": 3,
-        "arms": 2,
-        "head": 1,
-        "ears": 2,
-        "eyes": 1
-      },
-      "adult_heavy": {
-        "body": 2,
-        "arms": 3,
-        "head": 1,
-        "ears": 2,
-        "eyes": 1
-      },
-      "adult_tall": {
-        "body": 3,
-        "arms": 3,
-        "head": 1,
-        "ears": 2,
-        "eyes": 1
-      },
-      "child": {
-        "body": 1,
-        "arms": 2,
-        "head": 1,
-        "ears": 2,
-        "eyes": 1
-      },
-      "elder": {
-        "body": 1,
-        "arms": 2,
-        "head": 1,
-        "head-rear": [0],
-        "ears": 2,
-        "eyes": 1
+    "base": {
+      "head": 2,
+      "ears": 2,
+      "eyes": 1,
+      "body": {
+        "standard": {
+          "body": 3,
+          "arms": 2
+        },
+        "heavy": {
+          "body": 2,
+          "arms": 3
+        },
+        "tall": {
+          "body": 3,
+          "arms": 3
+        },
+        "child": {
+          "body": 1,
+          "arms": 2
+        },
+        "elder": {
+          "body": 1,
+          "arms": 2,
+          "head": 1,
+          "ears": 2,
+          "eyes": 1
+        },
+        "dwarf": {
+          "body": 1,
+          "arms": 1
+        }
       }
     },
-    "dwarf": {
-      "adult": {
-        "body": 1,
-        "arms": 1,
-        "head": 2,
-        "head-rear": [0, 1],
-        "ears": 1,
-        "eyes": 1
-      }
+    "outfit": {
+      "shoes": 0,
+      "legs": 0,
+      "torso": 0,
+      "mask": 0,
+      "hair": 2,
+      "hat": 0,
+      "detail": 0
     }
   }
 }

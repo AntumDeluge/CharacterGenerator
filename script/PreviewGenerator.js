@@ -17,7 +17,6 @@ export const PreviewGenerator = {
   framesX: 3, // horizonal frame count
   framesY: 4, // vertical frame count
 
-  race: undefined,
   body: undefined,
 
   // selected layer indexes
@@ -51,8 +50,7 @@ export const PreviewGenerator = {
    *   Layer information.
    */
   set: function(data) {
-    this.setFrameSize(data["dimensions"]);
-    this.race = data["race"];
+    this.setFrameSize(data["size"]);
     this.body = data["type"];
     this.layers = data["layers"];
   },
@@ -90,17 +88,6 @@ export const PreviewGenerator = {
   },
 
   /**
-   * Retrieves frame dimensions in a formatted string.
-   *
-   * @return
-   *   Frame dimensions formatted at 'WIDTHxHEIGHT'.
-   */
-  getFrameSizeString: function() {
-    const fsize = this.getFrameSize();
-    return fsize.width + "x" + fsize.height;
-  },
-
-  /**
    * Renders a layer on the canvas.
    *
    * @param img
@@ -110,35 +97,68 @@ export const PreviewGenerator = {
     // DEBUG:
     console.log("drawing layer: " + img.src);
 
-    this.getContext().drawImage(img, 0, 0);
+    this.getContext().drawImage(img, 0+img.offset.x, 0+img.offset.y);
   },
 
   /**
    * Generates preview image.
    */
   renderPreview: function() {
-    const dim = this.getFrameSizeString();
+    const size = this.getFrameSize();
+    const sizeSt = size.width + "x" + size.height;
 
     // DEBUG:
-    console.log("frame dimensions: " + dim);
+    console.log("frame dimensions: " + sizeSt);
+
+    const offset = {
+      "head": {
+        "child": {x: 0, y: Math.floor(6 * (size.height / 64))},
+        "dwarf": {x: 0, y: Math.floor(4 * (size.height / 64))},
+        //~ "elder": {x: 0, y: Math.floor(5 * (size.height / 64))},
+        "tall": {x: 0, y: Math.floor(-5 * (size.height / 64))}
+      }
+    };
 
     // preserve order that images should be drawn
     const imageLayers = [];
-    let headIdx = -1;
+    const rearIndexes = {};
     for (const layer in this.layers.base) {
       const idx = this.layers.base[layer];
       if (layer.endsWith("-rear")) {
+        rearIndexes[layer.substring(0, layer.indexOf("-rear"))] = idx;
         continue;
-      } else if (layer === "head") {
-        headIdx = idx;
       }
-      imageLayers.push(SpriteStore.getBaseImage(dim, this.race, this.body, layer, idx));
+      const img = SpriteStore.getBaseImage(sizeSt, this.body, layer, idx);
+      if (["arms", "body"].indexOf(layer) > -1) {
+        // unique layers
+        img.offset = {x: 0, y: 0};
+      } else {
+        // common layers
+        img.offset = offset["head"][this.body] || {x: 0, y: 0};
+      }
+      imageLayers.push(img);
     }
 
-    // check for head indexes requiring a "rear" layer
-    if (this.layers.base["head-rear"].indexOf(headIdx) > -1) {
-      imageLayers.splice(0, 0,
-          SpriteStore.getBaseImage(dim, this.race, this.body, "head", headIdx, "rear"));
+    // head layers have a separate "rear" layer
+    const headR = SpriteStore.getBaseImage(sizeSt, this.body, "head", this.layers.base["head"],
+        "rear");
+    headR.offset = offset["head"][this.body] || {x: 0, y: 0};
+    imageLayers.splice(0, 0, headR);
+
+
+    for (const layer in this.layers.outfit) {
+      const idx = this.layers.outfit[layer];
+      if (idx == 0) {
+        // ignore empty layers
+        continue;
+      }
+      const img = SpriteStore.getOutfitImage(sizeSt, layer, idx);
+      if (layer === "hair") {
+        img.offset = offset["head"][this.body] || {x: 0, y: 0};
+      } else {
+        img.offset = {x: 0, y: 0};
+      }
+      imageLayers.push(img);
     }
 
     // flag to prevent redrawing

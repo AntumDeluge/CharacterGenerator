@@ -16,6 +16,12 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 ### Outfits
 
-*(none yet)*
+*(shoes, legs, torso, mask, hair, hat, detail)*
+
+#### Hair
+
+- 1-2 by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
+
 
 [lic.cc0]: ../doc/licenses/CC0-1.0.txt
+[lic.ogaby]: ../doc/licenses/OGA-BY-3.0.txt
