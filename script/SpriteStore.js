@@ -68,8 +68,6 @@ export const SpriteStore = {
    *
    * @param size
    *   Image dimensions string (e.g. 48x64).
-   * @param race
-   *   Race identifier (e.g. human_elf, dwarf, etc.).
    * @param body
    *   Body type (e.g. adult, elder, child, etc.).
    * @param layer
@@ -81,8 +79,8 @@ export const SpriteStore = {
    * @return
    *   HTMLImageElement.
    */
-  getBaseImage: function(size, race, body, layer, idx, suffix=undefined) {
-    let filepath = this.joinPath(size, "base", race, body, layer, this.getIndexString(idx));
+  getBaseImage: function(size, body, layer, idx, suffix=undefined) {
+    let filepath = this.joinPath(size, "base", body, layer, this.getIndexString(idx));
     if (typeof(suffix) !== "undefined") {
       filepath += "-" + suffix;
     }

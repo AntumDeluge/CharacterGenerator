@@ -17,7 +17,6 @@ export const PreviewGenerator = {
   framesX: 3, // horizonal frame count
   framesY: 4, // vertical frame count
 
-  race: undefined,
   body: undefined,
 
   // selected layer indexes
@@ -52,7 +51,6 @@ export const PreviewGenerator = {
    */
   set: function(data) {
     this.setFrameSize(data["size"]);
-    this.race = data["race"];
     this.body = data["type"];
     this.layers = data["layers"];
   },
@@ -127,13 +125,13 @@ export const PreviewGenerator = {
         rearIndexes[layer.substring(0, layer.indexOf("-rear"))] = idx;
         continue;
       }
-      const img = SpriteStore.getBaseImage(sizeSt, this.race, this.body, layer, idx);
+      const img = SpriteStore.getBaseImage(sizeSt, this.body, layer, idx);
       img.offset = {x: 0, y: 0};
       imageLayers.push(img);
     }
 
     // head layers have a separate "rear" layer
-    const headR = SpriteStore.getBaseImage(sizeSt, this.race, this.body, "head",
+    const headR = SpriteStore.getBaseImage(sizeSt, this.body, "head",
         this.layers.base["head"], "rear");
     headR.offset = {x: 0, y: 0};
     imageLayers.splice(0, 0, headR);

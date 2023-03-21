@@ -61,9 +61,6 @@ export const LayerManager = {
       this.onSizeChanged();
     });
 
-    document.getElementById("select-race").addEventListener("change", (evt) => {
-      this.onRaceChanged();
-    });
     document.getElementById("select-type").addEventListener("change", (evt) => {
       this.onBodyTypeChanged();
     });
@@ -185,24 +182,9 @@ export const LayerManager = {
    */
   onSizeChanged: function() {
     const size = this.getSelectedValue("size");
-    // update races
+    // update body types
     const options = [];
-    for (const race of Object.keys(this.baseLayers[size])) {
-      options.push(this.getOption("race", race));
-    }
-    this.updateSelector("race", options);
-    this.onRaceChanged();
-  },
-
-  /**
-   * Updates preview & selectors when race is changed.
-   */
-  onRaceChanged: function() {
-    const size = this.getSelectedValue("size");
-    const race = this.getSelectedValue("race");
-    // update layers
-    const options = [];
-    for (const type of Object.keys(this.baseLayers[size][race])) {
+    for (const type of Object.keys(this.baseLayers[size])) {
       options.push(this.getOption("type", type));
     }
     this.updateSelector("type", options);
@@ -214,11 +196,10 @@ export const LayerManager = {
    */
   onBodyTypeChanged: function() {
     const size = this.getSelectedValue("size");
-    const race = this.getSelectedValue("race");
     const type = this.getSelectedValue("type");
     for (const layer of this.getBaseLayerNames()) {
       const options = [];
-      const indexes = this.baseLayers[size][race][type][layer] || 0;
+      const indexes = this.baseLayers[size][type][layer] || 0;
       for (let idx = 0; idx < indexes; idx++) {
         options.push(this.getOption(layer, idx, idx+1));
       }
@@ -241,16 +222,14 @@ export const LayerManager = {
   onLayerChanged: function() {
     const sizeSt = this.getSelectedValue("size");
     const size = sizeSt.split("x");
-    const race = this.getSelectedValue("race");
     const type = this.getSelectedValue("type");
 
     const data = {
       "size": {"width": size[0], "height": size[1]},
-      "race": race,
       "type": type,
       "layers": {
         "base": {
-          "head-rear": this.baseLayers[sizeSt][race][type]["head-rear"] || []
+          "head-rear": this.baseLayers[sizeSt][type]["head-rear"] || []
         },
         "outfit": {}
       }
