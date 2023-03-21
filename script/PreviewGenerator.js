@@ -112,7 +112,8 @@ export const PreviewGenerator = {
 
     const offset = {
       "head": {
-        "child": {x: 0, y: Math.floor(6 * (size.height / 64))}
+        "child": {x: 0, y: Math.floor(6 * (size.height / 64))},
+        "tall": {x: 0, y: Math.floor(-5 * (size.height / 64))}
       }
     };
 
