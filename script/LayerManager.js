@@ -220,7 +220,7 @@ export const LayerManager = {
       this.updateSelector(layer, options);
     }
     for (const layer of this.getOutfitLayerNames()) {
-      const options = [this.getOption(layer, 0)]; // first index of outfit layers is empty
+      const options = [this.getOption(layer, 0, "(none)")]; // first index of outfit layers is empty
       const indexes = this.outfitLayers[size][layer] || 0;
       for (let idx = 0; idx < indexes; idx++) {
         options.push(this.getOption(layer, idx+1))
