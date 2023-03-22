@@ -47,7 +47,7 @@
         }
       },
       "mask": 1,
-      "hair": 7,
+      "hair": 11,
       "hat": 23,
       "detail": 1
     }
@@ -95,6 +95,9 @@
     }
   },
   "labels": {
+    "hair": {
+      "9": "cornrows"
+    },
     "hat": {
       "1": "stetson",
       "2": "beret",

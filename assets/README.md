@@ -33,6 +33,11 @@ This page lists authors, licensing, and sources of assets and any other informat
     - 17 (boggin)
 - by DezrasDragons & Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]) [source](https://opengameart.org/node/47664):
     - 23 (samurai amigasa)
+- by diamonddmgirl with upscales by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
+    - 8 [source](https://opengameart.org/node/72198)
+    - 9 (cornrows) [source](https://opengameart.org/node/72198)
+    - 10 [source](https://opengameart.org/node/83661)
+    - 11 [source](https://opengameart.org/node/72198)
 - by Dungeon Crawl Stone Soup & bleutailfly ([OGA BY 3.0][lic.ogaby]) [source](https://opengameart.org/node/12210):
     - 21 (helmet)
     - 22 (helmet)
