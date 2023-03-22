@@ -48,7 +48,7 @@
       },
       "mask": 1,
       "hair": 7,
-      "hat": 22,
+      "hat": 23,
       "detail": 1
     }
   },
@@ -117,7 +117,8 @@
       "19": "fedora",
       "20": "helmet",
       "21": "helmet",
-      "22": "helmet"
+      "22": "helmet",
+      "23": "samurai amigasa"
     },
     "mask": {
       "1": "glasses"

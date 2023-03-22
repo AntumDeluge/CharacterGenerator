@@ -31,6 +31,8 @@ This page lists authors, licensing, and sources of assets and any other informat
 - by bleutailfly ([OGA BY 3.0][lic.ogaby]) [Stendhal](https://stendhalgame.org/):
     - 16 (backward cap)
     - 17 (boggin)
+- by DezrasDragons & Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]) [source](https://opengameart.org/node/47664):
+    - 23 (samurai amigasa)
 - by Dungeon Crawl Stone Soup & bleutailfly ([OGA BY 3.0][lic.ogaby]) [source](https://opengameart.org/node/12210):
     - 21 (helmet)
     - 22 (helmet)
