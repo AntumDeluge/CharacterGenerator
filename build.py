@@ -16,9 +16,12 @@ from zipfile import ZipFile
 try:
   import wget
 except ModuleNotFoundError:
-  print("installing wget Python module ...")
+  print("\ninstalling wget Python module ...")
   subprocess.run(("python", "-m", "pip", "install", "wget"), check=True)
-  import wget
+  try:
+    import wget
+  except ModuleNotFoundError:
+    print("\nWARNING: could not install 'wget' module, downloads will fail")
 
 
 def getConfig(key, default=None):
