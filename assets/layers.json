@@ -45,7 +45,7 @@
           "1-standard-2": 1
         }
       },
-      "mask": 0,
+      "mask": 1,
       "hair": 7,
       "hat": 1,
       "detail": 0
@@ -96,6 +96,9 @@
   "labels": {
     "hat": {
       "1": "stetson"
+    },
+    "mask": {
+      "1": "glasses"
     }
   }
 }

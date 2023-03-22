@@ -26,11 +26,15 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 - [1 (stetson) by Jordan Irwin (AntumDeluge)](https://opengameart.org/node/140316) ([OGA BY 3.0][lic.ogaby])
 
-#### Torso
+#### Legs
 
 - 1 by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0])
 
-#### Legs
+#### Mask
+
+- [1 by bleutailfly](https://github.com/arianne/stendhal/blob/894e86ee/data/sprites/outfit/mask/001.png) ([OGA BY 3.0][lic.ogaby])
+
+#### Torso
 
 - 1 by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0])
 
