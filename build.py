@@ -8,8 +8,112 @@
 # ****************************************************
 
 
-import errno, math, os, shutil, sys, time
+import codecs, errno, math, os, shutil, subprocess, sys, time
 
+from urllib.error import HTTPError
+from zipfile import ZipFile
+
+try:
+  import wget
+except ModuleNotFoundError:
+  print("installing wget Python module ...")
+  subprocess.run(("python", "-m", "pip", "install", "wget"), check=True)
+  import wget
+
+
+def getConfig(key, default=None):
+  file_conf = os.path.join(os.getcwd(), "build.conf")
+  if not os.path.isfile(file_conf):
+    print("\nERROR: config not found: {}".format(file_conf))
+    return None
+
+  fopen = codecs.open(file_conf, "r", "utf-8")
+  lines = fopen.read().replace("\r\n", "\n").replace("\r", "\n").split("\n")
+  fopen.close()
+
+  lidx = 0;
+  for line in lines:
+    lidx =+ 0
+    line = line.strip()
+    if not line or line.startswith("#"):
+      continue
+    if "=" not in line:
+      print("\nWARNING: malformed line in config ({}): {}".format(lidx, line))
+      continue
+    tmp = line.split("=", 1)
+    if key == tmp[0].strip():
+      return tmp[1].strip()
+  return default
+
+def downloadFile(url, filename):
+  # DEBUG:
+  print("downloading file from: {}".format(url))
+
+  dir_target = os.path.join(os.getcwd(), "temp")
+  if not os.path.exists(dir_target):
+    os.makedirs(dir_target)
+  if not os.path.isdir(dir_target):
+    print("\nERROR: cannot download to temp directory, file exists: {}".format(dir_target))
+    sys.exit(errno.EEXIST)
+
+  file_target = os.path.join(dir_target, filename)
+  if os.path.exists(file_target):
+    print("{} exists, delete to re-download".format(file_target))
+    return
+
+  try:
+    wget.download(url, file_target)
+  except HTTPError:
+    print("\nERROR: could not download file from: {}".format(url))
+    sys.exit(1)
+
+def packZipDir(filepath, sourcepath):
+  if os.path.exists(filepath):
+    if os.path.isdir(filepath):
+      print("\nERROR: cannot create zip, directory exists: {}".format(filepath))
+      sys.exit(errno.EEXIST)
+    os.remove(filepath)
+
+  dir_start = os.getcwd()
+  os.chdir(sourcepath)
+  # clean up path name
+  sourcepath = os.getcwd()
+  idx_trim = len(sourcepath) + 1
+
+  zopen = ZipFile(filepath, "w")
+  for ROOT, DIRS, FILES in os.walk(sourcepath):
+    for f in FILES:
+      f = os.path.join(ROOT, f)[idx_trim:]
+      zopen.write(f)
+  zopen.close()
+
+  os.chdir(dir_start)
+  print("packed archive: {}".format(filepath))
+
+def unpackZip(filepath, dir_target=None):
+  if not os.path.isfile(filepath):
+    print("\nERROR: cannot extract zip, file not found: {}".format(filepath))
+    sys.exit(errno.ENOENT)
+
+  dir_start = os.getcwd()
+  dir_parent = os.path.dirname(filepath)
+  if dir_target == None:
+    dir_target = os.path.join(dir_parent, os.path.basename(filepath).lower().split(".zip")[0])
+
+  if os.path.exists(dir_target):
+    if not os.path.isdir(dir_target):
+      print("\nERROR: cannot extract zip, file exists: {}".format(dir_target))
+      sys.exit(errno.EEXIST)
+    shutil.rmtree(dir_target)
+  os.makedirs(dir_target)
+
+  os.chdir(dir_target)
+  print("extracting contents of {} ...".format(filepath))
+  zopen = ZipFile(filepath, "r")
+  zopen.extractall()
+  zopen.close()
+  # return to original directory
+  os.chdir(dir_start)
 
 def cleanStage(dir_stage):
   if os.path.exists(dir_stage):
@@ -71,17 +175,67 @@ def stage(_dir):
           # FIXME: correct error value
           sys.exit(errno.EEXIST)
 
+def buildElectron(_dir):
+  stage(_dir)
+  dir_stage = os.path.join(_dir, "stage")
+  for f in ("electron_main.js", "package.json"):
+    shutil.copy(os.path.join(_dir, f), dir_stage)
+
+  ver_electron = getConfig("electron_version")
+  if ver_electron == None:
+    print("\nERROR: chromedriver version not configured in 'build.conf'")
+    sys.exit(1)
+
+  print("\nsetting up for electron version: {}".format(ver_electron))
+
+  dl_prefix = "https://github.com/electron/electron/releases/download/v{0}/".format(ver_electron)
+
+  for platform in ("linux-x64", "win32-x64"):
+    print("\nbuilding for platform " + platform + " ...")
+    dl_url = dl_prefix + "electron-v{}-".format(ver_electron) + platform + ".zip"
+    filename = os.path.basename(dl_url)
+    downloadFile(dl_url, filename)
+    dl_filepath = os.path.join(_dir, "temp", filename)
+    dir_build = os.path.join(_dir, "build", platform)
+    unpackZip(dl_filepath, dir_build)
+    dir_app = os.path.join(dir_build, "resources", "app")
+    # make sure parent dir exists
+    if not os.path.isdir(os.path.dirname(dir_app)):
+      os.makedirs(os.path.dirname(dir_app))
+    shutil.copytree(dir_stage, dir_app)
+    if platform.startswith("linux"):
+      for exe in ("electron", "chrome-sandbox", "chrome_crashpad_handler"):
+        exe = os.path.join(dir_build, exe)
+        if os.path.isfile(exe):
+          os.chmod(exe, 0o775)
+    file_dist = os.path.join(os.path.dirname(dir_build), "CharGen_{}_{}.zip".format(getConfig("version"), platform))
+    packZipDir(file_dist, dir_build)
+
 
 def main(_dir, argv):
-  time_start = time.time()
-
-  if "stage" in argv:
-    stage(_dir)
-  else:
+  if len(argv) == 0:
     file_exe = os.path.basename(__file__)
     print("missing command parameter")
-    print("\nUsage:\n  " + file_exe + " stage")
+    print("\nUsage:\n  " + file_exe + " stage|electron")
     sys.exit(0)
+  elif len(argv) > 1:
+    file_exe = os.path.basename(__file__)
+    print("too many commands")
+    print("\nUsage:\n  " + file_exe + " stage|electron")
+    sys.exit(0)
+
+  time_start = time.time()
+
+  command = argv[0]
+  if "stage" == command:
+    stage(_dir)
+  elif "electron" == command:
+    buildElectron(_dir)
+  else:
+    file_exe = os.path.basename(__file__)
+    print("\nERROR: unknown command: {}".format(command))
+    print("\nUsage:\n  " + file_exe + " stage|electron")
+    sys.exit(1)
 
   time_end = time.time()
   time_diff = time_end - time_start
