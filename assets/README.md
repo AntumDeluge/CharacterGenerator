@@ -24,7 +24,19 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 #### Hair
 
-- 1-7 by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
+- by diamonddmgirl with upscales by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
+    - 8 [source](https://opengameart.org/node/72198)
+    - 9 (cornrows) [source](https://opengameart.org/node/72198)
+    - 10 [source](https://opengameart.org/node/83661)
+    - 11 [source](https://opengameart.org/node/72198)
+- by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
+    - 1-7
+- by Nila122 ([CC BY-SA 3.0][lic.ccbysa30]):
+    - 14-16 [source](https://opengameart.org/node/29293)
+    - 17 [source](https://opengameart.org/node/25629)
+- by Yamilian ([CC BY-SA 3.0][lic.ccbysa30]):
+    - 12 [source](https://opengameart.org/node/11480)
+    - 13 [source](https://opengameart.org/node/11445)
 
 #### Hat
 
@@ -33,11 +45,6 @@ This page lists authors, licensing, and sources of assets and any other informat
     - 17 (boggin)
 - by DezrasDragons & Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]) [source](https://opengameart.org/node/47664):
     - 23 (samurai amigasa)
-- by diamonddmgirl with upscales by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
-    - 8 [source](https://opengameart.org/node/72198)
-    - 9 (cornrows) [source](https://opengameart.org/node/72198)
-    - 10 [source](https://opengameart.org/node/83661)
-    - 11 [source](https://opengameart.org/node/72198)
 - by Dungeon Crawl Stone Soup & bleutailfly ([OGA BY 3.0][lic.ogaby]) [source](https://opengameart.org/node/12210):
     - 21 (helmet)
     - 22 (helmet)
@@ -49,9 +56,6 @@ This page lists authors, licensing, and sources of assets and any other informat
     - 5 (wedding veil) [source](https://opengameart.org/node/83523)
     - 6 (prison hat) [source](https://opengameart.org/node/83639)
     - 18 (goggles)
-- by Nila122 ([CC BY-SA 3.0][lic.ccbysa30]):
-    - 14-16 [source](https://opengameart.org/node/29293)
-    - 17 [source](https://opengameart.org/node/25629)
 - by Sebastian Riedel (Baŝto):
     - 7 (baseball cap) ([CC BY-SA 3.0][lic.ccbysa30]) [source](https://opengameart.org/node/90784)
     - 8 (peaked cap) ([CC BY-SA 3.0][lic.ccbysa30]) [source](https://opengameart.org/node/90784)
@@ -66,9 +70,6 @@ This page lists authors, licensing, and sources of assets and any other informat
     - 13 (fedora)
     - 14 (crown)
     - 15 (Santa hat)
-- by Yamilian ([CC BY-SA 3.0][lic.ccbysa30]):
-    - 12 [source](https://opengameart.org/node/11480)
-    - 13 [source](https://opengameart.org/node/11445)
 
 #### Legs
 
