@@ -126,7 +126,7 @@ def cleanStage(dir_stage):
     shutil.rmtree(dir_stage)
 
 def stage(_dir):
-  dir_stage = os.path.join(_dir, "stage")
+  dir_stage = os.path.join(_dir, "build", "stage")
   cleanStage(dir_stage)
   print("\nstaging ...")
   os.makedirs(dir_stage)
@@ -177,7 +177,7 @@ def stage(_dir):
 
 def buildElectron(_dir):
   stage(_dir)
-  dir_stage = os.path.join(_dir, "stage")
+  dir_stage = os.path.join(_dir, "build", "stage")
   for f in ("electron_main.js", "package.json"):
     shutil.copy(os.path.join(_dir, f), dir_stage)
 

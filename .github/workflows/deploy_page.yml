@@ -23,10 +23,10 @@ jobs:
       - name: Stage
         run: |
           python3 build.py stage
-          sed -i -e "s/\"asset-info\":\(.*\?\)\/master\//\"asset-info\":\1\/${{ github.ref_name }}\//" stage/script/config.js
+          sed -i -e "s/\"asset-info\":\(.*\?\)\/master\//\"asset-info\":\1\/${{ github.ref_name }}\//" build/stage/script/config.js
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: stage/
+          publish_dir: build/stage/
