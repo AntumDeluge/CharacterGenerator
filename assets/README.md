@@ -38,6 +38,11 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 - [1 by bleutailfly](https://github.com/arianne/stendhal/blob/894e86ee/data/sprites/outfit/mask/001.png) ([OGA BY 3.0][lic.ogaby])
 
+#### Shoes
+
+- [1 by Svetlana Kushnariova (Cabbit)](https://opengameart.org/node/72969) ([OGA BY 3.0][lic.ogaby])
+  - upscaled 48x64 additions by Jordan Irwin (AntumDeluge)
+
 #### Torso
 
 - 1 by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0])

@@ -32,7 +32,7 @@
       }
     },
     "outfit": {
-      "shoes": 0,
+      "shoes": 1,
       "legs": {
         "indexes": 1,
         "bodymap": {
@@ -84,7 +84,7 @@
       }
     },
     "outfit": {
-      "shoes": 0,
+      "shoes": 1,
       "legs": 0,
       "torso": 0,
       "mask": 0,
