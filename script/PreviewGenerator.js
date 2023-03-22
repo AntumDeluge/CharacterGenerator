@@ -10,6 +10,7 @@
 
 import { LayerManager } from "./LayerManager.js";
 import { SpriteStore } from "./SpriteStore.js";
+import { util } from "./util.js";
 
 
 export const PreviewGenerator = {
@@ -211,7 +212,14 @@ export const PreviewGenerator = {
         // ignore empty layers
         continue;
       }
-      const img = SpriteStore.getOutfitImage(sizeSt, layer, idx);
+      const suffix = this.layers.bodymap[layer];
+
+      // DEBUG:
+      if (typeof(suffix) !== "undefined") {
+        console.log("using bodymap for layer: " + layer);
+      }
+
+      const img = SpriteStore.getOutfitImage(sizeSt, layer, idx, suffix);
       if (["hair", "mask", "hat"].indexOf(layer) > -1) {
         // layers on head
         img.offset = offset["head"][this.body] || {x: 0, y: 0};
