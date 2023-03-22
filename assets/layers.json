@@ -48,7 +48,7 @@
       },
       "mask": 1,
       "hair": 7,
-      "hat": 6,
+      "hat": 8,
       "detail": 1
     }
   },
@@ -101,7 +101,9 @@
       "3": "turban",
       "4": "sailor cap",
       "5": "wedding veil",
-      "6": "prison hat"
+      "6": "prison hat",
+      "7": "baseball cap",
+      "8": "peaked cap"
     },
     "mask": {
       "1": "glasses"
