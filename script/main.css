@@ -63,10 +63,17 @@ div.options-box, span.button {
   padding: 5px;
 }
 
-div.options-box {
+div.options-box, div.options-box-ext {
   display: grid;
-  grid-template-columns: auto auto;
   margin-bottom: 10px;
+}
+
+div.options-box {
+  grid-template-columns: auto auto;
+}
+
+div.options-box-ext {
+  grid-template-columns: auto 25px auto;
 }
 
 div.button-container {

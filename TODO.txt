@@ -10,7 +10,6 @@ TODO:
   - eyes
   - eyebrows
   - hair
-- add option to hide base layers
 - use Scale2x algorithm for upscaling
 - touch up scaled layers
 - add optional rear layer for hair

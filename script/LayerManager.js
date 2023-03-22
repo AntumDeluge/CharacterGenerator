@@ -88,6 +88,18 @@ export const LayerManager = {
       });
     }
 
+    // checkbox for toggling base layers
+    for (const layer of this.getBaseLayerNames()) {
+      const chk = document.getElementById("show-" + layer)
+      // add tooltip
+      chk.title = "show " + layer;
+      // default to enabled
+      chk.checked = true;
+      chk.addEventListener("change", (evt) => {
+        this.onLayerChanged();
+      });
+    }
+
     // checkbox for upscaling
     document.getElementById("upscale").addEventListener("change", (evt) => {
       this.onLayerChanged();
@@ -137,6 +149,19 @@ export const LayerManager = {
    */
   getOutfitLayerNames: function() {
     return ["shoes", "legs", "torso", "mask", "hair", "hat", "detail"];
+  },
+
+  /**
+   * Returns a list of base layer names that should be drawn in preview.
+   */
+  getVisibleBaseLayers: function() {
+    const visible = [];
+    for (const layer of this.getBaseLayerNames()) {
+      if (document.getElementById("show-" + layer).checked) {
+        visible.push(layer);
+      }
+    }
+    return visible;
   },
 
   /**

@@ -8,6 +8,7 @@
 
 "use strict";
 
+import { LayerManager } from "./LayerManager.js";
 import { SpriteStore } from "./SpriteStore.js";
 
 
@@ -166,8 +167,13 @@ export const PreviewGenerator = {
 
     // preserve order that images should be drawn
     const imageLayers = [];
+    const visibleBaseLayers = LayerManager.getVisibleBaseLayers();
     const rearIndexes = {}; // unused?
     for (const layer in this.layers.base) {
+      if (visibleBaseLayers.indexOf(layer) < 0) {
+        // don't draw layers that should be disabled in preview
+        continue;
+      }
       const idx = this.layers.base[layer];
       if (layer.endsWith("-rear")) {
         rearIndexes[layer.substring(0, layer.indexOf("-rear"))] = idx;
@@ -186,6 +192,10 @@ export const PreviewGenerator = {
 
     // head layers have a separate "rear" layer
     for (const layer of ["ears", "head"]) {
+      if (visibleBaseLayers.indexOf(layer) < 0) {
+        // don't draw layers that should be disabled in preview
+        continue;
+      }
       const img = SpriteStore.getBaseImage(sizeSt, this.body, layer, this.layers.base[layer],
           "rear");
       img.offset = offset["head"][this.body] || {x: 0, y: 0};
