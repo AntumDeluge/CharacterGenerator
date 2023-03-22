@@ -58,7 +58,7 @@ div.box, span.button {
   border-radius: 5px;
 }
 
-div.options-box, span.button {
+div.options-box, div.options-box-ext, span.button {
   background-color: #ffffff1f;
   padding: 5px;
 }
@@ -69,11 +69,11 @@ div.options-box, div.options-box-ext {
 }
 
 div.options-box {
-  grid-template-columns: auto auto;
+  grid-template-columns: 45% auto;
 }
 
 div.options-box-ext {
-  grid-template-columns: auto 25px auto;
+  grid-template-columns: 35% 10% auto;
 }
 
 div.button-container {
