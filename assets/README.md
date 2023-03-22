@@ -29,6 +29,10 @@ This page lists authors, licensing, and sources of assets and any other informat
 #### Hat
 
 - [1 (stetson) by Jordan Irwin (AntumDeluge)](https://opengameart.org/node/140316) ([OGA BY 3.0][lic.ogaby])
+- 2 (beret) by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
+- 3 (turban) by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
+- [4 (sailor cap) by Jordan Irwin (AntumDeluge)](https://opengameart.org/node/100767) ([OGA BY 3.0][lic.ogaby])
+- [5 (wedding veil) by Jordan Irwin (AntumDeluge)](https://opengameart.org/node/83523) ([OGA BY 3.0][lic.ogaby])
 
 #### Legs
 
