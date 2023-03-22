@@ -8,42 +8,12 @@
 
 "use strict";
 
+import { util } from "./util.js";
+
 
 export const SpriteStore = {
   cache: {},
 
-  /**
-   * Join path nodes into a single string.
-   *
-   * @param nodes
-   *   List of node strings to be joined.
-   * @return
-   *   Formatted path string.
-   */
-  joinPath: function(...nodes) {
-    let path = "";
-    for (let node of nodes) {
-      // trim leading & trailing node delimeters
-      node = node.replace(/^\/+|\/+$/g, "").trim();
-      if (path.length > 0) {
-        path += "/";
-      }
-      path += node;
-    }
-    return path;
-  },
-
-  /**
-   * Formats layer index into a usable string.
-   *
-   * @param idx
-   *   Layer index.
-   * @return
-   *   Index string prefixed by 0s.
-   */
-  getIndexString(idx) {
-    return idx < 100 ? ("00" + idx).slice(-3) : "" + idx;
-  },
 
   /**
    * Retrieves an image from cache or creates a new one.
@@ -58,7 +28,7 @@ export const SpriteStore = {
       return this.cache[filepath];
     }
     const img = new Image();
-    img.src = this.joinPath("assets", filepath);
+    img.src = util.joinPath("assets", filepath);
     this.cache[filepath] = img;
     return img;
   },
@@ -83,10 +53,10 @@ export const SpriteStore = {
     let filepath;
     if (["arms", "body"].indexOf(layer) > -1) {
       // unique layers
-      filepath = this.joinPath(size, "base/body", body, layer, this.getIndexString(idx));
+      filepath = util.joinPath(size, "base/body", body, layer, util.getIndexString(idx));
     } else {
       // common layers
-      filepath = this.joinPath(size, "base", layer, this.getIndexString(idx));
+      filepath = util.joinPath(size, "base", layer, util.getIndexString(idx));
     }
     if (typeof(suffix) !== "undefined") {
       filepath += "-" + suffix;
@@ -113,7 +83,7 @@ export const SpriteStore = {
    *   HTMLImageElement.
    */
   getOutfitImage: function(size, layer, idx, suffix=undefined) {
-    let filepath = this.joinPath(size, "outfit", layer, this.getIndexString(idx));
+    let filepath = util.joinPath(size, "outfit", layer, util.getIndexString(idx));
     if (typeof(suffix) !== "undefined") {
       filepath += "-" + suffix;
     }
