@@ -26,6 +26,14 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 - [1 (stetson) by Jordan Irwin (AntumDeluge)](https://opengameart.org/node/140316) ([OGA BY 3.0][lic.ogaby])
 
+#### Torso
+
+- 1 by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0])
+
+#### Legs
+
+- 1 by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0])
+
 
 [lic.cc0]: ../doc/licenses/CC0-1.0.txt
 [lic.ogaby]: ../doc/licenses/OGA-BY-3.0.txt
