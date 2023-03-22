@@ -63,6 +63,9 @@ This page lists authors, licensing, and sources of assets and any other informat
     - 13 (fedora)
     - 14 (crown)
     - 15 (Santa hat)
+- by Yamilian ([CC BY-SA 3.0][lic.ccbysa30]):
+    - 12 [source](https://opengameart.org/node/11480)
+    - 13 [source](https://opengameart.org/node/11445)
 
 #### Legs
 
