@@ -37,7 +37,7 @@
       "torso": 0,
       "mask": 0,
       "hair": 2,
-      "hat": 0,
+      "hat": 1,
       "detail": 0
     }
   },
@@ -79,9 +79,13 @@
       "torso": 0,
       "mask": 0,
       "hair": 2,
-      "hat": 0,
+      "hat": 1,
       "detail": 0
     }
   },
-  "labels": {}
+  "labels": {
+    "hat": {
+      "1": "stetson"
+    }
+  }
 }
