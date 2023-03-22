@@ -15,3 +15,4 @@ TODO:
 - add optional rear layer for hair
 - unify values for all sizes in layers.json
 - add flag for drawing certain hair layers over ears
+- format for small screens
