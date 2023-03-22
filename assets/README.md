@@ -38,6 +38,14 @@ This page lists authors, licensing, and sources of assets and any other informat
 - by Sebastian Riedel (Baŝto):
     - 7 (baseball cap) ([CC BY-SA 3.0][lic.ccbysa30]) [source](https://opengameart.org/node/90784)
     - 8 (peaked cap) ([CC BY-SA 3.0][lic.ccbysa30]) [source](https://opengameart.org/node/90784)
+- by Svetlana Kushnariova (Cabbit) with upscales by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]) [source](https://opengameart.org/node/72969):
+    - 9 (Robin's hat)
+    - 10 (panama)
+    - 11 (hood)
+    - 12 (bowler)
+    - 13 (fedora)
+    - 14 (crown)
+    - 15 (Santa hat)
 
 #### Legs
 

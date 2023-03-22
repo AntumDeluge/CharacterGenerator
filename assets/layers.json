@@ -48,7 +48,7 @@
       },
       "mask": 1,
       "hair": 7,
-      "hat": 8,
+      "hat": 15,
       "detail": 1
     }
   },
@@ -103,7 +103,14 @@
       "5": "wedding veil",
       "6": "prison hat",
       "7": "baseball cap",
-      "8": "peaked cap"
+      "8": "peaked cap",
+      "9": "Robin's hat",
+      "10": "panama",
+      "11": "hood",
+      "12": "bowler",
+      "13": "fedora",
+      "14": "crown",
+      "15": "Santa hat"
     },
     "mask": {
       "1": "glasses"
