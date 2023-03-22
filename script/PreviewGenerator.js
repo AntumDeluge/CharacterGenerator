@@ -197,6 +197,7 @@ export const PreviewGenerator = {
     }
 
     // head layers have a separate "rear" layer
+    // these need to be in order of last draw to first draw
     for (const layer of ["ears", "head"]) {
       const img = SpriteStore.getBaseImage(sizeSt, this.body, layer, this.layers.base[layer],
           "rear");
@@ -234,6 +235,15 @@ export const PreviewGenerator = {
       } else {
         imageLayers.push(img);
       }
+    }
+
+    // detail layer has separate rear layer
+    const detailIndex = this.layers.outfit["detail"];
+    if (detailIndex > 0) {
+      const img = SpriteStore.getOutfitImage(sizeSt, "detail", detailIndex, "rear");
+      img.offset = {x: 0, y: 0};
+      // detail is bottom-most layer
+      imageLayers.splice(0, 0, img);
     }
 
     // flag to prevent redrawing

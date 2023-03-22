@@ -19,3 +19,4 @@ TODO:
 - allow torso layers to be mapped by arm type
 - scale down legs & torso outfit index 1
 - scale down glasses
+- offset detail layer for body types
