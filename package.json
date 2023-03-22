@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/AntumDeluge/CharacterGenerator/issues"
   },
-  "homepage": "https://github.com/AntumDeluge/CharacterGenerator#readme"
+  "homepage": "https://github.com/AntumDeluge/CharacterGenerator#readme",
+  "devDependencies": {
+    "electron": "^23.1.4"
+  }
 }
