@@ -40,14 +40,15 @@
         }
       },
       "torso": {
-        "indexes": 1,
+        "indexes": 2,
         "bodymap": {
-          "1-standard-2": 1
+          "1-standard-2": 1,
+          "2-standard-2": 1
         }
       },
       "mask": 1,
-      "hair": 7,
-      "hat": 1,
+      "hair": 33,
+      "hat": 23,
       "detail": 1
     }
   },
@@ -89,16 +90,45 @@
       "torso": 0,
       "mask": 0,
       "hair": 7,
-      "hat": 1,
+      "hat": 2,
       "detail": 0
     }
   },
   "labels": {
+    "hair": {
+      "9": "cornrows",
+      "26": "mohawk"
+    },
     "hat": {
-      "1": "stetson"
+      "1": "stetson",
+      "2": "beret",
+      "3": "turban",
+      "4": "sailor cap",
+      "5": "wedding veil",
+      "6": "prison hat",
+      "7": "baseball cap",
+      "8": "peaked cap",
+      "9": "Robin's hat",
+      "10": "panama",
+      "11": "hood",
+      "12": "bowler",
+      "13": "fedora",
+      "14": "crown",
+      "15": "Santa hat",
+      "16": "backward cap",
+      "17": "boggin",
+      "18": "goggles",
+      "19": "fedora",
+      "20": "helmet",
+      "21": "helmet",
+      "22": "helmet",
+      "23": "samurai amigasa"
     },
     "mask": {
       "1": "glasses"
+    },
+    "torso": {
+      "2": "prison jumpsuit"
     }
   }
 }
