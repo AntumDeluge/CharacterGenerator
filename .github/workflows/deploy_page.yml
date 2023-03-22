@@ -22,11 +22,7 @@ jobs:
 
       - name: Stage
         run: |
-          mkdir -p stage/
-          cp -v index.html info.html LICENSE.txt stage/
-          cp -vr assets/ data/ doc/ script/ stage/
-          # remove files not used by generator
-          find stage/assets/ -type f -name "*.xcf*" -exec rm -v {} \;
+          python3 build.py stage
           sed -i -e "s/\"asset-info\":\(.*\?\)\/master\//\"asset-info\":\1\/${{ github.ref_name }}\//" stage/script/config.js
 
       - name: Publish
