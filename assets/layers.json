@@ -48,7 +48,7 @@
       },
       "mask": 1,
       "hair": 7,
-      "hat": 15,
+      "hat": 17,
       "detail": 1
     }
   },
@@ -110,7 +110,9 @@
       "12": "bowler",
       "13": "fedora",
       "14": "crown",
-      "15": "Santa hat"
+      "15": "Santa hat",
+      "16": "backward cap",
+      "17": "boggin"
     },
     "mask": {
       "1": "glasses"
