@@ -17,6 +17,9 @@ export const LayerManager = {
   baseLayers: {},
   outfitLayers: {},
 
+  // labels to show in selector
+  labels: {},
+
   /**
    * Loads layer information from JSON file.
    */
@@ -29,6 +32,10 @@ export const LayerManager = {
 
     JSONLoader.loadFile((data) => {
       for (const size of Object.keys(data)) {
+        if (size === "labels") {
+          this.labels = data[size];
+          continue;
+        }
         let tmp = data[size]["base"];
         if (typeof(tmp) !== "undefined" && typeof(tmp["body"]) !== "undefined") {
           const bodytypes = tmp["body"];
@@ -215,7 +222,13 @@ export const LayerManager = {
       const options = [];
       const indexes = this.baseLayers[size][type][layer] || 0;
       for (let idx = 0; idx < indexes; idx++) {
-        options.push(this.getOption(layer, idx+1));
+        const idxActual = idx + 1;
+        let label;
+        if (typeof(this.labels[layer]) !== "undefined"
+            && typeof(this.labels[layer][idxActual]) !== "undefined") {
+          label = idxActual + " (" + this.labels[layer][idxActual] + ")";
+        }
+        options.push(this.getOption(layer, idxActual, label));
       }
       this.updateSelector(layer, options);
     }
@@ -223,7 +236,13 @@ export const LayerManager = {
       const options = [this.getOption(layer, 0, "(none)")]; // first index of outfit layers is empty
       const indexes = this.outfitLayers[size][layer] || 0;
       for (let idx = 0; idx < indexes; idx++) {
-        options.push(this.getOption(layer, idx+1))
+        const idxActual = idx + 1;
+        let label;
+        if (typeof(this.labels[layer]) !== "undefined"
+            && typeof(this.labels[layer][idxActual]) !== "undefined") {
+          label = idxActual + " (" + this.labels[layer][idxActual] + ")";
+        }
+        options.push(this.getOption(layer, idxActual, label))
       }
       this.updateSelector(layer, options);
     }
