@@ -20,7 +20,7 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 #### Hair
 
-- 1-2 by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
+- 1-7 by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
 
 #### Hat
 
