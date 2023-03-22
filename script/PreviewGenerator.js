@@ -106,8 +106,15 @@ export const PreviewGenerator = {
    *   Layer to be drawn.
    */
   drawLayer: function(img) {
+    if (img.hide) {
+      // DEBUG:
+      console.log("hidden layer: " + img.src);
+
+      return;
+    }
+
     // DEBUG:
-    console.log("drawing layer: " + img.src);
+    console.log("visible layer: " + img.src);
 
     const ctx = this.getContext();
     ctx.imageSmoothingEnabled = false;
@@ -170,10 +177,6 @@ export const PreviewGenerator = {
     const visibleBaseLayers = LayerManager.getVisibleBaseLayers();
     const rearIndexes = {}; // unused?
     for (const layer in this.layers.base) {
-      if (visibleBaseLayers.indexOf(layer) < 0) {
-        // don't draw layers that should be disabled in preview
-        continue;
-      }
       const idx = this.layers.base[layer];
       if (layer.endsWith("-rear")) {
         rearIndexes[layer.substring(0, layer.indexOf("-rear"))] = idx;
@@ -187,18 +190,18 @@ export const PreviewGenerator = {
         // common layers
         img.offset = offset["head"][this.body] || {x: 0, y: 0};
       }
+      // don't draw layers that should be disabled in prieview
+      img.hide = visibleBaseLayers.indexOf(layer) < 0;
       imageLayers.push(img);
     }
 
     // head layers have a separate "rear" layer
     for (const layer of ["ears", "head"]) {
-      if (visibleBaseLayers.indexOf(layer) < 0) {
-        // don't draw layers that should be disabled in preview
-        continue;
-      }
       const img = SpriteStore.getBaseImage(sizeSt, this.body, layer, this.layers.base[layer],
           "rear");
       img.offset = offset["head"][this.body] || {x: 0, y: 0};
+      // don't draw layers that should be disabled in prieview
+      img.hide = visibleBaseLayers.indexOf(layer) < 0;
       imageLayers.splice(0, 0, img);
     }
 
@@ -215,6 +218,8 @@ export const PreviewGenerator = {
       } else {
         img.offset = {x: 0, y: 0};
       }
+      // all selected outfit layers are drawn
+      img.hide = false;
       if (layer === "hair") {
         // draw hair under ears
         imageLayers.splice(5, 0, img);
