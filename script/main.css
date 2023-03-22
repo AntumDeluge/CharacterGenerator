@@ -58,15 +58,22 @@ div.box, span.button {
   border-radius: 5px;
 }
 
-div.options-box, span.button {
+div.options-box, div.options-box-ext, span.button {
   background-color: #ffffff1f;
   padding: 5px;
 }
 
-div.options-box {
+div.options-box, div.options-box-ext {
   display: grid;
-  grid-template-columns: auto auto;
   margin-bottom: 10px;
+}
+
+div.options-box {
+  grid-template-columns: 45% auto;
+}
+
+div.options-box-ext {
+  grid-template-columns: 35% 10% auto;
 }
 
 div.button-container {

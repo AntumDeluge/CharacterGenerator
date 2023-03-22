@@ -18,9 +18,34 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 *(shoes, legs, torso, mask, hair, hat, detail)*
 
+#### Detail
+
+- [1 (balloon) by Jordan Irwin (AntumDeluge)](https://opengameart.org/node/101299) ([OGA BY 3.0][lic.ogaby])
+
 #### Hair
 
-- 1-2 by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
+- 1-7 by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
+
+#### Hat
+
+- [1 (stetson) by Jordan Irwin (AntumDeluge)](https://opengameart.org/node/140316) ([OGA BY 3.0][lic.ogaby])
+
+#### Legs
+
+- 1 by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0])
+
+#### Mask
+
+- [1 by bleutailfly](https://github.com/arianne/stendhal/blob/894e86ee/data/sprites/outfit/mask/001.png) ([OGA BY 3.0][lic.ogaby])
+
+#### Shoes
+
+- [1 by Svetlana Kushnariova (Cabbit)](https://opengameart.org/node/72969) ([OGA BY 3.0][lic.ogaby])
+  - upscaled 48x64 additions by Jordan Irwin (AntumDeluge)
+
+#### Torso
+
+- 1 by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0])
 
 
 [lic.cc0]: ../doc/licenses/CC0-1.0.txt

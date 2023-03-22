@@ -8,7 +8,9 @@
 
 "use strict";
 
+import { LayerManager } from "./LayerManager.js";
 import { SpriteStore } from "./SpriteStore.js";
+import { util } from "./util.js";
 
 
 export const PreviewGenerator = {
@@ -105,14 +107,50 @@ export const PreviewGenerator = {
    *   Layer to be drawn.
    */
   drawLayer: function(img) {
-    // DEBUG:
-    console.log("drawing layer: " + img.src);
+    if (img.hide) {
+      // DEBUG:
+      console.log("hidden layer: " + img.src);
 
-    if (this.upscale) {
-      this.getContext().drawImage(img, 0, 0, img.width, img.height,
-        0+(img.offset.x*2), 0+(img.offset.y*2), this.previewCanvas.width, this.previewCanvas.height);
+      return;
+    }
+
+    // DEBUG:
+    console.log("visible layer: " + img.src);
+
+    const ctx = this.getContext();
+    ctx.imageSmoothingEnabled = false;
+
+    if (img.offset.x != 0) {
+      const fsize = this.getFrameSize();
+      // slice layer into 4 parts to offset east/west facing frames
+      for (let slice = 0; slice < 4; slice++) {
+        let offsetX = 0;
+        if (slice == 1) {
+          offsetX = img.offset.x;
+        } else if (slice == 3) {
+          offsetX = -img.offset.x;
+        }
+        let offsetY = img.offset.y;
+        let swidth = img.width;
+        let sheight = fsize.height;
+        if (this.upscale) {
+          offsetX *= 2;
+          offsetY *= 2;
+          swidth *= 2;
+          sheight *= 2;
+        }
+
+        ctx.drawImage(img,
+            0, slice*fsize.height, img.width, fsize.height,
+            offsetX, (slice*sheight)+offsetY, swidth, sheight);
+      }
     } else {
-      this.getContext().drawImage(img, 0+img.offset.x, 0+img.offset.y);
+      if (this.upscale) {
+        ctx.drawImage(img, 0, 0, img.width, img.height,
+          0+(img.offset.x*2), 0+(img.offset.y*2), this.previewCanvas.width, this.previewCanvas.height);
+      } else {
+        ctx.drawImage(img, 0+img.offset.x, 0+img.offset.y);
+      }
     }
   },
 
@@ -130,14 +168,15 @@ export const PreviewGenerator = {
       "head": {
         "child": {x: 0, y: Math.floor(6 * (size.height / 64))},
         "dwarf": {x: 0, y: Math.floor(4 * (size.height / 64))},
-        //~ "elder": {x: 0, y: Math.floor(5 * (size.height / 64))},
+        "elder": {x: Math.floor(4 * (size.width / 48)), y: Math.floor(5 * (size.height / 64))},
         "tall": {x: 0, y: Math.floor(-5 * (size.height / 64))}
       }
     };
 
     // preserve order that images should be drawn
     const imageLayers = [];
-    const rearIndexes = {};
+    const visibleBaseLayers = LayerManager.getVisibleBaseLayers();
+    const rearIndexes = {}; // unused?
     for (const layer in this.layers.base) {
       const idx = this.layers.base[layer];
       if (layer.endsWith("-rear")) {
@@ -152,15 +191,21 @@ export const PreviewGenerator = {
         // common layers
         img.offset = offset["head"][this.body] || {x: 0, y: 0};
       }
+      // don't draw layers that should be disabled in prieview
+      img.hide = visibleBaseLayers.indexOf(layer) < 0;
       imageLayers.push(img);
     }
 
     // head layers have a separate "rear" layer
-    const headR = SpriteStore.getBaseImage(sizeSt, this.body, "head", this.layers.base["head"],
-        "rear");
-    headR.offset = offset["head"][this.body] || {x: 0, y: 0};
-    imageLayers.splice(0, 0, headR);
-
+    // these need to be in order of last draw to first draw
+    for (const layer of ["ears", "head"]) {
+      const img = SpriteStore.getBaseImage(sizeSt, this.body, layer, this.layers.base[layer],
+          "rear");
+      img.offset = offset["head"][this.body] || {x: 0, y: 0};
+      // don't draw layers that should be disabled in prieview
+      img.hide = visibleBaseLayers.indexOf(layer) < 0;
+      imageLayers.splice(0, 0, img);
+    }
 
     for (const layer in this.layers.outfit) {
       const idx = this.layers.outfit[layer];
@@ -168,13 +213,37 @@ export const PreviewGenerator = {
         // ignore empty layers
         continue;
       }
-      const img = SpriteStore.getOutfitImage(sizeSt, layer, idx);
-      if (layer === "hair") {
+      const suffix = this.layers.bodymap[layer];
+
+      // DEBUG:
+      if (typeof(suffix) !== "undefined") {
+        console.log("using bodymap for layer: " + layer);
+      }
+
+      const img = SpriteStore.getOutfitImage(sizeSt, layer, idx, suffix);
+      if (["hair", "mask", "hat"].indexOf(layer) > -1) {
+        // layers on head
         img.offset = offset["head"][this.body] || {x: 0, y: 0};
       } else {
         img.offset = {x: 0, y: 0};
       }
-      imageLayers.push(img);
+      // all selected outfit layers are drawn
+      img.hide = false;
+      if (layer === "hair") {
+        // draw hair under ears
+        imageLayers.splice(5, 0, img);
+      } else {
+        imageLayers.push(img);
+      }
+    }
+
+    // detail layer has separate rear layer
+    const detailIndex = this.layers.outfit["detail"];
+    if (detailIndex > 0) {
+      const img = SpriteStore.getOutfitImage(sizeSt, "detail", detailIndex, "rear");
+      img.offset = {x: 0, y: 0};
+      // detail is bottom-most layer
+      imageLayers.splice(0, 0, img);
     }
 
     // flag to prevent redrawing

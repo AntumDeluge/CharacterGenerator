@@ -11,7 +11,7 @@
         },
         "heavy": {
           "body": 2,
-          "arms": 1
+          "arms": 3
         },
         "tall": {
           "body": 3,
@@ -23,10 +23,7 @@
         },
         "elder": {
           "body": 1,
-          "arms": 2,
-          "head": 1,
-          "ears": 3,
-          "eyes": 1
+          "arms": 2
         },
         "dwarf": {
           "body": 1,
@@ -35,13 +32,23 @@
       }
     },
     "outfit": {
-      "shoes": 0,
-      "legs": 0,
-      "torso": 0,
-      "mask": 0,
-      "hair": 2,
-      "hat": 0,
-      "detail": 0
+      "shoes": 1,
+      "legs": {
+        "indexes": 1,
+        "bodymap": {
+          "1-standard-2": 1
+        }
+      },
+      "torso": {
+        "indexes": 1,
+        "bodymap": {
+          "1-standard-2": 1
+        }
+      },
+      "mask": 1,
+      "hair": 7,
+      "hat": 1,
+      "detail": 1
     }
   },
   "24x32": {
@@ -68,10 +75,7 @@
         },
         "elder": {
           "body": 1,
-          "arms": 2,
-          "head": 1,
-          "ears": 3,
-          "eyes": 1
+          "arms": 2
         },
         "dwarf": {
           "body": 1,
@@ -80,13 +84,21 @@
       }
     },
     "outfit": {
-      "shoes": 0,
+      "shoes": 1,
       "legs": 0,
       "torso": 0,
       "mask": 0,
-      "hair": 2,
-      "hat": 0,
+      "hair": 7,
+      "hat": 1,
       "detail": 0
+    }
+  },
+  "labels": {
+    "hat": {
+      "1": "stetson"
+    },
+    "mask": {
+      "1": "glasses"
     }
   }
 }

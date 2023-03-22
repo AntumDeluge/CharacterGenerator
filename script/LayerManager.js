@@ -10,12 +10,16 @@
 
 import { JSONLoader } from "./JSONLoader.js";
 import { PreviewGenerator } from "./PreviewGenerator.js";
+import { util } from "./util.js";
 
 
 export const LayerManager = {
   initialized: false,
   baseLayers: {},
   outfitLayers: {},
+
+  // labels to show in selector
+  labels: {},
 
   /**
    * Loads layer information from JSON file.
@@ -29,16 +33,16 @@ export const LayerManager = {
 
     JSONLoader.loadFile((data) => {
       for (const size of Object.keys(data)) {
+        if (size === "labels") {
+          this.labels = data[size];
+          continue;
+        }
         let tmp = data[size]["base"];
         if (typeof(tmp) !== "undefined" && typeof(tmp["body"]) !== "undefined") {
           const bodytypes = tmp["body"];
           for (const layer of ["head", "ears", "eyes"]) {
             const lcount = tmp[layer] || 0;
             for (const btype of Object.keys(bodytypes)) {
-              if (btype === "elder") {
-                // 'elder' body type has unique head, ears, & eyes
-                continue;
-              }
               bodytypes[btype][layer] = lcount;
             }
           }
@@ -78,16 +82,33 @@ export const LayerManager = {
       this.onBodyTypeChanged();
     });
 
-    for (const layer of [...this.getBaseLayerNames(), ...this.getOutfitLayerNames()]) {
+    for (const layer of this.getBaseLayerNames()) {
       sel = document.getElementById("select-" + layer);
       sel.addEventListener("change", (evt) => {
-        this.onLayerChanged();
+        this.onBaseLayerChanged();
+      });
+
+      // checkbox for toggling base layers
+      const chk = document.getElementById("show-" + layer)
+      // add tooltip
+      chk.title = "show " + layer;
+      // default to enabled
+      chk.checked = true;
+      chk.addEventListener("change", (evt) => {
+        this.onOutfitLayerChanged();
+      });
+    }
+
+    for (const layer of this.getOutfitLayerNames()) {
+      sel = document.getElementById("select-" + layer);
+      sel.addEventListener("change", (evt) => {
+        this.onOutfitLayerChanged();
       });
     }
 
     // checkbox for upscaling
     document.getElementById("upscale").addEventListener("change", (evt) => {
-      this.onLayerChanged();
+      this.onOutfitLayerChanged();
     });
 
     // initialize preview with default values
@@ -126,7 +147,7 @@ export const LayerManager = {
    * Retrieves usable base layer names.
    */
   getBaseLayerNames: function() {
-    return ["body", "arms", "head", "ears", "eyes"];
+    return ["body", "arms", "head", "eyes", "ears"];
   },
 
   /**
@@ -134,6 +155,19 @@ export const LayerManager = {
    */
   getOutfitLayerNames: function() {
     return ["shoes", "legs", "torso", "mask", "hair", "hat", "detail"];
+  },
+
+  /**
+   * Returns a list of base layer names that should be drawn in preview.
+   */
+  getVisibleBaseLayers: function() {
+    const visible = [];
+    for (const layer of this.getBaseLayerNames()) {
+      if (document.getElementById("show-" + layer).checked) {
+        visible.push(layer);
+      }
+    }
+    return visible;
   },
 
   /**
@@ -196,6 +230,18 @@ export const LayerManager = {
   },
 
   /**
+   * Retrieves a selected layer index.
+   *
+   * @param id
+   *   Selector string identifier.
+   * @return
+   *   Integer index.
+   */
+  getSelectedIndex: function(id) {
+    return parseInt(this.getSelectedValue(id), 10);
+  },
+
+  /**
    * Updates preview & selector when size is changed.
    */
   onSizeChanged: function() {
@@ -214,30 +260,116 @@ export const LayerManager = {
    */
   onBodyTypeChanged: function() {
     const size = this.getSelectedValue("size");
-    const type = this.getSelectedValue("type");
+    const bodyType = this.getSelectedValue("type");
     for (const layer of this.getBaseLayerNames()) {
       const options = [];
-      const indexes = this.baseLayers[size][type][layer] || 0;
+      const indexes = this.baseLayers[size][bodyType][layer] || 0;
       for (let idx = 0; idx < indexes; idx++) {
-        options.push(this.getOption(layer, idx, idx+1));
+        const idxActual = idx + 1;
+        let label;
+        if (typeof(this.labels[layer]) !== "undefined"
+            && typeof(this.labels[layer][idxActual]) !== "undefined") {
+          label = idxActual + " (" + this.labels[layer][idxActual] + ")";
+        }
+        options.push(this.getOption(layer, idxActual, label));
       }
       this.updateSelector(layer, options);
     }
-    for (const layer of this.getOutfitLayerNames()) {
-      const options = [this.getOption(layer, 0)]; // first index of outfit layers is empty
-      const indexes = this.outfitLayers[size][layer] || 0;
-      for (let idx = 0; idx < indexes; idx++) {
-        options.push(this.getOption(layer, idx+1))
-      }
-      this.updateSelector(layer, options);
-    }
-    this.onLayerChanged();
+
+    this.onBaseLayerChanged();
   },
 
   /**
-   * Updates preview when a layer option is changed.
+   * Retrieves a mapping string for layer.
+   *
+   * @param map
+   *   Map to parse.
+   * @param idx
+   *   Layer index.
+   * @param bodyType
+   *   Body type layer should be mapped to.
+   * @param bodyIdx
+   *   Body index layer should be mapped to.
+   * @return
+   *   String representation of mapping or undefined.
    */
-  onLayerChanged: function() {
+  getBodyMapping: function(map, idx, bodyType, bodyIdx) {
+    const key = idx + "-" + bodyType + "-" + bodyIdx;
+    // get body type this layer is mapped to
+    let bodyMapping = map[key];
+    if (bodyMapping === null) {
+      // values marked by 'null' should not be mapped
+      return undefined;
+    }
+    if (typeof(bodyMapping) === "undefined") {
+      bodyMapping = bodyIdx;
+    }
+    return bodyType + "-" + util.getIndexString(bodyMapping);
+  },
+
+  /**
+   * Updates preview & selectors when base layer is changed.
+   */
+  onBaseLayerChanged: function() {
+    const size = this.getSelectedValue("size");
+    const bodyType = this.getSelectedText("type");
+    const bodyIndex = this.getSelectedIndex("body");
+    for (const layer of this.getOutfitLayerNames()) {
+      const options = [this.getOption(layer, 0, "(none)")]; // first index of outfit layers is empty
+
+      let indexes = this.outfitLayers[size][layer] || 0;
+      let layermap;
+      if (typeof(indexes) === "object" && ["shoes", "legs", "torso", "detail"].indexOf(layer) > -1) {
+        // body type related layers
+        layermap = indexes["bodymap"];
+        indexes = indexes["indexes"];
+
+        let errmsg = [];
+        if (typeof(indexes) === "undefined") {
+          errmsg.push("indexes not defined");
+        }
+        if (typeof(layermap) === "undefined") {
+          errmsg.push("bodymap not defined");
+        }
+        if (errmsg.length > 0) {
+          errmsg.splice(0, 0, "ERROR:");
+          errmsg = errmsg.join("\n- ");
+          console.error(errmsg);
+          alert(errmsg);
+          return;
+        }
+      }
+
+      for (let idx = 0; idx < indexes; idx++) {
+        const idxActual = idx + 1;
+        let label;
+        if (typeof(this.labels[layer]) !== "undefined"
+            && typeof(this.labels[layer][idxActual]) !== "undefined") {
+          label = idxActual + " (" + this.labels[layer][idxActual] + ")";
+        }
+        const opt = this.getOption(layer, idxActual, label);
+
+        if (typeof(layermap) !== "undefined") {
+          const mapping = this.getBodyMapping(layermap, idxActual, bodyType, bodyIndex);
+          if (!mapping) {
+            continue;
+          } else {
+            opt.bodymap = mapping;
+          }
+        }
+        options.push(opt)
+      }
+
+      this.updateSelector(layer, options);
+    }
+
+    this.onOutfitLayerChanged();
+  },
+
+  /**
+   * Updates preview when an outfit layer is changed.
+   */
+  onOutfitLayerChanged: function() {
     const sizeSt = this.getSelectedValue("size");
     const size = sizeSt.split("x");
     const type = this.getSelectedValue("type");
@@ -247,15 +379,24 @@ export const LayerManager = {
       "type": type,
       "layers": {
         "base": {},
-        "outfit": {}
+        "outfit": {},
+        "bodymap": {}
       }
     };
 
+    const bodyType = this.getSelectedValue("type");
+    const bodyIndex = this.getSelectedIndex("body");
     for (const layer of this.getBaseLayerNames()) {
       data["layers"]["base"][layer] = parseInt(this.getSelectedValue(layer), 10);
     }
     for (const layer of this.getOutfitLayerNames()) {
-      data["layers"]["outfit"][layer] = parseInt(this.getSelectedValue(layer), 10);
+      const layerIndex = this.getSelectedIndex(layer);
+      const opt = this.getOption(layer, layerIndex);
+      if (typeof(opt.bodymap) !== "undefined") {
+        // pass body mapping to preview generator
+        data["layers"]["bodymap"][layer] = opt.bodymap;
+      }
+      data["layers"]["outfit"][layer] = layerIndex;
     }
 
     PreviewGenerator.set(data, document.getElementById("upscale").checked);
