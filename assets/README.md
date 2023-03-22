@@ -18,6 +18,10 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 *(shoes, legs, torso, mask, hair, hat, detail)*
 
+#### Detail
+
+- [1 (balloon) by Jordan Irwin (AntumDeluge)](https://opengameart.org/node/101299) ([OGA BY 3.0][lic.ogaby])
+
 #### Hair
 
 - 1-7 by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby])
