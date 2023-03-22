@@ -48,7 +48,7 @@
       },
       "mask": 1,
       "hair": 7,
-      "hat": 20,
+      "hat": 22,
       "detail": 1
     }
   },
@@ -115,7 +115,9 @@
       "17": "boggin",
       "18": "goggles",
       "19": "fedora",
-      "20": "helmet"
+      "20": "helmet",
+      "21": "helmet",
+      "22": "helmet"
     },
     "mask": {
       "1": "glasses"
