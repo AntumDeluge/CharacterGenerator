@@ -47,7 +47,7 @@
         }
       },
       "mask": 1,
-      "hair": 17,
+      "hair": 33,
       "hat": 23,
       "detail": 1
     }
@@ -96,7 +96,8 @@
   },
   "labels": {
     "hair": {
-      "9": "cornrows"
+      "9": "cornrows",
+      "26": "mohawk"
     },
     "hat": {
       "1": "stetson",

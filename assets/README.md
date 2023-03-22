@@ -34,6 +34,9 @@ This page lists authors, licensing, and sources of assets and any other informat
 - by Nila122 ([CC BY-SA 3.0][lic.ccbysa30]):
     - 14-16 [source](https://opengameart.org/node/29293)
     - 17 [source](https://opengameart.org/node/25629)
+- by Svetlana Kushnariova (Cabbit) with upscales by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
+    - 18-33 [source](https://opengameart.org/node/72969)
+    - 34 [source](https://opengameart.org/node/79804)
 - by Yamilian ([CC BY-SA 3.0][lic.ccbysa30]):
     - 12 [source](https://opengameart.org/node/11480)
     - 13 [source](https://opengameart.org/node/11445)
