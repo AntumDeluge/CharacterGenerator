@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/AntumDeluge/CharacterGenerator#readme",
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.5",
     "electron": "^23.1.4"
   }
 }
