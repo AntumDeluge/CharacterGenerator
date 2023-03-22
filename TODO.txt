@@ -21,3 +21,5 @@ TODO:
 - scale down glasses
 - scale down balloon
 - offset detail layer for body types
+- hair shold be drawn above clothes layers
+- create electonjs app
