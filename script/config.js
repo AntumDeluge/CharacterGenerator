@@ -10,6 +10,6 @@
 
 
 export const config = {
-  "git-repo": "https://github.com/AntumDeluge/CharacterGenerator",
-  "asset-info": "https://github.com/AntumDeluge/CharacterGenerator/blob/master/assets/README.md"
+  "git-repo": "https://github.com/AntumDeluge/chargen",
+  "asset-info": "https://github.com/AntumDeluge/chargen/blob/master/assets/README.md"
 };
