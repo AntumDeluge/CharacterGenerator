@@ -24,12 +24,25 @@ export const SpriteStore = {
    *   HTMLImageElement.
    */
   getImage: function(filepath) {
-    if (typeof(this.cache[filepath]) !== "undefined") {
-      return this.cache[filepath];
+    return this.getHashedImage(util.joinPath("assets", filepath));
+  },
+
+  /**
+   * Retrieves an image from cache or creates a new one.
+   *
+   * @param data
+   *   Image data or path to image to be loaded.
+   * @return
+   *   HTMLImageElement.
+   */
+  getHashedImage: function(data) {
+    const hash = util.stringHash(data);
+    if (typeof(this.cache[hash]) !== "undefined") {
+      return this.cache[hash];
     }
     const img = new Image();
-    img.src = util.joinPath("assets", filepath);
-    this.cache[filepath] = img;
+    img.src = data;
+    this.cache[hash] = img;
     return img;
   },
 
