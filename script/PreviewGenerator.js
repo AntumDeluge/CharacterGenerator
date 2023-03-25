@@ -150,17 +150,16 @@ export const PreviewGenerator = {
     // DEBUG:
     message.debug("preparing animation ...");
 
-    const preview = new Image();
-    preview.src = this.buildPNG();
+    const preview = SpriteStore.getHashedImage(this.buildPNG()).cloneNode();
     preview.onload = () => {
       if (!preview.complete) {
         // DEBUG:
-        message.debug("preview.onload() called prematurely");
+        message.debug(2, "preview.onload() called prematurely");
 
         return;
       } else {
         // DEBUG:
-        message.debug("preview.onload() image ready");
+        message.debug(2, "preview.onload() image ready");
       }
 
       const fsize = this.getFrameSize();
@@ -197,9 +196,7 @@ export const PreviewGenerator = {
         }
       }
 
-      // TODO: store/retrieve image using cache
-
-      this.animation = new Image();
+      this.animation = SpriteStore.getHashedImage(canvas.toDataURL("image/png")).cloneNode();
       this.animation.onload = () => {
         // DEBUG:
         //~ message.debug("animation frames:\n" + this.animation.src);
@@ -209,7 +206,14 @@ export const PreviewGenerator = {
         this.cycleStart = this.frameStart;
         this.renderAnimation();
       };
-      this.animation.src = canvas.toDataURL("image/png");
+      if (this.animation.width > 0) {
+        // image was cached
+
+        // DEBUG:
+        message.debug("animation loaded from cache");
+
+        this.animation.onload();
+      }
     }
 
     // in case preview was cached
@@ -323,7 +327,7 @@ export const PreviewGenerator = {
     }
 
     // DEBUG:
-    message.debug("visible layer: " + img.src);
+    message.debug(2, "visible layer: " + img.src);
 
     if (img.offset.x != 0) {
       const fsize = this.getFrameSize();

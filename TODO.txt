@@ -21,5 +21,6 @@ TODO:
 - scale down glasses
 - scale down balloon
 - offset detail layer for body types
-- hair shold be drawn above clothes layers
+- hair should be drawn above clothes layers
 - switch from electronjs app to neutralinojs
+- fix animated preview not always showing
