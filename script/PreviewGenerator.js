@@ -490,6 +490,7 @@ const LayerGroup = function(images) {
     }
   };
 
+  let loaded = false;
   for (const imgOuter of def.layers) {
     imgOuter.onload = function() {
       for (const imgInner of def.layers) {
@@ -499,6 +500,10 @@ const LayerGroup = function(images) {
       }
       // all layers loaded
       def.onLoaded();
+      loaded = true;
+    }
+    if (loaded) {
+      break;
     }
     // call onload manually in case image was cached
     imgOuter.onload();
