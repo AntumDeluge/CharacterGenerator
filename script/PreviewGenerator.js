@@ -75,6 +75,65 @@ export const PreviewGenerator = {
   },
 
   /**
+   * Sets layer information to be drawn.
+   *
+   * @param data
+   *   Layer information.
+   * @param upscale
+   *   If true, previews will be upscaled by a factor of 2.
+   */
+  set: function(data, upscale=false) {
+    this.upscale = upscale;
+    this.setFrameSize(Size(data.size.width, data.size.height));
+    this.body = data.type;
+    this.layers = data.layers;
+  },
+
+  /**
+   * Sets canvas size according to frame dimensions.
+   *
+   * @param fsize
+   *   Size object representing frame dimensions.
+   */
+  setFrameSize: function(fsize) {
+    // DEBUG:
+    console.log("frame dimensions: " + fsize.toString());
+
+    if (this.upscale) {
+      fsize.scale(2);
+    }
+    const cwidth = fsize.width * this.framesX;
+    this.previewCanvas.width = cwidth;
+    this.previewCanvas.height = fsize.height * this.framesY;
+    this.animationCanvas.width = cwidth;
+    this.animationCanvas.height = fsize.height; // animated preview contains only 1 row
+  },
+
+  /**
+   * Retrieves frame dimensions.
+   *
+   * @return
+   *   Frame dimenstions table & string representation.
+   */
+  getFrameSize: function() {
+    const csize = this.getCanvasSize();
+    if (this.upscale) {
+      csize.scale(0.5);
+    }
+    return Size(csize.width / this.framesX, csize.height / this.framesY);
+  },
+
+  /**
+   * Retrieves dimensions of canvas.
+   *
+   * @return
+   *   Image dimensions table & string representation.
+   */
+  getCanvasSize: function() {
+    return Size(this.previewCanvas.width, this.previewCanvas.height);
+  },
+
+  /**
    * Creates an image resource from preview.
    */
   buildPNG: function() {
@@ -85,7 +144,7 @@ export const PreviewGenerator = {
   },
 
   /**
-   * Sets animated preview image.
+   * Prepares image of 3x3 frames to draw animated preview.
    */
   buildAnimation: function() {
     // DEBUG:
@@ -171,7 +230,7 @@ export const PreviewGenerator = {
   },
 
   /**
-   * Draws a frame of animation.
+   * Draws a frame of the animated preview.
    */
   renderAnimation: function() {
     if (typeof(this.animation) === "undefined") {
@@ -241,65 +300,6 @@ export const PreviewGenerator = {
     this.animationId = setTimeout(() => {
       this.renderAnimation();
     }, 1000 / this.fps);
-  },
-
-  /**
-   * Sets layer information to be drawn.
-   *
-   * @param data
-   *   Layer information.
-   * @param upscale
-   *   If true, previews will be upscaled by a factor of 2.
-   */
-  set: function(data, upscale=false) {
-    this.upscale = upscale;
-    this.setFrameSize(Size(data.size.width, data.size.height));
-    this.body = data.type;
-    this.layers = data.layers;
-  },
-
-  /**
-   * Sets canvas size according to frame dimensions.
-   *
-   * @param fsize
-   *   Size object representing frame dimensions.
-   */
-  setFrameSize: function(fsize) {
-    // DEBUG:
-    console.log("frame dimensions: " + fsize.toString());
-
-    if (this.upscale) {
-      fsize.scale(2);
-    }
-    const cwidth = fsize.width * this.framesX;
-    this.previewCanvas.width = cwidth;
-    this.previewCanvas.height = fsize.height * this.framesY;
-    this.animationCanvas.width = cwidth;
-    this.animationCanvas.height = fsize.height; // animated preview contains only 1 row
-  },
-
-  /**
-   * Retrieves dimensions of canvas.
-   *
-   * @return
-   *   Table with 'width' & 'height' attributes.
-   */
-  getCanvasSize: function() {
-    return Size(this.previewCanvas.width, this.previewCanvas.height);
-  },
-
-  /**
-   * Retrieves frame dimensions.
-   *
-   * @return
-   *   Frame dimenstions table & string representation.
-   */
-  getFrameSize: function() {
-    const csize = this.getCanvasSize();
-    if (this.upscale) {
-      csize.scale(0.5);
-    }
-    return Size(csize.width / this.framesX, csize.height / this.framesY);
   },
 
   /**
