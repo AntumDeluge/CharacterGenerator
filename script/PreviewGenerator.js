@@ -77,7 +77,7 @@ export const PreviewGenerator = {
    */
   set: function(data, upscale=false) {
     this.upscale = upscale;
-    this.setFrameSize(data.size);
+    this.setFrameSize(Size(data.size.width, data.size.height));
     this.body = data.type;
     this.layers = data.layers;
   },
@@ -90,11 +90,10 @@ export const PreviewGenerator = {
    */
   setFrameSize: function(fsize) {
     // DEBUG:
-    console.log("frame dimensions: " + fsize.width + "x" + fsize.height);
+    console.log("frame dimensions: " + fsize.toString());
 
     if (this.upscale) {
-      fsize.width = fsize.width * 2;
-      fsize.height = fsize.height * 2;
+      fsize.scale(2);
     }
     const cwidth = fsize.width * this.framesX;
     this.previewCanvas.width = cwidth;
@@ -110,22 +109,21 @@ export const PreviewGenerator = {
    *   Table with 'width' & 'height' attributes.
    */
   getCanvasSize: function() {
-    return {width: this.previewCanvas.width, height: this.previewCanvas.height};
+    return Size(this.previewCanvas.width, this.previewCanvas.height);
   },
 
   /**
    * Retrieves frame dimensions.
    *
    * @return
-   *   Table with 'width' & 'height' attributes.
+   *   Frame dimenstions table & string representation.
    */
   getFrameSize: function() {
     const csize = this.getCanvasSize();
     if (this.upscale) {
-      csize.width = csize.width / 2;
-      csize.height = csize.height / 2;
+      csize.scale(0.5);
     }
-    return {width: csize.width / this.framesX, height: csize.height / this.framesY};
+    return Size(csize.width / this.framesX, csize.height / this.framesY);
   },
 
   /**
@@ -187,7 +185,7 @@ export const PreviewGenerator = {
    */
   renderPreview: function() {
     const fsize = this.getFrameSize();
-    const sizeSt = fsize.width + "x" + fsize.height;
+    const sizeSt = fsize.toString();
     const offset = {
       "head": {
         "child": {x: 0, y: Math.floor(6 * (fsize.height / 64))},
@@ -320,4 +318,38 @@ const LayerGroup = function(images) {
   }
 
   return def;
+};
+
+
+/**
+ * Object representing image dimensions.
+ *
+ * @param width
+ *   Image width in pixels.
+ * @param height
+ *   Image height in pixels.
+ */
+const Size = function(width, height) {
+  return {
+    width: width,
+    height: height,
+
+    /**
+     * Rescales dimensions.
+     *
+     * @param factor
+     *   Factor to scale by.
+     */
+    scale: function(factor) {
+      this.width = this.width * factor;
+      this.height = this.height * factor;
+    },
+
+    /**
+     * Retrievies dimensions in string representation.
+     */
+    toString: function() {
+      return this.width + "x" + this.height;
+    }
+  };
 };
