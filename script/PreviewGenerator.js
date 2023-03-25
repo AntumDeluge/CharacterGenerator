@@ -60,13 +60,13 @@ export const PreviewGenerator = {
    */
   init: function() {
     if (this.initialized) {
-      console.warn("tried to re-initialize preview generator");
+      message.warn("tried to re-initialize preview generator");
       return;
     }
     this.initialized = true;
 
     // DEBUG:
-    console.log("initializing preview generator ...");
+    message.debug("initializing preview generator ...");
 
     this.previewCtx = this.previewCanvas.getContext("2d");
     this.animationCtx = this.animationCanvas.getContext("2d");
@@ -97,7 +97,7 @@ export const PreviewGenerator = {
    */
   setFrameSize: function(fsize) {
     // DEBUG:
-    console.log("frame dimensions: " + fsize.toString());
+    message.debug("frame dimensions: " + fsize.toString());
 
     if (this.upscale) {
       fsize.scale(2);
@@ -138,7 +138,7 @@ export const PreviewGenerator = {
    */
   buildPNG: function() {
     // DEBUG:
-    console.log("preparing PNG data ...");
+    message.debug("preparing PNG data ...");
 
     return this.previewCanvas.toDataURL("image/png");
   },
@@ -148,19 +148,19 @@ export const PreviewGenerator = {
    */
   buildAnimation: function() {
     // DEBUG:
-    console.log("preparing animation ...");
+    message.debug("preparing animation ...");
 
     const preview = new Image();
     preview.src = this.buildPNG();
     preview.onload = () => {
       if (!preview.complete) {
         // DEBUG:
-        console.log("preview.onload() called prematurely");
+        message.debug("preview.onload() called prematurely");
 
         return;
       } else {
         // DEBUG:
-        console.log("preview.onload() image ready");
+        message.debug("preview.onload() image ready");
       }
 
       const fsize = this.getFrameSize();
@@ -202,7 +202,7 @@ export const PreviewGenerator = {
       this.animation = new Image();
       this.animation.onload = () => {
         // DEBUG:
-        console.log("animation frames:\n" + this.animation.src);
+        //~ message.debug("animation frames:\n" + this.animation.src);
 
         // initialize frame draw timestamp
         this.frameStart = Date.now();
@@ -221,7 +221,7 @@ export const PreviewGenerator = {
    */
   removeAnimation: function() {
     // DEBUG:
-    console.log("resetting animation ...");
+    message.debug("resetting animation ...");
 
     if (typeof(this.animationId) !== "undefined") {
       clearTimeout(this.animationId);
@@ -239,7 +239,7 @@ export const PreviewGenerator = {
     }
     if (!this.animation.complete) {
       // DEBUG:
-      console.log("animation not ready, retrying ...");
+      message.debug("animation not ready, retrying ...");
 
       this.animationId = setTimeout(() => {
         this.renderAnimation();
@@ -247,19 +247,23 @@ export const PreviewGenerator = {
       return;
     }
 
+    const debugging = debugEnabled();
     const debugMessage = [];
 
     const timestamp = Date.now();
 
-    let timediff = timestamp - this.frameStart;
-    if (timediff >= this.frameDelay) {
-      this.frameStart = timestamp;
-      this.frameIdx = this.frameIdx < 3 ? this.frameIdx + 1 : 0;
-      // refresh canvas before drawing a new frame
-      this.animationCtx.clearRect(0, 0, this.animationCanvas.width, this.animationCanvas.height);
+    let timediff;
+    if (debugging) {
+      timediff = timestamp - this.frameStart;
+      if (timediff >= this.frameDelay) {
+        this.frameStart = timestamp;
+        this.frameIdx = this.frameIdx < 3 ? this.frameIdx + 1 : 0;
+        // refresh canvas before drawing a new frame
+        this.animationCtx.clearRect(0, 0, this.animationCanvas.width, this.animationCanvas.height);
 
-      debugMessage.push("frame index: " + this.frameIdx);
-      debugMessage.push("draw delay: " + timediff + "ms");
+        debugMessage.push("frame index: " + this.frameIdx);
+        debugMessage.push("draw delay: " + timediff + "ms");
+      }
     }
 
     let drawIdx = this.frameIdx;
@@ -281,20 +285,22 @@ export const PreviewGenerator = {
     );
 
     // debugging
-    this.cycleCount++;
-    timediff = timestamp - this.cycleStart;
-    if (timediff >= 1000) {
-      // check frame refresh rate
-      debugMessage.push("cycle delay: " + timediff + "ms");
-      debugMessage.push("framerate: " + this.cycleCount + "fps");
+    if (debugging) {
+      this.cycleCount++;
+      timediff = timestamp - this.cycleStart;
+      if (timediff >= 1000) {
+        // check frame refresh rate
+        debugMessage.push("cycle delay: " + timediff + "ms");
+        debugMessage.push("framerate: " + this.cycleCount + "fps");
 
-      this.cycleCount = 0;
-      this.cycleStart = Date.now();
-    }
+        this.cycleCount = 0;
+        this.cycleStart = Date.now();
+      }
 
-    // DEBUG:
-    if (debugMessage.length > 0) {
-      //~ console.log(debugMessage.join("\n"));
+      // DEBUG:
+      if (debugMessage.length > 0) {
+        message.debug(2, debugMessage.join("\n"));
+      }
     }
 
     this.animationId = setTimeout(() => {
@@ -311,13 +317,13 @@ export const PreviewGenerator = {
   drawLayer: function(img) {
     if (img.hide) {
       // DEBUG:
-      console.log("hidden layer: " + img.src);
+      message.debug("hidden layer: " + img.src);
 
       return;
     }
 
     // DEBUG:
-    console.log("visible layer: " + img.src);
+    message.debug("visible layer: " + img.src);
 
     if (img.offset.x != 0) {
       const fsize = this.getFrameSize();
@@ -415,7 +421,7 @@ export const PreviewGenerator = {
 
       // DEBUG:
       if (typeof(suffix) !== "undefined") {
-        console.log("using bodymap for layer: " + layer);
+        message.debug("using bodymap for layer: " + layer);
       }
 
       const img = SpriteStore.getOutfitImage(sizeSt, layer, idx, suffix);
@@ -476,7 +482,7 @@ const LayerGroup = function(images) {
      */
     onLoaded: function() {
       // DEBUG:
-      console.log("layer group loaded");
+      message.debug("layer group loaded");
 
       if (typeof(this.callback) === "function") {
         this.callback();

@@ -27,13 +27,13 @@ export const LayerManager = {
    */
   init: function() {
     if (this.initialized) {
-      console.warn("tried to re-initialize layer manager");
+      message.warn("tried to re-initialize layer manager");
       return;
     }
     this.initialized = true;
 
     // DEBUG:
-    console.log("initializing layer manager ...");
+    message.debug("initializing layer manager ...");
 
     // prepare preview generator
     PreviewGenerator.init();
@@ -71,7 +71,7 @@ export const LayerManager = {
     let sel = document.getElementById("select-size");
     const sizes = Object.keys(this.baseLayers);
     if (sizes.length < 1) {
-      alert("ERROR: no layer information available");
+      message.error("no layer information available", true);
       return;
     }
     sel.remove(0);
@@ -341,8 +341,7 @@ export const LayerManager = {
         if (errmsg.length > 0) {
           errmsg.splice(0, 0, "ERROR:");
           errmsg = errmsg.join("\n- ");
-          console.error(errmsg);
-          alert(errmsg);
+          message.error(errmsg, true);
           return;
         }
       }

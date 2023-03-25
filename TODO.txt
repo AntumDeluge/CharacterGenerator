@@ -23,4 +23,3 @@ TODO:
 - offset detail layer for body types
 - hair shold be drawn above clothes layers
 - switch from electronjs app to neutralinojs
-- add debugging setting
