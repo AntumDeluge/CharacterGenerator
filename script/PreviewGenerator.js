@@ -454,13 +454,13 @@ export const PreviewGenerator = {
     this.removeAnimation();
 
     const lgroup = LayerGroup(imageLayers);
-    lgroup.callback = () => {
+    lgroup.setCallback(() => {
       for (const layer of lgroup.layers) {
         this.drawLayer(layer);
       }
       // build animation after preview is finished drawing
       this.renderAnimation();
-    };
+    });
   },
 };
 
@@ -474,40 +474,42 @@ export const PreviewGenerator = {
 const LayerGroup = function(images) {
   const def = {
     layers: images,
-    /** Function to execute when layers loading is complete. */
-    callback: undefined,
 
     /**
-     * Called when all layer images are loaded.
+     * Sets callback function & initializes image loading.
+     *
+     * @param callback
+     *   Function to call when image loading is complete.
      */
-    onLoaded: function() {
-      // DEBUG:
-      message.debug("layer group loaded");
-
-      if (typeof(this.callback) === "function") {
-        this.callback();
+    setCallback: function(callback) {
+      let allLoaded = false;
+      for (const imgOuter of this.layers) {
+        imgOuter.onload = () => {
+          if (allLoaded) {
+            return;
+          }
+          let loaded = true;
+          for (const imgInner of this.layers) {
+            loaded = loaded && imgInner.complete && imgInner.naturalWidth !== 0;
+            if (!loaded) {
+              break;
+            }
+          }
+          if (loaded) {
+            // all layers loaded
+            if (typeof(callback) !== "function") {
+              message.error("failed to execute callback on layer group load, not a function: " + typeof(callback));
+              return;
+            }
+            callback();
+            allLoaded = true;
+          }
+        }
+        // call onload manually in case image was cached
+        imgOuter.onload();
       }
     }
   };
-
-  let loaded = false;
-  for (const imgOuter of def.layers) {
-    imgOuter.onload = function() {
-      for (const imgInner of def.layers) {
-        if (!imgInner.complete || imgInner.naturalWidth === 0) {
-          return;
-        }
-      }
-      // all layers loaded
-      def.onLoaded();
-      loaded = true;
-    }
-    if (loaded) {
-      break;
-    }
-    // call onload manually in case image was cached
-    imgOuter.onload();
-  }
 
   return def;
 };
