@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="script/main.css">
+  <script type="module" src="script/debug.js"></script>
   <script type="module" src="script/main.js"></script>
   <script type="module" src="script/nav.js"></script>
 </head>
@@ -28,6 +29,9 @@
       Please <span id="button-info" class="button" onclick="onNavButton('info.html')">read this</span> before using assets.
     </p>
   </div>
+
+  <!-- hidden canvas to build animation preview in background -->
+  <canvas id="animation-builder" class="hidden"></canvas>
 
   <div id="container">
     <div id="input" class="left-column">
@@ -124,9 +128,11 @@
         <input id="upscale" type="checkbox">
         <label for="upscale">scale x2</label>
       </span>
-      <div id="preview-box" class="box">
-        <canvas id="preview"/>
-        <canvas id="animated-preview"/>
+      <div class="box preview-box">
+        <canvas class="preview" id="animated-preview"></canvas>
+      </div>
+      <div class="box preview-box">
+        <canvas class="preview" id="preview"></canvas>
       </div>
 
       <div class="button-container">
