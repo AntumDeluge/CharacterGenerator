@@ -22,4 +22,5 @@ TODO:
 - scale down balloon
 - offset detail layer for body types
 - hair shold be drawn above clothes layers
-- create electonjs app
+- switch from electronjs app to neutralinojs
+- add debugging setting
