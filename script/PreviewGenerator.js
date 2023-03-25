@@ -256,15 +256,14 @@ export const PreviewGenerator = {
 
     const timestamp = Date.now();
 
-    let timediff;
-    if (debugging) {
-      timediff = timestamp - this.frameStart;
-      if (timediff >= this.frameDelay) {
-        this.frameStart = timestamp;
-        this.frameIdx = this.frameIdx < 3 ? this.frameIdx + 1 : 0;
-        // refresh canvas before drawing a new frame
-        this.animationCtx.clearRect(0, 0, this.animationCanvas.width, this.animationCanvas.height);
+    let timediff = timestamp - this.frameStart;
+    if (timediff >= this.frameDelay) {
+      this.frameStart = timestamp;
+      this.frameIdx = this.frameIdx < 3 ? this.frameIdx + 1 : 0;
+      // refresh canvas before drawing a new frame
+      this.animationCtx.clearRect(0, 0, this.animationCanvas.width, this.animationCanvas.height);
 
+      if (debugging) {
         debugMessage.push("frame index: " + this.frameIdx);
         debugMessage.push("draw delay: " + timediff + "ms");
       }
