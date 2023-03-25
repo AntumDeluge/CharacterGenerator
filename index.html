@@ -29,6 +29,9 @@
     </p>
   </div>
 
+  <!-- hidden canvas to build animation preview in background -->
+  <canvas id="animation-builder" class="hidden"></canvas>
+
   <div id="container">
     <div id="input" class="left-column">
       <span class="box-caption">Main Options:</span>
@@ -124,9 +127,11 @@
         <input id="upscale" type="checkbox">
         <label for="upscale">scale x2</label>
       </span>
-      <div id="preview-box" class="box">
-        <canvas id="preview"/>
-        <canvas id="animated-preview"/>
+      <div class="box preview-box">
+        <canvas class="preview" id="animated-preview"></canvas>
+      </div>
+      <div class="box preview-box">
+        <canvas class="preview" id="preview"></canvas>
       </div>
 
       <div class="button-container">

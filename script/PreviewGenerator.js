@@ -28,6 +28,23 @@ export const PreviewGenerator = {
   // if true, previews will by upscaled x2
   upscale: false,
 
+  // animated preview image element
+  animation: undefined,
+  // timeout id
+  animationId: undefined,
+  // animation refresh rate (ms)
+  frameDelay: 250,
+  // track frame to draw
+  frameIdx: 0,
+  // time of last frame change
+  frameStart: 0,
+
+  // animation debugging
+  fps: 30, // draw refresh rate
+  fpsActual: 0,
+  cycleStart: 0, // time of most recent cycle start
+  cycleCount: 0,
+
   // selected body type
   body: undefined,
 
@@ -65,6 +82,165 @@ export const PreviewGenerator = {
     console.log("preparing PNG data ...");
 
     return this.previewCanvas.toDataURL("image/png");
+  },
+
+  /**
+   * Sets animated preview image.
+   */
+  buildAnimation: function() {
+    // DEBUG:
+    console.log("preparing animation ...");
+
+    const preview = new Image();
+    preview.src = this.buildPNG();
+    preview.onload = () => {
+      if (!preview.complete) {
+        // DEBUG:
+        console.log("preview.onload() called prematurely");
+
+        return;
+      } else {
+        // DEBUG:
+        console.log("preview.onload() image ready");
+      }
+
+      const fsize = this.getFrameSize();
+      if (this.upscale) {
+        fsize.scale(2);
+      }
+
+      // stage temporary canvas for creating animated preview
+      const canvas = document.getElementById("animation-builder");
+      canvas.width = fsize.width * 3;
+      canvas.height = fsize.height * 3;
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = false;
+
+      // 3 rows each representing a frame with 3 columns for S/N/E facing directions
+      const slices = [
+        [[1, 2], [1, 0], [1, 1]],
+        [[0, 2], [0, 0], [0, 1]],
+        [[2, 2], [2, 0], [2, 1]]
+      ];
+
+      for (let ridx = 0; ridx < slices.length; ridx++) {
+        const rslice = slices[ridx];
+        for (let cidx = 0; cidx < rslice.length; cidx++) {
+          const cslice = rslice[cidx];
+          const soffsetX = cslice[0] * fsize.width;
+          const soffsetY = cslice[1] * fsize.height;
+          const toffsetX = cidx * fsize.width;
+          const toffsetY = ridx * fsize.height;
+          ctx.drawImage(preview,
+            soffsetX, soffsetY, fsize.width, fsize.height,
+            toffsetX, toffsetY, fsize.width, fsize.height
+          );
+        }
+      }
+
+      // TODO: store/retrieve image using cache
+
+      this.animation = new Image();
+      this.animation.onload = () => {
+        // DEBUG:
+        console.log("animation frames:\n" + this.animation.src);
+
+        // initialize frame draw timestamp
+        this.frameStart = Date.now();
+        this.cycleStart = this.frameStart;
+        this.renderAnimation();
+      };
+      this.animation.src = canvas.toDataURL("image/png");
+    }
+
+    // in case preview was cached
+    preview.onload();
+  },
+
+  /**
+   * Stops animation & clears animated preview.
+   */
+  removeAnimation: function() {
+    // DEBUG:
+    console.log("resetting animation ...");
+
+    if (typeof(this.animationId) !== "undefined") {
+      clearTimeout(this.animationId);
+    }
+    this.animation = undefined;
+  },
+
+  /**
+   * Draws a frame of animation.
+   */
+  renderAnimation: function() {
+    if (typeof(this.animation) === "undefined") {
+      this.buildAnimation();
+      return;
+    }
+    if (!this.animation.complete) {
+      // DEBUG:
+      console.log("animation not ready, retrying ...");
+
+      this.animationId = setTimeout(() => {
+        this.renderAnimation();
+      }, 500);
+      return;
+    }
+
+    const debugMessage = [];
+
+    const timestamp = Date.now();
+
+    let timediff = timestamp - this.frameStart;
+    if (timediff >= this.frameDelay) {
+      this.frameStart = timestamp;
+      this.frameIdx = this.frameIdx < 3 ? this.frameIdx + 1 : 0;
+      // refresh canvas before drawing a new frame
+      this.animationCtx.clearRect(0, 0, this.animationCanvas.width, this.animationCanvas.height);
+
+      debugMessage.push("frame index: " + this.frameIdx);
+      debugMessage.push("draw delay: " + timediff + "ms");
+    }
+
+    let drawIdx = this.frameIdx;
+    if (drawIdx % 2 == 0) {
+      // use first frame for even indexes
+      drawIdx = 0;
+    } else if (drawIdx == 3) {
+      // animation's 4th frame is index 2
+      drawIdx = 2;
+    }
+
+    const fsize = this.getFrameSize();
+    if (this.upscale) {
+      fsize.scale(2);
+    }
+    this.animationCtx.drawImage(this.animation,
+      0, drawIdx*fsize.height, this.animationCanvas.width, fsize.height,
+      0, 0, this.animationCanvas.width, this.animationCanvas.height
+    );
+
+    // debugging
+    this.cycleCount++;
+    timediff = timestamp - this.cycleStart;
+    if (timediff >= 1000) {
+      // check frame refresh rate
+      debugMessage.push("cycle delay: " + timediff + "ms");
+      debugMessage.push("framerate: " + this.cycleCount + "fps");
+
+      this.cycleCount = 0;
+      this.cycleStart = Date.now();
+    }
+
+    // DEBUG:
+    if (debugMessage.length > 0) {
+      //~ console.log(debugMessage.join("\n"));
+    }
+
+    this.animationId = setTimeout(() => {
+      this.renderAnimation();
+    }, 1000 / this.fps);
   },
 
   /**
@@ -268,11 +444,16 @@ export const PreviewGenerator = {
       imageLayers.splice(0, 0, img);
     }
 
+    // clear animated preview
+    this.removeAnimation();
+
     const lgroup = LayerGroup(imageLayers);
     lgroup.callback = () => {
       for (const layer of lgroup.layers) {
         this.drawLayer(layer);
       }
+      // build animation after preview is finished drawing
+      this.renderAnimation();
     };
   },
 };
