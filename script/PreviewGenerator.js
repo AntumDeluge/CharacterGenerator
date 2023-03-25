@@ -246,40 +246,54 @@ export const PreviewGenerator = {
       imageLayers.splice(0, 0, img);
     }
 
-    // flag to prevent redrawing
-    let drawComplete = false;
-    for (const img of imageLayers) {
-      img.onload = () => {
-        if (drawComplete) {
+    const lgroup = LayerGroup(imageLayers);
+    lgroup.callback = () => {
+      for (const layer of lgroup.layers) {
+        this.drawLayer(layer);
+      }
+    };
+  },
+};
+
+
+/**
+ * Object representing individual layers of a composite image.
+ *
+ * @param images
+ *   Layers making up the entire image.
+ */
+const LayerGroup = function(images) {
+  const def = {
+    layers: images,
+    /** Function to execute when layers loading is complete. */
+    callback: undefined,
+
+    /**
+     * Called when all layer images are loaded.
+     */
+    onLoaded: function() {
+      // DEBUG:
+      console.log("layer group loaded");
+
+      if (typeof(this.callback) === "function") {
+        this.callback();
+      }
+    }
+  };
+
+  for (const imgOuter of def.layers) {
+    imgOuter.onload = function() {
+      for (const imgInner of def.layers) {
+        if (!imgInner.complete || imgInner.naturalWidth === 0) {
           return;
         }
-        let allLoaded = true;
-        for (const i2 of imageLayers) {
-          if (!i2.complete || i2.naturalWidth === 0) {
-            allLoaded = false;
-            break;
-          }
-        }
-        if (allLoaded) {
-          for (const i2 of imageLayers) {
-            this.drawLayer(i2);
-          }
-          drawComplete = true;
-        }
-      };
-      // call 'onload' manually in case image was cached
-      img.onload();
+      }
+      // all layers loaded
+      def.onLoaded();
     }
-  },
-
-  /**
-   * Refreshes canvas for re-drawing.
-   */
-  clear: function() {
-    this.getContext().clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
-    this.layers = {
-      base: {},
-      outfit: {}
-    };
+    // call onload manually in case image was cached
+    imgOuter.onload();
   }
+
+  return def;
 };
