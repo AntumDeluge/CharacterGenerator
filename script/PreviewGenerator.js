@@ -14,12 +14,21 @@ import { util } from "./util.js";
 
 
 export const PreviewGenerator = {
+  initialized: false,
+
+  // main preview canvas & drawing context
   previewCanvas: document.getElementById("preview"),
+  previewCtx: undefined,
+  // animated preview canvas & drawing context
   animationCanvas: document.getElementById("animated-preview"),
-  framesX: 3, // horizonal frame count
-  framesY: 4, // vertical frame count
+  animationCtx: undefined,
+  // horizonal and vertical frame counts
+  framesX: 3,
+  framesY: 4,
+  // if true, previews will by upscaled x2
   upscale: false,
 
+  // selected body type
   body: undefined,
 
   // selected layer indexes
@@ -30,19 +39,31 @@ export const PreviewGenerator = {
 
 
   /**
-   * Retrieves the 2d drawing context.
-   *
-   * @return
-   *   CanvasRenderingContext2D.
+   * Sets up drawing contexts.
    */
-  getContext: function() {
-    return this.previewCanvas.getContext("2d");
+  init: function() {
+    if (this.initialized) {
+      console.warn("tried to re-initialize preview generator");
+      return;
+    }
+    this.initialized = true;
+
+    // DEBUG:
+    console.log("initializing preview generator ...");
+
+    this.previewCtx = this.previewCanvas.getContext("2d");
+    this.animationCtx = this.animationCanvas.getContext("2d");
+    this.previewCtx.imageSmoothingEnabled = false;
+    this.animationCtx.imageSmoothingEnabled = false;
   },
 
   /**
    * Creates an image resource from preview.
    */
   buildPNG: function() {
+    // DEBUG:
+    console.log("preparing PNG data ...");
+
     return this.previewCanvas.toDataURL("image/png");
   },
 
@@ -52,27 +73,34 @@ export const PreviewGenerator = {
    * @param data
    *   Layer information.
    * @param upscale
+   *   If true, previews will be upscaled by a factor of 2.
    */
   set: function(data, upscale=false) {
     this.upscale = upscale;
-    this.setFrameSize(data["size"]);
-    this.body = data["type"];
-    this.layers = data["layers"];
+    this.setFrameSize(data.size);
+    this.body = data.type;
+    this.layers = data.layers;
   },
 
   /**
    * Sets canvas size according to frame dimensions.
    *
-   * @param dim
-   *   Frame dimensions.
+   * @param fsize
+   *   Size object representing frame dimensions.
    */
-  setFrameSize: function(dim) {
+  setFrameSize: function(fsize) {
+    // DEBUG:
+    console.log("frame dimensions: " + fsize.width + "x" + fsize.height);
+
     if (this.upscale) {
-      dim["width"] = dim["width"] * 2;
-      dim["height"] = dim["height"] * 2;
+      fsize.width = fsize.width * 2;
+      fsize.height = fsize.height * 2;
     }
-    this.previewCanvas.width = dim["width"] * this.framesX;
-    this.previewCanvas.height = dim["height"] * this.framesY;
+    const cwidth = fsize.width * this.framesX;
+    this.previewCanvas.width = cwidth;
+    this.previewCanvas.height = fsize.height * this.framesY;
+    this.animationCanvas.width = cwidth;
+    this.animationCanvas.height = fsize.height; // animated preview contains only 1 row
   },
 
   /**
@@ -117,9 +145,6 @@ export const PreviewGenerator = {
     // DEBUG:
     console.log("visible layer: " + img.src);
 
-    const ctx = this.getContext();
-    ctx.imageSmoothingEnabled = false;
-
     if (img.offset.x != 0) {
       const fsize = this.getFrameSize();
       // slice layer into 4 parts to offset east/west facing frames
@@ -140,16 +165,19 @@ export const PreviewGenerator = {
           sheight *= 2;
         }
 
-        ctx.drawImage(img,
+        this.previewCtx.drawImage(img,
             0, slice*fsize.height, img.width, fsize.height,
             offsetX, (slice*sheight)+offsetY, swidth, sheight);
       }
     } else {
       if (this.upscale) {
-        ctx.drawImage(img, 0, 0, img.width, img.height,
-          0+(img.offset.x*2), 0+(img.offset.y*2), this.previewCanvas.width, this.previewCanvas.height);
+        this.previewCtx.drawImage(img,
+          0, 0,
+              img.width, img.height,
+          0+(img.offset.x*2), 0+(img.offset.y*2),
+              this.previewCanvas.width, this.previewCanvas.height);
       } else {
-        ctx.drawImage(img, 0+img.offset.x, 0+img.offset.y);
+        this.previewCtx.drawImage(img, 0+img.offset.x, 0+img.offset.y);
       }
     }
   },
@@ -158,18 +186,14 @@ export const PreviewGenerator = {
    * Generates preview image.
    */
   renderPreview: function() {
-    const size = this.getFrameSize();
-    const sizeSt = size.width + "x" + size.height;
-
-    // DEBUG:
-    console.log("frame dimensions: " + sizeSt);
-
+    const fsize = this.getFrameSize();
+    const sizeSt = fsize.width + "x" + fsize.height;
     const offset = {
       "head": {
-        "child": {x: 0, y: Math.floor(6 * (size.height / 64))},
-        "dwarf": {x: 0, y: Math.floor(4 * (size.height / 64))},
-        "elder": {x: Math.floor(4 * (size.width / 48)), y: Math.floor(5 * (size.height / 64))},
-        "tall": {x: 0, y: Math.floor(-5 * (size.height / 64))}
+        "child": {x: 0, y: Math.floor(6 * (fsize.height / 64))},
+        "dwarf": {x: 0, y: Math.floor(4 * (fsize.height / 64))},
+        "elder": {x: Math.floor(4 * (fsize.width / 48)), y: Math.floor(5 * (fsize.height / 64))},
+        "tall": {x: 0, y: Math.floor(-5 * (fsize.height / 64))}
       }
     };
 

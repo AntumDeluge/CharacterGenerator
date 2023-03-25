@@ -15,6 +15,7 @@ import { util } from "./util.js";
 
 export const LayerManager = {
   initialized: false,
+
   baseLayers: {},
   outfitLayers: {},
 
@@ -26,10 +27,16 @@ export const LayerManager = {
    */
   init: function() {
     if (this.initialized) {
-      console.warn("Tried to re-initialize LayerManager");
+      console.warn("tried to re-initialize layer manager");
       return;
     }
     this.initialized = true;
+
+    // DEBUG:
+    console.log("initializing layer manager ...");
+
+    // prepare preview generator
+    PreviewGenerator.init();
 
     JSONLoader.loadFile((data) => {
       for (const size of Object.keys(data)) {
