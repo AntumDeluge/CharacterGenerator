@@ -24,6 +24,14 @@ except ModuleNotFoundError:
     print("\nWARNING: could not install 'wget' module, downloads will fail")
 
 
+options = {
+  "commands": ("stage", "electron")
+}
+
+def showUsage():
+  file_exe = os.path.basename(__file__)
+  print("\nUSAGE:\n  {} {}".format(file_exe, "|".join(options["commands"])))
+
 def getConfig(key, default=None):
   file_conf = os.path.join(os.getcwd(), "build.conf")
   if not os.path.isfile(file_conf):
@@ -217,28 +225,26 @@ def buildElectron(_dir):
 
 def main(_dir, argv):
   if len(argv) == 0:
-    file_exe = os.path.basename(__file__)
-    print("missing command parameter")
-    print("\nUsage:\n  " + file_exe + " stage|electron")
-    sys.exit(0)
+    print("\nERROR: missing command parameter")
+    showUsage()
+    sys.exit(1)
   elif len(argv) > 1:
-    file_exe = os.path.basename(__file__)
-    print("too many commands")
-    print("\nUsage:\n  " + file_exe + " stage|electron")
-    sys.exit(0)
+    print("\nERROR: too many commands")
+    showUsage()
+    sys.exit(1)
+
+  command = argv[0]
+  if command not in options["commands"]:
+    print("\nERROR: unknown command: {}".format(command))
+    showUsage()
+    sys.exit(1)
 
   time_start = time.time()
 
-  command = argv[0]
   if "stage" == command:
     stage(_dir)
   elif "electron" == command:
     buildElectron(_dir)
-  else:
-    file_exe = os.path.basename(__file__)
-    print("\nERROR: unknown command: {}".format(command))
-    print("\nUsage:\n  " + file_exe + " stage|electron")
-    sys.exit(1)
 
   time_end = time.time()
   time_diff = time_end - time_start
