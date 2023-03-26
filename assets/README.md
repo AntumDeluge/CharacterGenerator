@@ -43,6 +43,8 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 #### Hat
 
+- NOTE: hat 10 (panama) disabled, need to verify attribution
+
 - by bleutailfly ([OGA BY 3.0][lic.ogaby]) [Stendhal](https://stendhalgame.org/):
     - 16 (backward cap)
     - 17 (boggin)
@@ -67,7 +69,6 @@ This page lists authors, licensing, and sources of assets and any other informat
     - 20 (helmet)
 - by Svetlana Kushnariova (Cabbit) with upscales by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]) [source](https://opengameart.org/node/72969):
     - 9 (Robin's hat)
-    - 10 (panama)
     - 11 (hood)
     - 12 (bowler)
     - 13 (fedora)
