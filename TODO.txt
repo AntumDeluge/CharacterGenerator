@@ -27,3 +27,6 @@ TODO:
 - add option for rear hat layers
 - add wedding gown & tuxedo
 - find correct attribution for panama hat
+- find originals for:
+  - 24x32 hat 10 (panama)
+  - 24x32 hat 13 (fedora)
