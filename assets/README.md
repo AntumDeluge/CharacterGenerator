@@ -96,6 +96,7 @@ This page lists authors, licensing, and sources of assets and any other informat
     - 2 (prison jumpsuit) [source](https://opengameart.org/node/83639)
 - by Svetlana Kushnariova (Cabbit) & Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
     - 3 (wedding gown) [source](https://opengameart.org/node/83523)
+    - 4 (tuxedo) [source](https://opengameart.org/node/83523)
 
 
 [lic.cc0]: ../doc/licenses/CC0-1.0.txt

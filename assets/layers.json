@@ -40,12 +40,14 @@
         }
       },
       "torso": {
-        "indexes": 3,
+        "indexes": 4,
         "bodymap": {
           "1-standard-2": 1,
           "2-standard-2": 1,
           "3-standard-1": 3,
-          "3-standard-2": 3
+          "3-standard-2": 3,
+          "4-standard-2": null,
+          "4-standard-3": null
         }
       },
       "mask": 1,
@@ -95,12 +97,14 @@
         }
       },
       "torso": {
-        "indexes": 3,
+        "indexes": 4,
         "bodymap": {
           "1-standard-2": 1,
           "2-standard-2": 1,
           "3-standard-1": 3,
-          "3-standard-2": 3
+          "3-standard-2": 3,
+          "4-standard-2": null,
+          "4-standard-3": null
         }
       },
       "mask": 1,
@@ -144,7 +148,8 @@
     },
     "torso": {
       "2": "prison jumpsuit",
-      "3": "wedding gown"
+      "3": "wedding gown",
+      "4": "tuxedo"
     }
   }
 }
