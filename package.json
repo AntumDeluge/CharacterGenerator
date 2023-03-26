@@ -2,12 +2,12 @@
   "name": "chargen",
   "version": "0.2.0",
   "description": "Character Sprite Generator for Cabbit style sprites",
-  "main": "electron_main.js",
+  "main": "desktop_app.js",
   "directories": {
     "doc": "doc"
   },
   "scripts": {
-    "electron": "electron ."
+    "test": "electron ."
   },
   "repository": {
     "type": "git",
