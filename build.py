@@ -25,7 +25,7 @@ except ModuleNotFoundError:
 
 
 options = {
-  "commands": ("stage", "electron")
+  "commands": ("stage", "electron", "clean")
 }
 
 def showUsage():
@@ -222,6 +222,16 @@ def buildElectron(_dir):
     file_dist = os.path.join(os.path.dirname(dir_build), "CharGen_{}_{}.zip".format(getConfig("version"), platform))
     packZipDir(file_dist, dir_build)
 
+def clean(_dir):
+  dir_build = os.path.join(_dir, "build")
+  if os.path.exists(dir_build):
+    if not os.path.isdir(dir_build):
+      print("\nERROR: cannot remove build directory, file exists: {}".format(dir_build))
+      sys.exit(errno.EEXIST)
+    print("\ncleaning build files")
+    print("delete '{}'".format(dir_build))
+    shutil.rmtree(dir_build)
+
 
 def main(_dir, argv):
   if len(argv) == 0:
@@ -241,7 +251,9 @@ def main(_dir, argv):
 
   time_start = time.time()
 
-  if "stage" == command:
+  if "clean" == command:
+    clean(_dir)
+  elif "stage" == command:
     stage(_dir)
   elif "electron" == command:
     buildElectron(_dir)
