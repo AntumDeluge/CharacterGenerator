@@ -1,5 +1,5 @@
 {
-  "name": "charactergenerator",
+  "name": "chargen",
   "version": "0.2.0",
   "description": "Character Sprite Generator for Cabbit style sprites",
   "main": "electron_main.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AntumDeluge/CharacterGenerator.git"
+    "url": "git+https://github.com/AntumDeluge/chargen.git"
   },
   "keywords": [
     "character",
@@ -22,9 +22,9 @@
   "author": "Jordan Irwin (AntumDeluge)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/AntumDeluge/CharacterGenerator/issues"
+    "url": "https://github.com/AntumDeluge/chargen/issues"
   },
-  "homepage": "https://github.com/AntumDeluge/CharacterGenerator#readme",
+  "homepage": "https://github.com/AntumDeluge/chargen#readme",
   "devDependencies": {
     "electron": "^23.1.4"
   }
