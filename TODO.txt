@@ -1,6 +1,5 @@
 
 TODO:
-- add outfit assets
 - add option to convert to SWEN format
 - simulate hyperlink behavior with custom div button elements
 - use browser session storage to preserve selections
@@ -11,7 +10,6 @@ TODO:
   - eyebrows
   - hair
 - use Scale2x algorithm for upscaling
-- touch up scaled layers
 - add optional rear layer for hair
 - unify values for all sizes in layers.json
 - add flag for drawing certain hair layers over ears
@@ -24,3 +22,5 @@ TODO:
 - fix buggy animated preview
   - not always showing
   - sometimes uses wrong base image
+- separate prison jumpsuit legs & shoes onto their own layers
+- scale down hats

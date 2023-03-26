@@ -93,9 +93,10 @@
         }
       },
       "torso": {
-        "indexes": 1,
+        "indexes": 2,
         "bodymap": {
-          "1-standard-2": 1
+          "1-standard-2": 1,
+          "2-standard-2": 1
         }
       },
       "mask": 1,
