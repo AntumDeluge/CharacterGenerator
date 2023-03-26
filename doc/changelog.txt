@@ -8,7 +8,7 @@
 - option selectors can have descriptive label
 - individual base layers can be disabled
 - fixed layers draw order
-- implemented Electon.js app build
+- implemented Neutralinojs app build
 - added animated preview
 - added message functions for debugging
 - cached images are indexed by hash string

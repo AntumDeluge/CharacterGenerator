@@ -25,7 +25,7 @@ except ModuleNotFoundError:
 
 
 options = {
-  "commands": ("stage", "electron", "clean")
+  "commands": ("clean", "stage", "desktop", "run-desktop")
 }
 
 
@@ -338,40 +338,92 @@ def stage(_dir, verbose=True):
       if ".xcf" in f:
         deleteFile(file_staged, verbose)
 
-def buildElectron(_dir):
+def buildDesktop(_dir, verbose=True):
   stage(_dir)
-  dir_stage = os.path.join(_dir, "build", "stage")
-  for f in ("electron_main.js", "package.json"):
-    shutil.copy(os.path.join(_dir, f), dir_stage)
 
-  ver_electron = getConfig("electron_version")
-  if ver_electron == None:
-    exitWithError("chromedriver version not configured in 'build.conf'")
+  if verbose:
+    print("\nbuilding desktop app ...")
 
-  print("\nsetting up for electron version: {}".format(ver_electron))
+  dir_build = os.path.join(_dir, "build")
+  dir_stage = os.path.join(dir_build, "stage")
+  dir_neu = os.path.join(dir_build, "neutralinojs")
+  dir_app = os.path.join(dir_build, "desktop")
+  dir_res = os.path.join(dir_app, "resources")
 
-  dl_prefix = "https://github.com/electron/electron/releases/download/v{0}/".format(ver_electron)
+  try:
+    subprocess.run(("npm", "run", "stage-desktop"), check=True)
+  except subprocess.CalledProcessError:
+    print("\nskipped Neutralinojs download, app exists: {}".format(dir_neu))
 
-  for platform in ("linux-x64", "win32-x64"):
-    print("\nbuilding for platform " + platform + " ...")
-    dl_url = dl_prefix + "electron-v{}-".format(ver_electron) + platform + ".zip"
-    filename = os.path.basename(dl_url)
-    downloadFile(dl_url, filename)
-    dl_filepath = os.path.join(_dir, "temp", filename)
-    dir_build = os.path.join(_dir, "build", platform)
-    unpackZip(dl_filepath, dir_build)
-    dir_app = os.path.join(dir_build, "resources", "app")
-    # make sure parent dir exists
-    if not os.path.isdir(os.path.dirname(dir_app)):
-      os.makedirs(os.path.dirname(dir_app))
-    shutil.copytree(dir_stage, dir_app)
-    if platform.startswith("linux"):
-      for exe in ("electron", "chrome-sandbox", "chrome_crashpad_handler"):
-        exe = os.path.join(dir_build, exe)
-        if os.path.isfile(exe):
-          os.chmod(exe, 0o775)
-    file_dist = os.path.join(os.path.dirname(dir_build), "CharGen_{}_{}.zip".format(getConfig("version"), platform))
-    packZipDir(file_dist, dir_build)
+  deleteDir(dir_app)
+  makeDir(dir_app)
+  copyDir(dir_stage, dir_app, "resources", verbose)
+  for nfile in ("LICENSE", "README.md"):
+    copyFile(
+      os.path.join(dir_neu, nfile),
+      os.path.join(dir_app, nfile)
+    )
+  copyDir(
+    os.path.join(dir_neu, "bin"),
+    os.path.join(dir_app, "bin")
+  )
+  copyFile(
+    os.path.join(dir_neu, "resources", "js", "neutralino.js"),
+    os.path.join(dir_res, "js", "neutralino.js")
+  )
+  copyFile(
+    os.path.join(dir_neu, "resources", "icons", "appIcon.png"),
+    os.path.join(dir_res, "data", "icon.png")
+  )
+  copyFile(
+    os.path.join(_dir, "neutralino.config.json"),
+    os.path.join(dir_app, "neutralino.config.json")
+  )
+
+  # add Neutralinojs script to HTML
+  if verbose:
+    print("\nincorporating neutralino.js into index.html")
+  file_index = os.path.join(dir_res, "index.html")
+  lines_orig = readFile(file_index).split("\n")
+  lines = list(lines_orig)
+  for idx in range(len(lines)):
+    if lines[idx].strip() == "<head>":
+      lines.insert(idx+1, "  <script src=\"js/neutralino.js\"></script>")
+      break
+  if lines != lines_orig:
+    writeFile(file_index, lines)
+
+  dir_start = os.getcwd()
+  try:
+    os.chdir(dir_app)
+    subprocess.run(("npm", "exec", "neu", "build", "--release"), check=True)
+  except subprocess.CalledProcessError:
+    exitWithError("npm process returned error when building desktop app")
+
+  os.chdir(os.path.normpath("dist/chargen"))
+  for arch in ("arm64", "armhf", "x64"):
+    os.chmod("chargen-linux_" + arch, 0o775)
+  for arch in ("arm64", "x64"):
+    os.chmod("chargen-mac_" + arch, 0o775)
+
+  os.chdir(dir_start)
+
+def runDesktop(_dir, verbose=True):
+  buildDesktop(_dir)
+
+  if verbose:
+    print("\nrunning desktop app ...")
+
+  dir_start = os.getcwd()
+  dir_app = os.path.join(_dir, "build", "desktop")
+
+  try:
+    os.chdir(dir_app)
+    subprocess.run(("npm", "exec", "neu", "run"), check=True)
+  except subprocess.CalledProcessError:
+    exitWithError("npm process returned error when running desktop app")
+
+  os.chdir(dir_start)
 
 def clean(_dir, verbose=True):
   dir_build = os.path.join(_dir, "build")
@@ -401,8 +453,10 @@ def main(_dir, argv):
     clean(_dir)
   elif "stage" == command:
     stage(_dir)
-  elif "electron" == command:
-    buildElectron(_dir)
+  elif "desktop" == command:
+    buildDesktop(_dir)
+  elif "run-desktop" == command:
+    runDesktop(_dir)
 
   time_end = time.time()
   time_diff = time_end - time_start

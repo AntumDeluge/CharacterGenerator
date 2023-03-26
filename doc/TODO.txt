@@ -17,7 +17,6 @@ TODO:
 - allow torso layers to be mapped by arm type
 - offset detail layer for body types
 - hair should be drawn above clothes layers
-- switch from electronjs app to neutralinojs
 - touch up scaled down layers
 - fix buggy animated preview
   - not always showing

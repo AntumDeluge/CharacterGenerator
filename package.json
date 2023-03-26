@@ -7,7 +7,8 @@
     "doc": "doc"
   },
   "scripts": {
-    "test": "electron ."
+    "stage-desktop": "neu create build/neutralinojs",
+    "desktop": "cd build/neutralinojs && neu run"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,7 @@
     "url": "https://github.com/AntumDeluge/chargen/issues"
   },
   "homepage": "https://github.com/AntumDeluge/chargen#readme",
-  "devDependencies": {
-    "electron": "^23.1.4"
+  "dependencies": {
+    "@neutralinojs/neu": "^9.5.0"
   }
 }
