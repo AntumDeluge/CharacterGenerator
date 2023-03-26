@@ -24,3 +24,5 @@ TODO:
   - sometimes uses wrong base image
 - separate prison jumpsuit legs & shoes onto their own layers
 - scale down hats
+- add option for rear hat layers
+- add wedding gown & tuxedo
