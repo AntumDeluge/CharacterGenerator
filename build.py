@@ -28,20 +28,54 @@ options = {
   "commands": ("stage", "electron", "clean")
 }
 
-def showUsage():
+
+# --- UTILITY FUNCTIONS --- #
+
+def printUsage():
   file_exe = os.path.basename(__file__)
   print("\nUSAGE:\n  {} {}".format(file_exe, "|".join(options["commands"])))
+
+def printWarning(msg):
+  print("\nWARNING: " + msg)
+
+def printError(msg):
+  print("\nERROR: " + msg)
+
+def exitWithError(msg, code=1, usage=False):
+  printError(msg)
+  if usage:
+    printUsage()
+  sys.exit(code)
+
+def readFile(filepath):
+  if not os.path.exists(filepath):
+    exitWithError("cannot open file for reading, does not exist: {}".format(filepath), errno.ENOENT)
+  if os.path.isdir(filepath):
+    exitWithError("cannot open file for reading, directory exists: {}".format(filepath), errno.EISDIR)
+
+  fopen = codecs.open(filepath, "r", "utf-8")
+  # clean up line delimeters
+  content = fopen.read().replace("\r\n", "\n").replace("\r", "\n")
+  fopen.close()
+
+  return content
+
+def writeFile(filepath, data):
+  if type(data) in (list, tuple):
+    # convert data to string
+    data = "\n".join(data)
+
+  fopen = codecs.open(filepath, "w", "utf-8")
+  fopen.write(data)
+  fopen.close()
 
 def getConfig(key, default=None):
   file_conf = os.path.join(os.getcwd(), "build.conf")
   if not os.path.isfile(file_conf):
-    print("\nERROR: config not found: {}".format(file_conf))
+    printError("config not found: {}".format(file_conf))
     return None
 
-  fopen = codecs.open(file_conf, "r", "utf-8")
-  lines = fopen.read().replace("\r\n", "\n").replace("\r", "\n").split("\n")
-  fopen.close()
-
+  lines = readFile(file_conf).split("\n")
   lidx = 0;
   for line in lines:
     lidx =+ 0
@@ -49,23 +83,163 @@ def getConfig(key, default=None):
     if not line or line.startswith("#"):
       continue
     if "=" not in line:
-      print("\nWARNING: malformed line in config ({}): {}".format(lidx, line))
+      printWarning("malformed line in config ({}): {}".format(lidx, line))
       continue
     tmp = line.split("=", 1)
     if key == tmp[0].strip():
       return tmp[1].strip()
   return default
 
-def downloadFile(url, filename):
-  # DEBUG:
-  print("downloading file from: {}".format(url))
+def checkTargetNotExists(target, action=None, add_parent=False):
+  err = errno.EEXIST
+  msg = ""
+  if action:
+    msg += "cannot " + action + ", "
+
+  if os.path.exists(target):
+    if os.path.isdir(target):
+      err = errno.EISDIR
+      msg += "directory"
+    else:
+      msg += "file"
+    msg += " exists: {}".format(target)
+    exitWithError(msg, err)
+
+  if add_parent:
+    dir_parent = os.path.dirname(target)
+    if not os.path.exists(dir_parent):
+      os.makedirs(dir_parent)
+    elif not os.path.isdir(dir_parent):
+      exitWithError("cannot create directory, file exists: {}".format(dir_parent), err)
+
+def checkFileSourceExists(source, action=None):
+  msg = ""
+  if action:
+    msg += "cannot " + action + " file, "
+
+  if not os.path.exists(source):
+    msg += "source does not exist: {}".format(source)
+    exitWithError(msg, errno.ENOENT)
+  if os.path.isdir(source):
+    msg += "source is a directory: {}".format(source)
+    exitWithError(msg, errno.EISDIR)
+
+def checkDirSourceExists(source, action=None):
+  msg = ""
+  if action:
+    msg += "cannot " + action + " directory, "
+
+  if not os.path.exists(source):
+    msg += "source does not exist: {}".format(source)
+    exitWithError(msg, errno.ENOENT)
+  if not os.path.isdir(source):
+    msg += "source is a file: {}".format(source)
+    exitWithError(msg, errno.EEXIST)
+
+def makeDir(dirpath, verbose=True):
+  checkTargetNotExists(dirpath, "create directory")
+  os.makedirs(dirpath)
+  if not os.path.isdir(dirpath):
+    exitWithError("failed to create directory, an unknown error occured: {}".format(dirpath))
+  if verbose:
+    print("new directory '{}'".format(dirpath))
+
+def deleteFile(filepath, verbose=True):
+  if os.path.exists(filepath):
+    if os.path.isdir(filepath):
+      exitWithError("cannot delete file, directory exists: {}".format(filepath), errno.EISDIR)
+    os.remove(filepath)
+    if os.path.exists(filepath):
+      exitWithError("failed to delete file, an unknown error occured: {}".format(filepath))
+    if verbose:
+      print("delete '{}'".format(filepath))
+
+def deleteDir(dirpath, verbose=True):
+  if os.path.exists(dirpath):
+    if not os.path.isdir(dirpath):
+      exitWithError("cannot delete directory, file exists: {}".format(dirpath), errno.EEXIST)
+    for obj in os.listdir(dirpath):
+      objpath = os.path.join(dirpath, obj)
+      if not os.path.isdir(objpath):
+        deleteFile(objpath)
+      else:
+        deleteDir(objpath)
+    if len(os.listdir(dirpath)) != 0:
+      exitWithError("failed to delete directory, not empty: {}".format(dirpath))
+    os.rmdir(dirpath)
+    if os.path.exists(dirpath):
+      exitWithError("failed to delete directory, an unknown error occurred: {}".format(dirpath))
+    if verbose:
+      print("delete '{}'".format(dirpath))
+
+def copyFile(source, target, name=None, verbose=True):
+  if name:
+    target = os.path.join(target, name)
+  checkFileSourceExists(source, "copy")
+  checkTargetNotExists(target, "copy file", True)
+  shutil.copyfile(source, target)
+  if not os.path.exists(target):
+    exitWithError("failed to copy file, an unknown error occurred: {}".format(target))
+  if verbose:
+    print("copy '{}' -> '{}'".format(source, target))
+
+def copyDir(source, target, name=None, verbose=True):
+  if name:
+    target = os.path.join(target, name)
+  checkDirSourceExists(source, "copy")
+  checkTargetNotExists(target, "copy directory")
+  makeDir(target)
+  if not os.path.isdir(target):
+    exitWithError("failed to copy directory, an unknown error occurred: {}".format(target))
+  if verbose:
+    print("copy '{}' -> '{}'".format(source, target))
+  for obj in os.listdir(source):
+    objsource = os.path.join(source, obj)
+    objtarget = os.path.join(target, obj)
+    if not os.path.isdir(objsource):
+      copyFile(objsource, objtarget, None, verbose)
+    else:
+      copyDir(objsource, objtarget, None, verbose)
+
+def moveFile(source, target, name=None, verbose=True):
+  if name:
+    target = os.path.join(target, name)
+  checkFileSourceExists(source, "move")
+  checkTargetNotExists(target, "move file", True)
+  shutil.move(source, target)
+  if os.path.exists(source) or not os.path.exists(target):
+    exitWithError("failed to move file, an unknown error occurred: {}".format(target))
+  if verbose:
+    print("move '{}' -> '{}'".format(source, target))
+
+def moveDir(source, target, name=None, verbose=True):
+  if name:
+    target = os.path.join(target, name)
+  checkDirSourceExists(source, "move")
+  checkTargetNotExists(target, "move directory")
+  makeDir(target)
+  if not os.path.isdir(target):
+    exitWithError("failed to move directory, an unknown error occurred: {}".format(target))
+  for obj in os.listdir(source):
+    objsource = os.path.join(source, obj)
+    objtarget = os.path.join(target, obj)
+    if not os.path.isdir(objsource):
+      moveFile(objsource, objtarget, None, verbose)
+    else:
+      moveDir(objsource, objtarget, None, verbose)
+  deleteDir(source, False)
+  if verbose:
+    print("move '{}' -> '{}'".format(source, target))
+
+def downloadFile(url, filename, verbose=True):
+  if verbose:
+    print("\ndownloading file from {} ...".format(url))
 
   dir_target = os.path.join(os.getcwd(), "temp")
   if not os.path.exists(dir_target):
     os.makedirs(dir_target)
   if not os.path.isdir(dir_target):
-    print("\nERROR: cannot download to temp directory, file exists: {}".format(dir_target))
-    sys.exit(errno.EEXIST)
+    exitWithError("cannot download to temp directory, file exists: {}".format(dir_target), errno.EEXIST)
 
   file_target = os.path.join(dir_target, filename)
   if os.path.exists(file_target):
@@ -75,14 +249,12 @@ def downloadFile(url, filename):
   try:
     wget.download(url, file_target)
   except HTTPError:
-    print("\nERROR: could not download file from: {}".format(url))
-    sys.exit(1)
+    exitWithError("could not download file from: {}".format(url))
 
-def packZipDir(filepath, sourcepath):
+def packZipDir(filepath, sourcepath, verbose=True):
   if os.path.exists(filepath):
     if os.path.isdir(filepath):
-      print("\nERROR: cannot create zip, directory exists: {}".format(filepath))
-      sys.exit(errno.EEXIST)
+      exitWithError("cannot create zip, directory exists: {}".format(filepath), errno.EEXIST)
     os.remove(filepath)
 
   dir_start = os.getcwd()
@@ -99,12 +271,12 @@ def packZipDir(filepath, sourcepath):
   zopen.close()
 
   os.chdir(dir_start)
-  print("packed archive: {}".format(filepath))
+  if verbose:
+    print("packed archive: {}".format(filepath))
 
-def unpackZip(filepath, dir_target=None):
+def unpackZip(filepath, dir_target=None, verbose=True):
   if not os.path.isfile(filepath):
-    print("\nERROR: cannot extract zip, file not found: {}".format(filepath))
-    sys.exit(errno.ENOENT)
+    exitWithError("cannot extract zip, file not found: {}".format(filepath), errno.ENOENT)
 
   dir_start = os.getcwd()
   dir_parent = os.path.dirname(filepath)
@@ -113,38 +285,33 @@ def unpackZip(filepath, dir_target=None):
 
   if os.path.exists(dir_target):
     if not os.path.isdir(dir_target):
-      print("\nERROR: cannot extract zip, file exists: {}".format(dir_target))
-      sys.exit(errno.EEXIST)
+      exitWithError("cannot extract zip, file exists: {}".format(dir_target), errno.EEXIST)
     shutil.rmtree(dir_target)
   os.makedirs(dir_target)
 
   os.chdir(dir_target)
-  print("extracting contents of {} ...".format(filepath))
+  if verbose:
+    print("extracting contents of {} ...".format(filepath))
   zopen = ZipFile(filepath, "r")
   zopen.extractall()
   zopen.close()
   # return to original directory
   os.chdir(dir_start)
 
-def cleanStage(dir_stage):
-  if os.path.exists(dir_stage):
-    if not os.path.isdir(dir_stage):
-      print("\nERROR: cannot stage, file exists: {}".format(dir_stage))
-      sys.exit(errno.EEXIST)
 
-    print("\nremoving old staging directory ...")
-    print("delete '{}'".format(dir_stage))
-    shutil.rmtree(dir_stage)
+# --- TARGET FUNCTIONS --- #
 
-def stage(_dir):
+def stage(_dir, verbose=True):
   dir_stage = os.path.join(_dir, "build", "stage")
-  cleanStage(dir_stage)
-  print("\nstaging ...")
+  deleteDir(dir_stage)
+
+  if verbose:
+    print("\nstaging files ...")
+
   os.makedirs(dir_stage)
   if not os.path.isdir(dir_stage):
-    print("\nERROR: failed to create staging directory: {}".format(dir_stage))
     # FIXME: correct error value
-    sys.exit(errno.ENOENT)
+    exitWithError("failed to create staging directory: {}".format(dir_stage), errno.ENOENT)
 
   files_stage = getConfig("stage_files", "").split(";")
   dirs_stage = getConfig("stage_dirs", "").split(";")
@@ -152,39 +319,24 @@ def stage(_dir):
   for f in files_stage:
     file_source = os.path.join(_dir, f)
     file_target = os.path.join(dir_stage, f)
-    print("'" + file_source + "' -> '" + file_target + "'")
-    shutil.copyfile(file_source, file_target)
-    if not os.path.isfile(file_target):
-      print("\nERROR: failed to copy file to staging directory: {}".format(file_source))
-      # FIXME: correct error value
-      sys.exit(errno.ENOENT)
+    copyFile(file_source, file_target, None, verbose)
 
   for d in dirs_stage:
     dir_source = os.path.join(_dir, d)
     dir_target = os.path.join(dir_stage, d)
-    shutil.copytree(dir_source, dir_target)
-    print("'" + dir_source + "' -> '" + dir_target + "'")
-    if not os.path.isdir(dir_target):
-      print("\nERROR: failed to copy directory to staging directory: {}".format(dir_source))
-      # FIXME: correct error value
-      sys.exit(errno.ENOENT)
+    copyDir(dir_source, dir_target, None, verbose)
 
   dir_assets = os.path.join(dir_stage, "assets")
   if not os.path.isdir(dir_assets):
-    print("\nERROR: no assets staged (missing directory: {})".format(dir_assets))
-    sys.exit(errno.ENOENT)
+    exitWithError("no assets staged (missing directory: {})".format(dir_assets), errno.ENOENT)
 
-  print("\ncleaning stage ...")
+  if verbose:
+    print("\ncleaning staged files ...")
   for ROOT, DIRS, FILES in os.walk(dir_assets):
     for f in FILES:
       file_staged = os.path.join(ROOT, f)
       if ".xcf" in f:
-        print("delete '{}'".format(file_staged))
-        os.remove(file_staged)
-        if os.path.isfile(file_staged):
-          print("\nERROR: failed to remove unused file: {}".format(file_staged))
-          # FIXME: correct error value
-          sys.exit(errno.EEXIST)
+        deleteFile(file_staged, verbose)
 
 def buildElectron(_dir):
   stage(_dir)
@@ -194,8 +346,7 @@ def buildElectron(_dir):
 
   ver_electron = getConfig("electron_version")
   if ver_electron == None:
-    print("\nERROR: chromedriver version not configured in 'build.conf'")
-    sys.exit(1)
+    exitWithError("chromedriver version not configured in 'build.conf'")
 
   print("\nsetting up for electron version: {}".format(ver_electron))
 
@@ -222,32 +373,27 @@ def buildElectron(_dir):
     file_dist = os.path.join(os.path.dirname(dir_build), "CharGen_{}_{}.zip".format(getConfig("version"), platform))
     packZipDir(file_dist, dir_build)
 
-def clean(_dir):
+def clean(_dir, verbose=True):
   dir_build = os.path.join(_dir, "build")
   if os.path.exists(dir_build):
     if not os.path.isdir(dir_build):
-      print("\nERROR: cannot remove build directory, file exists: {}".format(dir_build))
-      sys.exit(errno.EEXIST)
-    print("\ncleaning build files")
-    print("delete '{}'".format(dir_build))
-    shutil.rmtree(dir_build)
+      exitWithError("cannot remove build directory, file exists: {}".format(dir_build), errno.EEXIST)
+
+    if verbose:
+      print("\ncleaning build files ...")
+
+    deleteDir(dir_build, verbose)
 
 
 def main(_dir, argv):
   if len(argv) == 0:
-    print("\nERROR: missing command parameter")
-    showUsage()
-    sys.exit(1)
+    exitWithError("missing command parameter", usage=True)
   elif len(argv) > 1:
-    print("\nERROR: too many commands")
-    showUsage()
-    sys.exit(1)
+    exitWithError("too many commands", usage=True)
 
   command = argv[0]
   if command not in options["commands"]:
-    print("\nERROR: unknown command: {}".format(command))
-    showUsage()
-    sys.exit(1)
+    exitWithError("unknown command: {}".format(command), usage=True)
 
   time_start = time.time()
 
