@@ -54,7 +54,7 @@ This page lists authors, licensing, and sources of assets and any other informat
 - by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
     - 1 (stetson) [source](https://opengameart.org/node/140316)
     - 2 (beret)
-    - 3 (turban)
+    - 3 (turban) [source](https://opengameart.org/node/82929)
     - 4 (sailor cap) [source](https://opengameart.org/node/100767)
     - 5 (wedding veil) [source](https://opengameart.org/node/83523)
     - 6 (prison hat) [source](https://opengameart.org/node/83639)
