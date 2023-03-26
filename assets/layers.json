@@ -86,12 +86,23 @@
     },
     "outfit": {
       "shoes": 1,
-      "legs": 0,
-      "torso": 0,
-      "mask": 0,
+      "legs": {
+        "indexes": 1,
+        "bodymap": {
+          "1-standard-2": 1
+        }
+      },
+      "torso": {
+        "indexes": 2,
+        "bodymap": {
+          "1-standard-2": 1,
+          "2-standard-2": 1
+        }
+      },
+      "mask": 1,
       "hair": 7,
-      "hat": 2,
-      "detail": 0
+      "hat": 23,
+      "detail": 1
     }
   },
   "labels": {
@@ -109,7 +120,7 @@
       "7": "baseball cap",
       "8": "peaked cap",
       "9": "Robin's hat",
-      "10": "panama",
+      "10": "disabled",
       "11": "hood",
       "12": "bowler",
       "13": "fedora",
