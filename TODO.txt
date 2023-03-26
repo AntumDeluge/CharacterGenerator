@@ -26,3 +26,4 @@ TODO:
 - scale down hats
 - add option for rear hat layers
 - add wedding gown & tuxedo
+- find correct attribution for panama hat
