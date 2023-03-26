@@ -17,8 +17,10 @@ TODO:
 - add flag for drawing certain hair layers over ears
 - format for small screens
 - allow torso layers to be mapped by arm type
-- scale down legs & torso outfit index 1
 - offset detail layer for body types
 - hair should be drawn above clothes layers
 - switch from electronjs app to neutralinojs
-- fix animated preview not always showing
+- touch up scaled down layers
+- fix buggy animated preview
+  - not always showing
+  - sometimes uses wrong base image

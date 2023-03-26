@@ -86,8 +86,18 @@
     },
     "outfit": {
       "shoes": 1,
-      "legs": 0,
-      "torso": 0,
+      "legs": {
+        "indexes": 1,
+        "bodymap": {
+          "1-standard-2": 1
+        }
+      },
+      "torso": {
+        "indexes": 1,
+        "bodymap": {
+          "1-standard-2": 1
+        }
+      },
       "mask": 1,
       "hair": 7,
       "hat": 2,
