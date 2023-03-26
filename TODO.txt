@@ -18,7 +18,6 @@ TODO:
 - format for small screens
 - allow torso layers to be mapped by arm type
 - scale down legs & torso outfit index 1
-- scale down glasses
 - offset detail layer for body types
 - hair should be drawn above clothes layers
 - switch from electronjs app to neutralinojs
