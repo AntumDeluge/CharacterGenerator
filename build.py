@@ -138,8 +138,8 @@ def stage(_dir):
     # FIXME: correct error value
     sys.exit(errno.ENOENT)
 
-  files_stage = ("index.html", "info.html", "LICENSE.txt")
-  dirs_stage = ("assets", "data", "doc", "script")
+  files_stage = getConfig("stage_files", "").split(";")
+  dirs_stage = getConfig("stage_dirs", "").split(";")
 
   for f in files_stage:
     file_source = os.path.join(_dir, f)
