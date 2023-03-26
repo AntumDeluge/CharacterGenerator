@@ -70,8 +70,8 @@ export const PreviewGenerator = {
 
     this.previewCtx = this.previewCanvas.getContext("2d");
     this.animationCtx = this.animationCanvas.getContext("2d");
-    this.previewCtx.imageSmoothingEnabled = false;
-    this.animationCtx.imageSmoothingEnabled = false;
+    //~ this.previewCtx.imageSmoothingEnabled = false;
+    //~ this.animationCtx.imageSmoothingEnabled = false;
   },
 
   /**
@@ -327,6 +327,8 @@ export const PreviewGenerator = {
 
     // DEBUG:
     message.debug(2, "visible layer: " + img.src);
+
+    this.previewCtx.imageSmoothingEnabled = false;
 
     if (img.offset.x != 0) {
       const fsize = this.getFrameSize();
