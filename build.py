@@ -17,7 +17,7 @@ try:
   import wget
 except ModuleNotFoundError:
   print("\ninstalling wget Python module ...")
-  subprocess.run(("python", "-m", "pip", "install", "wget"), check=True)
+  subprocess.run(("python", "-m", "pip", "install", "wget"))
   try:
     import wget
   except ModuleNotFoundError:
