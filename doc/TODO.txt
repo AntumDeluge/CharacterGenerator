@@ -17,12 +17,13 @@ TODO:
 - allow torso layers to be mapped by arm type
 - offset detail layer for body types
 - hair should be drawn above clothes layers
-- switch from electronjs app to neutralinojs
 - touch up scaled down layers
 - fix buggy animated preview
   - not always showing
   - sometimes uses wrong base image
-- separate prison jumpsuit legs & shoes onto their own layers
+- separate torso, legs, & shoes layers:
+  - prison jumpsuit
+  - tuxedo
 - scale down hats
 - add option for rear hat layers
 - add wedding gown & tuxedo

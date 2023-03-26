@@ -11,5 +11,5 @@
 
 export const config = {
   "git-repo": "https://github.com/AntumDeluge/chargen",
-  "asset-info": "https://github.com/AntumDeluge/chargen/blob/v0.2-beta5/assets/README.md"
+  "asset-info": "https://github.com/AntumDeluge/chargen/blob/v0.2-beta6/assets/README.md"
 };
