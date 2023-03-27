@@ -42,4 +42,4 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/stage/
+          publish_dir: build/web/
