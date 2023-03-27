@@ -9,11 +9,16 @@
 "use strict";
 
 import { LayerManager } from "./LayerManager.js";
+import { config } from "./config.js";
 
 window.main = {};
 
 
 main.init = function() {
+  // add version info
+  const ver = document.getElementById("version");
+  ver.innerText = "Version " + config.version;
+
   // initialize the layer manager
   LayerManager.init();
 };

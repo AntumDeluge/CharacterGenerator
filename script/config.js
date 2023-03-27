@@ -9,7 +9,7 @@
 "use strict";
 
 
-export const config = {
-  "git-repo": "https://github.com/AntumDeluge/chargen",
-  "asset-info": "https://github.com/AntumDeluge/chargen/blob/v0.2-beta8/assets/README.md"
-};
+export const config = {};
+config["version"] = "0.2-beta9";
+config["git-repo"] = "https://github.com/AntumDeluge/chargen";
+config["asset-info"] = config["git-repo"] + "/blob/v0.2-beta9/assets/README.md"
