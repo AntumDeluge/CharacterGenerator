@@ -20,11 +20,14 @@ main.init = function() {
   ver.innerText = "Version " + config.version;
   // add link to desktop download
   if (config["web-dist"]) {
-    const dl = document.getElementById("desktop-download")
-    const anchor = document.createElement("a")
-    anchor.href = config["git-repo"] + "/releases/tag/v" + config.version
-    anchor.innerText = "get the desktop version"
-    dl.appendChild(anchor)
+    const dl = document.getElementById("desktop-download");
+    const dl_button = document.createElement("span");
+    dl_button.className = "button";
+    dl_button.innerText = "Get Desktop Version";
+    dl_button.onclick = function() {
+      document.location.href = config["git-repo"] + "/releases/tag/v" + config.version;
+    };
+    dl.appendChild(dl_button);
   }
 
   // initialize the layer manager
