@@ -83,7 +83,7 @@ templates["html-head"] = "<html>\n\
 templates["html-tail"] = "</body>\n</html>"
 templates["favicon-data"] = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAJ1BMVEVHcEzytYYAAABhPAA2Njbkhnb/2rCYWUE9GwD6+voskrrX19cedpDJqZNvAAAAAXRSTlMAQObYZgAAAFRJREFUCNdjYIADJiUlCEPFxQnCVAIBBbCUCpThqKQkAma4CSmmgBmCQABiMEs0SjQagBjRB2W2ghmRy7KmghmlYonhIAaDeaBoMdgOZmNjAwYsAACaGQ2gK4O7gQAAAABJRU5ErkJggg=="
 templates["favicon"] = "<link rel=\"icon\" href=\"{}\">".format(templates["favicon-data"])
-templates["button-uplevel"] = "<span class=\"button\" onclick=\"onNavButton('../')\">Back</span>"
+templates["button-uplevel"] = "<a class=\"button\" href=\"../\"><span class=\"button\">Back</span></a>"
 
 
 # --- UTILITY FUNCTIONS --- #

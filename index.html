@@ -27,7 +27,7 @@
     </p>
 
     <p>
-      Please <span id="button-info" class="button" onclick="onNavButton('info.html')">read this</span> before using assets.
+      Please <a class="button" href="info.html"><span id="button-info" class="button">read this</span></a> before using assets.
     </p>
   </div>
 
@@ -136,9 +136,11 @@
         <canvas class="preview" id="preview"></canvas>
       </div>
 
+      <a class="button" onclick="onDownload()">
       <div class="button-container">
-        <span id="button-download" class="button" onclick="onDownload()">Download</span>
+        <span id="button-download" class="button">Download</span>
       </div>
+      </a>
     </div> <!-- output -->
   </div> <!-- container -->
 
