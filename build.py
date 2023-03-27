@@ -24,8 +24,14 @@ except ModuleNotFoundError:
     print("\nWARNING: could not install 'wget' module, downloads will fail")
 
 
+# set up environment
+dir_root = os.path.dirname(__file__)
+os.chdir(dir_root)
+dir_root = os.getcwd()
+file_conf = os.path.join(dir_root, "build.conf")
+
 options = {
-  "commands": ("clean", "stage", "desktop", "desktop-run")
+  "commands": ("clean", "stage", "desktop", "desktop-run", "desktop-dist")
 }
 
 
@@ -70,7 +76,6 @@ def writeFile(filepath, data):
   fopen.close()
 
 def getConfig(key, default=None):
-  file_conf = os.path.join(os.getcwd(), "build.conf")
   if not os.path.isfile(file_conf):
     printError("config not found: {}".format(file_conf))
     return None
@@ -190,6 +195,10 @@ def copyFile(source, target, name=None, verbose=True):
     exitWithError("failed to copy file, an unknown error occurred: {}".format(target))
   if verbose:
     print("copy '{}' -> '{}'".format(source, target))
+
+def copyExecutable(source, target, name=None, verbose=True):
+  copyFile(source, target, name, verbose)
+  os.chmod(target, 0o775)
 
 def copyDir(source, target, name=None, verbose=True):
   if name:
@@ -400,6 +409,7 @@ def buildDesktop(_dir, verbose=True):
   dir_stage = os.path.join(dir_build, "stage")
   dir_neu = os.path.join(dir_build, "neutralinojs")
   dir_app = os.path.join(dir_build, "desktop")
+  dir_doc = os.path.join(dir_app, "doc")
   dir_res = os.path.join(dir_app, "resources")
 
   try:
@@ -410,12 +420,22 @@ def buildDesktop(_dir, verbose=True):
   deleteDir(dir_app, verbose)
   makeDir(dir_app, verbose)
   copyDir(dir_stage, dir_app, "resources", verbose)
-  for nfile in ("LICENSE", "README.md"):
-    copyFile(
-      os.path.join(dir_neu, nfile),
-      os.path.join(dir_app, nfile),
-      None, verbose
-    )
+  moveDir(
+    os.path.join(dir_app, "resources", "doc"),
+    dir_doc,
+    None, verbose
+  )
+  copyFile(
+    os.path.join(dir_neu, "LICENSE"),
+    dir_app,
+    "LICENSE-neutralinojs.txt",
+    verbose
+  )
+  moveFile(
+    os.path.join(dir_res, "LICENSE.txt"),
+    os.path.join(dir_app, "LICENSE.txt"),
+    None, verbose
+  )
   copyDir(
     os.path.join(dir_neu, "bin"),
     os.path.join(dir_app, "bin"),
@@ -450,21 +470,6 @@ def buildDesktop(_dir, verbose=True):
   if lines != lines_orig:
     writeFile(file_index, lines)
 
-  dir_start = os.getcwd()
-  try:
-    os.chdir(dir_app)
-    subprocess.run(("npm", "exec", "neu", "build", "--release"), check=True)
-  except subprocess.CalledProcessError:
-    exitWithError("npm process returned error when building desktop app")
-
-  os.chdir(os.path.normpath("dist/chargen"))
-  for arch in ("arm64", "armhf", "x64"):
-    os.chmod("chargen-linux_" + arch, 0o775)
-  for arch in ("arm64", "x64"):
-    os.chmod("chargen-mac_" + arch, 0o775)
-
-  os.chdir(dir_start)
-
 def runDesktop(_dir, verbose=True):
   buildDesktop(_dir, verbose)
 
@@ -480,6 +485,71 @@ def runDesktop(_dir, verbose=True):
     exitWithError("npm process returned error when running desktop app")
 
   os.chdir(dir_start)
+
+def _packageDist(distname, ext="", verbose=True):
+  app_ver = getConfig("version")
+  dir_temp = os.path.join(os.getcwd(), "tmp")
+  makeDir(dir_temp, verbose)
+  target_exe = os.path.join(dir_temp, "chargen"+ext)
+  copyExecutable(
+    os.path.normpath("chargen/chargen-{}{}".format(distname, ext)),
+    target_exe, None, verbose
+  )
+  copyFile(
+    os.path.normpath("chargen/resources.neu"),
+    dir_temp, "resources.neu", verbose
+  )
+  if ext == ".exe":
+    copyFile(
+      os.path.normpath("chargen/WebView2Loader.dll"),
+      dir_temp, "WebView2Loader.dll", verbose
+    )
+  copyDir(
+    os.path.normpath("../doc"),
+    dir_temp, "doc", verbose
+  )
+  for filename in ("LICENSE.txt", "LICENSE-neutralinojs.txt"):
+    copyFile(
+      os.path.join("..", filename),
+      dir_temp, filename, verbose
+    )
+  copyFile(
+    os.path.join(dir_root, "README.md"),
+    dir_temp, "README.md", verbose
+  )
+  packDir(dir_temp, "chargen_{}_{}.zip".format(app_ver, distname), False, False, verbose)
+  deleteDir(dir_temp, verbose)
+
+def distDesktop(_dir, verbose=True):
+  buildDesktop(_dir, verbose)
+
+  print("\ncreating desktop app distribution files ...")
+
+  dir_start = os.getcwd()
+  dir_app = os.path.join(_dir, "build", "desktop")
+  dir_dist = os.path.join(dir_app, "dist")
+
+  try:
+    os.chdir(dir_app)
+    subprocess.run(("npm", "exec", "neu", "build", "--release"), check=True)
+  except subprocess.CalledProcessError:
+    exitWithError("npm process returned error when creating desktop app distribution files")
+
+  os.chdir(dir_dist)
+  if verbose:
+    print("packaging Linux binaries ...")
+  for arch in ("arm64", "armhf", "x64"):
+    _packageDist("linux_" + arch, "", verbose)
+  if verbose:
+    print("packaging Mac OS X binaries ...")
+  for arch in ("arm64", "x64"):
+    _packageDist("mac_" + arch, "", verbose)
+  if verbose:
+    print("packaging Windows binaries ...")
+  _packageDist("win_x64", ".exe", verbose)
+
+  os.chdir(dir_start)
+  deleteDir(os.path.join(dir_dist, "chargen"), verbose)
 
 
 def main(_dir, argv):
@@ -507,6 +577,8 @@ def main(_dir, argv):
     buildDesktop(_dir, verbose)
   elif "desktop-run" == command:
     runDesktop(_dir, verbose)
+  elif "desktop-dist" == command:
+    distDesktop(_dir, verbose)
 
   time_end = time.time()
   time_diff = time_end - time_start
