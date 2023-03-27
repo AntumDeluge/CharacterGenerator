@@ -10,7 +10,7 @@
 
 
 export const config = {};
-config["version"] = "0.2-beta11";
+config["version"] = "0.2-beta12";
 config["git-repo"] = "https://github.com/AntumDeluge/chargen";
-config["asset-info"] = config["git-repo"] + "/blob/v0.2-beta11/assets/README.md"
+config["asset-info"] = "assets/README.html"
 config["web-dist"] = true
