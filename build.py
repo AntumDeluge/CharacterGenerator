@@ -563,7 +563,7 @@ def stageDesktop(_dir, verbose=False):
     "LICENSE-neutralinojs.txt",
     verbose
   )
-  moveFile(
+  copyFile(
     os.path.join(dir_res, "LICENSE.txt"),
     os.path.join(dir_app, "LICENSE.txt"),
     None, verbose
