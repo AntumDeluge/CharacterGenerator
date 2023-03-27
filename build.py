@@ -39,7 +39,7 @@ options = {
 
 def printUsage():
   file_exe = os.path.basename(__file__)
-  print("\nUSAGE:\n  {} [-v] {}".format(file_exe, "|".join(options["commands"])))
+  print("\nUSAGE:\n  {} [-h] [-v] {}".format(file_exe, "|".join(options["commands"])))
 
 def printWarning(msg):
   print("\nWARNING: " + msg)
@@ -577,6 +577,10 @@ def distDesktop(_dir, verbose=False):
 
 
 def main(_dir, argv):
+  if "-h" in argv or "--help" in argv:
+    printUsage()
+    sys.exit(0)
+
   verbose = "-v" in argv
   if verbose:
     argv.pop(argv.index("-v"))
