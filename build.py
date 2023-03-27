@@ -62,11 +62,15 @@ class Targets:
 
 targets = Targets()
 
+options = {
+  "web-dist": False
+}
+
 # --- UTILITY FUNCTIONS --- #
 
 def printUsage():
   file_exe = os.path.basename(__file__)
-  print("\nUSAGE:\n  {} [-h] [-v|-q] {}".format(file_exe, "|".join(targets.getNames())))
+  print("\nUSAGE:\n  {} [-h] [-v|-q] [-w] {}".format(file_exe, "|".join(targets.getNames())))
 
 def printWarning(msg):
   print("\nWARNING: " + msg)
@@ -453,6 +457,19 @@ def stageWeb(_dir, verbose=False):
       if ".xcf" in f:
         deleteFile(file_staged, verbose)
 
+  if options["web-dist"]:
+    file_config_js = os.path.join(dir_web, "script", "config.js")
+    contents = readFile(file_config_js)
+    changes = re.sub(
+      r"^config\[\"web-dist\"\] = false$",
+      "config[\"web-dist\"] = true",
+      contents, 1, re.M
+    )
+    if changes != contents:
+      writeFile(file_config_js, changes)
+      if verbose:
+        print("configured for web distribution: {}".format(file_config_js))
+
 def distWeb(_dir, verbose=False):
   targets.run("stage-web", _dir, verbose)
 
@@ -668,6 +685,9 @@ def main(_dir, argv):
     argv.pop(argv.index("-q"))
     # silent overrides verbose
     verbose = False
+  options["web-dist"] = "-w" in argv
+  if options["web-dist"]:
+    argv.pop(argv.index("-w"))
 
   if len(argv) == 0:
     exitWithError("missing command parameter", usage=True)

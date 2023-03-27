@@ -34,7 +34,7 @@ jobs:
 
       - name: Stage
         run: |
-          python3 build.py stage-web
+          python3 build.py -w stage-web
           sed -i -e "s/^config\[\"asset-info\"\] = \(.*\?\)\/master\//config\[\"asset-info\"\] = \1\/v${{ env.ver }}\//" build/web/script/config.js
 
       - name: Publish

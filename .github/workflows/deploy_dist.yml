@@ -42,7 +42,7 @@ jobs:
         run: python3 build.py dist-web
 
       - name: Package Desktop
-        run: python3 build.py dist-desktop
+        run: python3 build.py clean dist-desktop
 
       - name: Prepare Changes
         run: |
