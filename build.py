@@ -39,7 +39,7 @@ options = {
 
 def printUsage():
   file_exe = os.path.basename(__file__)
-  print("\nUSAGE:\n  {} [-q] {}".format(file_exe, "|".join(options["commands"])))
+  print("\nUSAGE:\n  {} [-v] {}".format(file_exe, "|".join(options["commands"])))
 
 def printWarning(msg):
   print("\nWARNING: " + msg)
@@ -149,7 +149,7 @@ def checkDirSourceExists(source, action=None):
     msg += "source is a file: {}".format(source)
     exitWithError(msg, errno.EEXIST)
 
-def makeDir(dirpath, verbose=True):
+def makeDir(dirpath, verbose=False):
   checkTargetNotExists(dirpath, "create directory")
   os.makedirs(dirpath)
   if not os.path.isdir(dirpath):
@@ -157,7 +157,7 @@ def makeDir(dirpath, verbose=True):
   if verbose:
     print("new directory '{}'".format(dirpath))
 
-def deleteFile(filepath, verbose=True):
+def deleteFile(filepath, verbose=False):
   if os.path.exists(filepath):
     if os.path.isdir(filepath):
       exitWithError("cannot delete file, directory exists: {}".format(filepath), errno.EISDIR)
@@ -167,7 +167,7 @@ def deleteFile(filepath, verbose=True):
     if verbose:
       print("delete '{}'".format(filepath))
 
-def deleteDir(dirpath, verbose=True):
+def deleteDir(dirpath, verbose=False):
   if os.path.exists(dirpath):
     if not os.path.isdir(dirpath):
       exitWithError("cannot delete directory, file exists: {}".format(dirpath), errno.EEXIST)
@@ -185,7 +185,7 @@ def deleteDir(dirpath, verbose=True):
     if verbose:
       print("delete '{}'".format(dirpath))
 
-def copyFile(source, target, name=None, verbose=True):
+def copyFile(source, target, name=None, verbose=False):
   if name:
     target = os.path.join(target, name)
   checkFileSourceExists(source, "copy")
@@ -196,11 +196,11 @@ def copyFile(source, target, name=None, verbose=True):
   if verbose:
     print("copy '{}' -> '{}'".format(source, target))
 
-def copyExecutable(source, target, name=None, verbose=True):
+def copyExecutable(source, target, name=None, verbose=False):
   copyFile(source, target, name, verbose)
   os.chmod(target, 0o775)
 
-def copyDir(source, target, name=None, verbose=True):
+def copyDir(source, target, name=None, verbose=False):
   if name:
     target = os.path.join(target, name)
   checkDirSourceExists(source, "copy")
@@ -218,7 +218,7 @@ def copyDir(source, target, name=None, verbose=True):
     else:
       copyDir(objsource, objtarget, None, verbose)
 
-def moveFile(source, target, name=None, verbose=True):
+def moveFile(source, target, name=None, verbose=False):
   if name:
     target = os.path.join(target, name)
   checkFileSourceExists(source, "move")
@@ -229,7 +229,7 @@ def moveFile(source, target, name=None, verbose=True):
   if verbose:
     print("move '{}' -> '{}'".format(source, target))
 
-def moveDir(source, target, name=None, verbose=True):
+def moveDir(source, target, name=None, verbose=False):
   if name:
     target = os.path.join(target, name)
   checkDirSourceExists(source, "move")
@@ -248,7 +248,7 @@ def moveDir(source, target, name=None, verbose=True):
   if verbose:
     print("move '{}' -> '{}'".format(source, target))
 
-def downloadFile(url, filename, verbose=True):
+def downloadFile(url, filename, verbose=False):
   if verbose:
     print("\ndownloading file from {} ...".format(url))
 
@@ -268,7 +268,7 @@ def downloadFile(url, filename, verbose=True):
   except HTTPError:
     exitWithError("could not download file from: {}".format(url))
 
-def packFile(sourcefile, archive, amend=False, verbose=True):
+def packFile(sourcefile, archive, amend=False, verbose=False):
   checkFileSourceExists(sourcefile)
 
   new_archive = type(archive) != ZipFile
@@ -284,7 +284,7 @@ def packFile(sourcefile, archive, amend=False, verbose=True):
   if verbose:
     print("compress '{}' => '{}'".format(sourcefile, archive))
 
-def packDir(sourcedir, archive, incroot=False, amend=False, verbose=True):
+def packDir(sourcedir, archive, incroot=False, amend=False, verbose=False):
   checkDirSourceExists(sourcedir)
   checkTargetNotDir(archive, "create zip")
 
@@ -327,7 +327,7 @@ def packDir(sourcedir, archive, incroot=False, amend=False, verbose=True):
     else:
       print("added {} files into archive: {}".format(z_count_diff, archive))
 
-def unpack(filepath, dir_target=None, verbose=True):
+def unpack(filepath, dir_target=None, verbose=False):
   if not os.path.isfile(filepath):
     exitWithError("cannot extract zip, file not found: {}".format(filepath), errno.ENOENT)
 
@@ -354,7 +354,7 @@ def unpack(filepath, dir_target=None, verbose=True):
 
 # --- TARGET FUNCTIONS --- #
 
-def clean(_dir, verbose=True):
+def clean(_dir, verbose=False):
   print("\ncleaning build files ...")
 
   dir_build = os.path.join(_dir, "build")
@@ -366,7 +366,7 @@ def clean(_dir, verbose=True):
     return
   print("no files to remove")
 
-def stage(_dir, verbose=True):
+def stage(_dir, verbose=False):
   print("\nstaging files ...")
 
   dir_stage = os.path.join(_dir, "build", "stage")
@@ -400,7 +400,7 @@ def stage(_dir, verbose=True):
       if ".xcf" in f:
         deleteFile(file_staged, verbose)
 
-def buildDesktop(_dir, verbose=True):
+def buildDesktop(_dir, verbose=False):
   stage(_dir, verbose)
 
   print("\nbuilding desktop app ...")
@@ -470,7 +470,7 @@ def buildDesktop(_dir, verbose=True):
   if lines != lines_orig:
     writeFile(file_index, lines)
 
-def runDesktop(_dir, verbose=True):
+def runDesktop(_dir, verbose=False):
   buildDesktop(_dir, verbose)
 
   print("\nrunning desktop app ...")
@@ -486,7 +486,7 @@ def runDesktop(_dir, verbose=True):
 
   os.chdir(dir_start)
 
-def _packageDist(distname, ext="", verbose=True):
+def _packageDist(distname, ext="", verbose=False):
   app_ver = getConfig("version")
   dir_temp = os.path.join(os.getcwd(), "tmp")
   makeDir(dir_temp, verbose)
@@ -520,7 +520,7 @@ def _packageDist(distname, ext="", verbose=True):
   packDir(dir_temp, "chargen_{}_{}.zip".format(app_ver, distname), False, False, verbose)
   deleteDir(dir_temp, verbose)
 
-def distDesktop(_dir, verbose=True):
+def distDesktop(_dir, verbose=False):
   buildDesktop(_dir, verbose)
 
   print("\ncreating desktop app distribution files ...")
@@ -553,10 +553,9 @@ def distDesktop(_dir, verbose=True):
 
 
 def main(_dir, argv):
-  verbose = True
-  if "-q" in argv:
-    verbose = False
-    argv.pop(argv.index("-q"))
+  verbose = "-v" in argv
+  if verbose:
+    argv.pop(argv.index("-v"))
 
   if len(argv) == 0:
     exitWithError("missing command parameter", usage=True)
