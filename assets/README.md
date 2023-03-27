@@ -100,6 +100,9 @@ This page lists authors, licensing, and sources of assets and any other informat
 - by Svetlana Kushnariova (Cabbit) & Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
     - 3 (wedding gown) [source](https://opengameart.org/node/83523)
     - 4 (tuxedo) [source](https://opengameart.org/node/83523)
+- by bleutailfly ([OGA BY 3.0][lic.ogaby]):
+    - 5 (bathing suit) [source](https://github.com/arianne/stendhal/blob/894e86ee57/data/sprites/outfit/dress/991.png)
+    - 6 (bathing suit) [source](https://github.com/arianne/stendhal/blob/894e86ee57/data/sprites/outfit/dress/993.png)
 
 
 [lic.cc0]: ../doc/licenses/CC0-1.0.txt
