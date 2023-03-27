@@ -402,6 +402,18 @@ def unpack(filepath, dir_target=None, verbose=False):
   # return to original directory
   os.chdir(dir_start)
 
+def runCommand(cmd, args=[], failOnError=True, winext=None):
+  if sys.platform == "win32" and winext:
+    cmd = cmd + "." + winext
+  args = [cmd] + list(args)
+  try:
+    res = subprocess.run(args)
+    if res.returncode != 0 and failOnError:
+      exitWithError("called process exited with error: {}".format(" ".join(args)), res.returncode)
+    return res.returncode
+  except FileNotFoundError:
+    exitWithError("the system could not find file to execute: {}".format(cmd), errno.ENOENT)
+  return 0
 
 # --- TARGET FUNCTIONS --- #
 
@@ -544,9 +556,8 @@ def stageDesktop(_dir, verbose=False):
   dir_doc = os.path.join(dir_app, "doc")
   dir_res = os.path.join(dir_app, "resources")
 
-  try:
-    subprocess.run(("npm", "run", "stage-desktop"), check=True)
-  except subprocess.CalledProcessError:
+  res = runCommand("npm", ("run", "stage-desktop"), False, "cmd")
+  if res != 0:
     print("\nskipped Neutralinojs download, app exists: {}".format(dir_neu))
 
   deleteDir(dir_app, verbose)
@@ -600,11 +611,8 @@ def runDesktop(_dir, verbose=False):
   dir_start = os.getcwd()
   dir_app = os.path.join(_dir, "build", "desktop")
 
-  try:
-    os.chdir(dir_app)
-    subprocess.run(("npm", "exec", "neu", "run"), check=True)
-  except subprocess.CalledProcessError:
-    exitWithError("npm process returned error when running desktop app")
+  os.chdir(dir_app)
+  ret = runCommand("npm", ("exec", "neu", "run"), winext="cmd")
 
   os.chdir(dir_start)
 
@@ -652,11 +660,8 @@ def distDesktop(_dir, verbose=False):
   dir_app = os.path.join(dir_build, "desktop")
   dir_dist_temp = os.path.join(dir_app, "dist")
 
-  try:
-    os.chdir(dir_app)
-    subprocess.run(("npm", "exec", "neu", "build", "--release"), check=True)
-  except subprocess.CalledProcessError:
-    exitWithError("npm process returned error when creating desktop app distribution files")
+  os.chdir(dir_app)
+  runCommand("npm", ("exec", "neu", "build", "--release"), winext="cmd")
 
   os.chdir(dir_dist_temp)
   if verbose:
