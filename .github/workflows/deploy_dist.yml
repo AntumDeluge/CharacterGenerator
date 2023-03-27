@@ -40,3 +40,17 @@ jobs:
 
       - name: Package Desktop
         run: python3 build.py dist-desktop
+
+      - name: Prepare Changes
+        run: |
+          python3 build.py -q print-changes > release_notes.tmp
+          sed -i -e '1 s/^.*$/Changes:\n/' release_notes.tmp
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          name: 'Version ${{ env.ver }}'
+          body_path: release_notes.tmp
+          files: build/dist/*.zip
+          prerelease: true
