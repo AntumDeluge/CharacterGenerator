@@ -77,7 +77,10 @@ This page lists authors, licensing, and sources of assets and any other informat
 
 #### Legs
 
-- 1 by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0])
+- by Jordan Irwin (AntumDeluge) ([CC0][lic.cc0]):
+    - 1
+- by Jordan Irwin (AntumDeluge) ([OGA BY 3.0][lic.ogaby]):
+    - 2 (swim trunks)
 
 #### Mask
 

@@ -34,9 +34,11 @@
     "outfit": {
       "shoes": 1,
       "legs": {
-        "indexes": 1,
+        "indexes": 2,
         "bodymap": {
-          "1-standard-2": 1
+          "1-standard-2": 1,
+          "2-standard-2": null,
+          "2-standard-3": null
         }
       },
       "torso": {
@@ -91,9 +93,11 @@
     "outfit": {
       "shoes": 1,
       "legs": {
-        "indexes": 1,
+        "indexes": 2,
         "bodymap": {
-          "1-standard-2": 1
+          "1-standard-2": 1,
+          "2-standard-2": null,
+          "2-standard-3": null
         }
       },
       "torso": {
@@ -142,6 +146,9 @@
       "21": "helmet",
       "22": "helmet",
       "23": "samurai amigasa"
+    },
+    "legs": {
+      "2": "swim trunks"
     },
     "mask": {
       "1": "glasses"
