@@ -568,9 +568,12 @@ def stageDesktop(_dir, verbose=False):
   dir_doc = os.path.join(dir_app, "doc")
   dir_res = os.path.join(dir_app, "resources")
 
-  res = runCommand("npm", ("run", "stage-desktop"), False, "cmd")
-  if res != 0:
-    print("\nskipped Neutralinojs download, app exists: {}".format(dir_neu))
+  if not os.path.isdir(dir_neu):
+    res = runCommand("npm", ("run", "stage-desktop"), False, "cmd")
+    if res != 0:
+      printWarning("call to 'npm' returned error")
+  else:
+    print("\nskipped Neutralinojs download, directory exists: {}".format(dir_neu))
 
   deleteDir(dir_app, verbose)
   makeDir(dir_app, verbose)
