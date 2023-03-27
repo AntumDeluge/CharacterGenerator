@@ -74,6 +74,18 @@ options = {
   "web-dist": False
 }
 
+templates = {}
+templates["html-head"] = "<html>\n\
+<head>\n\
+{{head}}\n\
+</head>\
+\n<body>"
+templates["html-tail"] = "</body>\n</html>"
+templates["favicon-data"] = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAJ1BMVEVHcEzytYYAAABhPAA2Njbkhnb/2rCYWUE9GwD6+voskrrX19cedpDJqZNvAAAAAXRSTlMAQObYZgAAAFRJREFUCNdjYIADJiUlCEPFxQnCVAIBBbCUCpThqKQkAma4CSmmgBmCQABiMEs0SjQagBjRB2W2ghmRy7KmghmlYonhIAaDeaBoMdgOZmNjAwYsAACaGQ2gK4O7gQAAAABJRU5ErkJggg=="
+templates["favicon"] = "<link rel=\"icon\" href=\"{}\">".format(templates["favicon-data"])
+templates["button-uplevel"] = "<span class=\"button\" onclick=\"onNavButton('../')\">Back</span>"
+
+
 # --- UTILITY FUNCTIONS --- #
 
 def printUsage():
@@ -430,6 +442,7 @@ def updateVersion(_dir, verbose=False):
       print("updated file '{}'".format(file_changelog))
 
 def stageWeb(_dir, verbose=False):
+  installModule("markdown")
   targets.run("update-version", _dir, verbose)
 
   print("\nstaging web files ...")
@@ -458,16 +471,42 @@ def stageWeb(_dir, verbose=False):
   if not os.path.isdir(dir_assets):
     exitWithError("no assets staged (missing directory: {})".format(dir_assets), errno.ENOENT)
 
+  # convert README to HTML
+  file_readme = os.path.join(dir_assets, "README")
+  html = modules["markdown"].markdown(readFile(file_readme + ".md"))
+  html_head = [
+    "  <title>Assets Info</title>",
+    # ~ "<link rel=\"icon\" href=\"{}\">".format(templates["favicon"]),
+    templates["favicon"],
+    "<link rel=\"stylesheet\" href=\"../script/main.css\">",
+    "<script type=\"module\" src=\"../script/nav.js\"></script>"
+  ]
+  html_head = re.sub(r"^{{head}}$", "\n  ".join(html_head), templates["html-head"], 1, re.M)
+  html = "\n".join((html_head, templates["button-uplevel"], html, templates["html-tail"]))
+  writeFile(file_readme + ".html", html)
+
+  # DEBUG:
+  # ~ print("README:")
+  # ~ print(html)
+
   print("\ncleaning web files ...")
   for ROOT, DIRS, FILES in os.walk(dir_assets):
     for f in FILES:
       file_staged = os.path.join(ROOT, f)
-      if ".xcf" in f:
+      if ".xcf" in f or f.endswith(".md"):
         deleteFile(file_staged, verbose)
 
+  file_config_js = os.path.join(dir_web, "script", "config.js")
+  contents = readFile(file_config_js)
+  changes = re.sub(
+    r"^config\[\"asset-info\"\] = .*$",
+    "config[\"asset-info\"] = \"assets/README.html\"",
+    contents, 1, re.M
+  )
+  writeFile(file_config_js, changes)
+
   if options["web-dist"]:
-    file_config_js = os.path.join(dir_web, "script", "config.js")
-    contents = readFile(file_config_js)
+    contents = changes
     changes = re.sub(
       r"^config\[\"web-dist\"\] = false$",
       "config[\"web-dist\"] = true",
@@ -668,6 +707,7 @@ def printChanges(_dir, verbose=False):
 
 def init(_dir, verbose=False):
   installModule("wget")
+  installModule("markdown")
 
 targets.add("init", init)
 targets.add("clean", clean)
