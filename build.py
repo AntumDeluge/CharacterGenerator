@@ -31,7 +31,7 @@ dir_root = os.getcwd()
 file_conf = os.path.join(dir_root, "build.conf")
 
 options = {
-  "commands": ("clean", "stage", "desktop", "desktop-run", "desktop-dist")
+  "commands": ("clean", "stage-web", "stage-desktop", "run-desktop", "dist-desktop")
 }
 
 
@@ -366,47 +366,47 @@ def clean(_dir, verbose=False):
     return
   print("no files to remove")
 
-def stage(_dir, verbose=False):
-  print("\nstaging files ...")
+def stageWeb(_dir, verbose=False):
+  print("\nstaging web files ...")
 
-  dir_stage = os.path.join(_dir, "build", "stage")
-  deleteDir(dir_stage, verbose)
-  makeDir(dir_stage, verbose)
-  if not os.path.isdir(dir_stage):
+  dir_web = os.path.join(_dir, "build", "web")
+  deleteDir(dir_web, verbose)
+  makeDir(dir_web, verbose)
+  if not os.path.isdir(dir_web):
     # FIXME: correct error value
-    exitWithError("failed to create staging directory: {}".format(dir_stage), errno.ENOENT)
+    exitWithError("failed to create staging directory: {}".format(dir_web), errno.ENOENT)
 
   files_stage = getConfig("stage_files", "").split(";")
   dirs_stage = getConfig("stage_dirs", "").split(";")
 
   for f in files_stage:
     file_source = os.path.join(_dir, f)
-    file_target = os.path.join(dir_stage, f)
+    file_target = os.path.join(dir_web, f)
     copyFile(file_source, file_target, None, verbose)
 
   for d in dirs_stage:
     dir_source = os.path.join(_dir, d)
-    dir_target = os.path.join(dir_stage, d)
+    dir_target = os.path.join(dir_web, d)
     copyDir(dir_source, dir_target, None, verbose)
 
-  dir_assets = os.path.join(dir_stage, "assets")
+  dir_assets = os.path.join(dir_web, "assets")
   if not os.path.isdir(dir_assets):
     exitWithError("no assets staged (missing directory: {})".format(dir_assets), errno.ENOENT)
 
-  print("\ncleaning staged files ...")
+  print("\ncleaning web files ...")
   for ROOT, DIRS, FILES in os.walk(dir_assets):
     for f in FILES:
       file_staged = os.path.join(ROOT, f)
       if ".xcf" in f:
         deleteFile(file_staged, verbose)
 
-def buildDesktop(_dir, verbose=False):
-  stage(_dir, verbose)
+def stageDesktop(_dir, verbose=False):
+  stageWeb(_dir, verbose)
 
-  print("\nbuilding desktop app ...")
+  print("\nstaging desktop files ...")
 
   dir_build = os.path.join(_dir, "build")
-  dir_stage = os.path.join(dir_build, "stage")
+  dir_web = os.path.join(dir_build, "web")
   dir_neu = os.path.join(dir_build, "neutralinojs")
   dir_app = os.path.join(dir_build, "desktop")
   dir_doc = os.path.join(dir_app, "doc")
@@ -419,7 +419,7 @@ def buildDesktop(_dir, verbose=False):
 
   deleteDir(dir_app, verbose)
   makeDir(dir_app, verbose)
-  copyDir(dir_stage, dir_app, "resources", verbose)
+  copyDir(dir_web, dir_app, "resources", verbose)
   moveDir(
     os.path.join(dir_app, "resources", "doc"),
     dir_doc,
@@ -471,7 +471,7 @@ def buildDesktop(_dir, verbose=False):
     writeFile(file_index, lines)
 
 def runDesktop(_dir, verbose=False):
-  buildDesktop(_dir, verbose)
+  stageDesktop(_dir, verbose)
 
   print("\nrunning desktop app ...")
 
@@ -521,7 +521,7 @@ def _packageDist(distname, ext="", verbose=False):
   deleteDir(dir_temp, verbose)
 
 def distDesktop(_dir, verbose=False):
-  buildDesktop(_dir, verbose)
+  stageDesktop(_dir, verbose)
 
   print("\ncreating desktop app distribution files ...")
 
@@ -570,13 +570,13 @@ def main(_dir, argv):
 
   if "clean" == command:
     clean(_dir, verbose)
-  elif "stage" == command:
-    stage(_dir, verbose)
-  elif "desktop" == command:
-    buildDesktop(_dir, verbose)
-  elif "desktop-run" == command:
+  elif "stage-web" == command:
+    stageWeb(_dir, verbose)
+  elif "stage-desktop" == command:
+    stageDesktop(_dir, verbose)
+  elif "run-desktop" == command:
     runDesktop(_dir, verbose)
-  elif "desktop-dist" == command:
+  elif "dist-desktop" == command:
     distDesktop(_dir, verbose)
 
   time_end = time.time()
