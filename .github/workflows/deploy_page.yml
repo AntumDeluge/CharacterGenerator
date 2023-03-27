@@ -32,6 +32,9 @@ jobs:
           echo "configuring character generator version ${version} ..."
           echo "ver=${version}" >> $GITHUB_ENV
 
+      - name: Install Dependencies
+        run: sudo python3 build.py init
+
       - name: Stage
         run: |
           python3 build.py -w stage-web

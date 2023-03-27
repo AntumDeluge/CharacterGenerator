@@ -33,10 +33,11 @@ jobs:
           echo "configuring character generator version ${version} ..."
           echo "ver=${version}" >> $GITHUB_ENV
 
-      - name: Prepare Node.js
+      - name: Install Dependencies
         run: |
           sudo snap install --classic node
           npm install
+          sudo python3 build.py init
 
       - name: Package Web
         run: python3 build.py dist-web
