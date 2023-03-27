@@ -532,11 +532,6 @@ def stageDesktop(_dir, verbose=False):
     None, verbose
   )
   copyFile(
-    os.path.join(dir_neu, "resources", "icons", "appIcon.png"),
-    os.path.join(dir_res, "data", "icon.png"),
-    None, verbose
-  )
-  copyFile(
     os.path.join(_dir, "neutralino.config.json"),
     os.path.join(dir_app, "neutralino.config.json"),
     None, verbose
