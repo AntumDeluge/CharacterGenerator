@@ -32,3 +32,4 @@ TODO:
   - 24x32 hat 10 (panama)
   - 24x32 hat 13 (fedora)
 - package non-Windows dist files in tarballs
+- fix download in desktop app
