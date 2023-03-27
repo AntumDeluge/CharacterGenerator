@@ -33,7 +33,7 @@ options = {
 
 def printUsage():
   file_exe = os.path.basename(__file__)
-  print("\nUSAGE:\n  {} {}".format(file_exe, "|".join(options["commands"])))
+  print("\nUSAGE:\n  {} [-q] {}".format(file_exe, "|".join(options["commands"])))
 
 def printWarning(msg):
   print("\nWARNING: " + msg)
@@ -169,9 +169,9 @@ def deleteDir(dirpath, verbose=True):
     for obj in os.listdir(dirpath):
       objpath = os.path.join(dirpath, obj)
       if not os.path.isdir(objpath):
-        deleteFile(objpath)
+        deleteFile(objpath, verbose)
       else:
-        deleteDir(objpath)
+        deleteDir(objpath, verbose)
     if len(os.listdir(dirpath)) != 0:
       exitWithError("failed to delete directory, not empty: {}".format(dirpath))
     os.rmdir(dirpath)
@@ -196,7 +196,7 @@ def copyDir(source, target, name=None, verbose=True):
     target = os.path.join(target, name)
   checkDirSourceExists(source, "copy")
   checkTargetNotExists(target, "copy directory")
-  makeDir(target)
+  makeDir(target, False)
   if not os.path.isdir(target):
     exitWithError("failed to copy directory, an unknown error occurred: {}".format(target))
   if verbose:
@@ -225,7 +225,7 @@ def moveDir(source, target, name=None, verbose=True):
     target = os.path.join(target, name)
   checkDirSourceExists(source, "move")
   checkTargetNotExists(target, "move directory")
-  makeDir(target)
+  makeDir(target, False)
   if not os.path.isdir(target):
     exitWithError("failed to move directory, an unknown error occurred: {}".format(target))
   for obj in os.listdir(source):
@@ -345,14 +345,24 @@ def unpack(filepath, dir_target=None, verbose=True):
 
 # --- TARGET FUNCTIONS --- #
 
+def clean(_dir, verbose=True):
+  print("\ncleaning build files ...")
+
+  dir_build = os.path.join(_dir, "build")
+  if os.path.exists(dir_build):
+    if not os.path.isdir(dir_build):
+      exitWithError("cannot remove build directory, file exists: {}".format(dir_build), errno.EEXIST)
+
+    deleteDir(dir_build, verbose)
+    return
+  print("no files to remove")
+
 def stage(_dir, verbose=True):
+  print("\nstaging files ...")
+
   dir_stage = os.path.join(_dir, "build", "stage")
-  deleteDir(dir_stage)
-
-  if verbose:
-    print("\nstaging files ...")
-
-  os.makedirs(dir_stage)
+  deleteDir(dir_stage, verbose)
+  makeDir(dir_stage, verbose)
   if not os.path.isdir(dir_stage):
     # FIXME: correct error value
     exitWithError("failed to create staging directory: {}".format(dir_stage), errno.ENOENT)
@@ -374,8 +384,7 @@ def stage(_dir, verbose=True):
   if not os.path.isdir(dir_assets):
     exitWithError("no assets staged (missing directory: {})".format(dir_assets), errno.ENOENT)
 
-  if verbose:
-    print("\ncleaning staged files ...")
+  print("\ncleaning staged files ...")
   for ROOT, DIRS, FILES in os.walk(dir_assets):
     for f in FILES:
       file_staged = os.path.join(ROOT, f)
@@ -383,10 +392,9 @@ def stage(_dir, verbose=True):
         deleteFile(file_staged, verbose)
 
 def buildDesktop(_dir, verbose=True):
-  stage(_dir)
+  stage(_dir, verbose)
 
-  if verbose:
-    print("\nbuilding desktop app ...")
+  print("\nbuilding desktop app ...")
 
   dir_build = os.path.join(_dir, "build")
   dir_stage = os.path.join(dir_build, "stage")
@@ -399,29 +407,34 @@ def buildDesktop(_dir, verbose=True):
   except subprocess.CalledProcessError:
     print("\nskipped Neutralinojs download, app exists: {}".format(dir_neu))
 
-  deleteDir(dir_app)
-  makeDir(dir_app)
+  deleteDir(dir_app, verbose)
+  makeDir(dir_app, verbose)
   copyDir(dir_stage, dir_app, "resources", verbose)
   for nfile in ("LICENSE", "README.md"):
     copyFile(
       os.path.join(dir_neu, nfile),
-      os.path.join(dir_app, nfile)
+      os.path.join(dir_app, nfile),
+      None, verbose
     )
   copyDir(
     os.path.join(dir_neu, "bin"),
-    os.path.join(dir_app, "bin")
+    os.path.join(dir_app, "bin"),
+    None, verbose
   )
   copyFile(
     os.path.join(dir_neu, "resources", "js", "neutralino.js"),
-    os.path.join(dir_res, "js", "neutralino.js")
+    os.path.join(dir_res, "js", "neutralino.js"),
+    None, verbose
   )
   copyFile(
     os.path.join(dir_neu, "resources", "icons", "appIcon.png"),
-    os.path.join(dir_res, "data", "icon.png")
+    os.path.join(dir_res, "data", "icon.png"),
+    None, verbose
   )
   copyFile(
     os.path.join(_dir, "neutralino.config.json"),
-    os.path.join(dir_app, "neutralino.config.json")
+    os.path.join(dir_app, "neutralino.config.json"),
+    None, verbose
   )
 
   # add Neutralinojs script to HTML
@@ -453,10 +466,9 @@ def buildDesktop(_dir, verbose=True):
   os.chdir(dir_start)
 
 def runDesktop(_dir, verbose=True):
-  buildDesktop(_dir)
+  buildDesktop(_dir, verbose)
 
-  if verbose:
-    print("\nrunning desktop app ...")
+  print("\nrunning desktop app ...")
 
   dir_start = os.getcwd()
   dir_app = os.path.join(_dir, "build", "desktop")
@@ -469,19 +481,13 @@ def runDesktop(_dir, verbose=True):
 
   os.chdir(dir_start)
 
-def clean(_dir, verbose=True):
-  dir_build = os.path.join(_dir, "build")
-  if os.path.exists(dir_build):
-    if not os.path.isdir(dir_build):
-      exitWithError("cannot remove build directory, file exists: {}".format(dir_build), errno.EEXIST)
-
-    if verbose:
-      print("\ncleaning build files ...")
-
-    deleteDir(dir_build, verbose)
-
 
 def main(_dir, argv):
+  verbose = True
+  if "-q" in argv:
+    verbose = False
+    argv.pop(argv.index("-q"))
+
   if len(argv) == 0:
     exitWithError("missing command parameter", usage=True)
   elif len(argv) > 1:
@@ -494,13 +500,13 @@ def main(_dir, argv):
   time_start = time.time()
 
   if "clean" == command:
-    clean(_dir)
+    clean(_dir, verbose)
   elif "stage" == command:
-    stage(_dir)
+    stage(_dir, verbose)
   elif "desktop" == command:
-    buildDesktop(_dir)
+    buildDesktop(_dir, verbose)
   elif "desktop-run" == command:
-    runDesktop(_dir)
+    runDesktop(_dir, verbose)
 
   time_end = time.time()
   time_diff = time_end - time_start
