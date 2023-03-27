@@ -453,6 +453,18 @@ def updateVersion(_dir, verbose=False):
     if verbose:
       print("updated file '{}'".format(file_changelog))
 
+  file_config_neu = os.path.join(_dir, "neutralino.config.json")
+  contents = readFile(file_config_neu)
+  changes = re.sub(
+    r"\"version\": .*,$",
+    "\"version\": \"{}\",".format(app_ver),
+    contents, 1, re.M
+  )
+  if changes != contents:
+    writeFile(file_config_neu, changes)
+    if verbose:
+      print("updated file '{}'".format(file_config_neu))
+
 def stageWeb(_dir, verbose=False):
   installModule("markdown")
   targets.run("update-version", _dir, verbose)
