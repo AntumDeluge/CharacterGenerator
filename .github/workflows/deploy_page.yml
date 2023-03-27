@@ -30,12 +30,12 @@ jobs:
           fi
           version=$(grep "^version = " build.conf | sed -e 's/^version = //')
           echo "configuring character generator version ${version} ..."
+          echo "ver=${version}" >> $GITHUB_ENV
 
       - name: Stage
         run: |
-          version=$(grep "^version = " build.conf | sed -e 's/^version = //')
           python3 build.py stage-web
-          sed -i -e "s/\"asset-info\":\(.*\?\)\/master\//\"asset-info\":\1\/v${version}\//" build/web/script/config.js
+          sed -i -e "s/\"asset-info\":\(.*\?\)\/master\//\"asset-info\":\1\/v${{ env.ver }}\//" build/web/script/config.js
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3

@@ -28,6 +28,7 @@ jobs:
           fi
           version=$(grep "^version = " build.conf | sed -e 's/^version = //')
           echo "configuring character generator version ${version} ..."
+          echo "ver=${version}" >> $GITHUB_ENV
 
       - name: Prepare Node.js
         run: |
@@ -35,11 +36,7 @@ jobs:
           npm install
 
       - name: Package Web
-        run: |
-          version=$(grep "^version = " build.conf | sed -e 's/^version = //')
-          python3 build.py dist-web
+        run: python3 build.py dist-web
 
       - name: Package Desktop
-        run: |
-          version=$(grep "^version = " build.conf | sed -e 's/^version = //')
-          python3 build.py dist-desktop
+        run: python3 build.py dist-desktop
