@@ -112,6 +112,14 @@ def checkTargetNotExists(target, action=None, add_parent=False):
     elif not os.path.isdir(dir_parent):
       exitWithError("cannot create directory, file exists: {}".format(dir_parent), err)
 
+def checkTargetNotDir(target, action=None):
+  msg = ""
+  if action:
+    msg += "cannot " + action + ", "
+
+  if os.path.exists(target) and os.path.isdir(target):
+    exitWithError(msg + "directory exists: {}".format(target), errno.EISDIR)
+
 def checkFileSourceExists(source, action=None):
   msg = ""
   if action:
@@ -251,30 +259,66 @@ def downloadFile(url, filename, verbose=True):
   except HTTPError:
     exitWithError("could not download file from: {}".format(url))
 
-def packZipDir(filepath, sourcepath, verbose=True):
-  if os.path.exists(filepath):
-    if os.path.isdir(filepath):
-      exitWithError("cannot create zip, directory exists: {}".format(filepath), errno.EEXIST)
-    os.remove(filepath)
+def packFile(sourcefile, archive, amend=False, verbose=True):
+  checkFileSourceExists(sourcefile)
+
+  new_archive = type(archive) != ZipFile
+  zopen = archive
+  if new_archive:
+    checkTargetNotDir(archive, "create zip")
+    zopen = ZipFile(archive, "a" if amend else "w")
+  zopen.write(sourcefile)
+  # if ZipFile was passed, calling instruction should close the file
+  if new_archive:
+    zopen.close()
+
+  if verbose:
+    print("compress '{}' => '{}'".format(sourcefile, archive))
+
+def packDir(sourcedir, archive, incroot=False, amend=False, verbose=True):
+  checkDirSourceExists(sourcedir)
+  checkTargetNotDir(archive, "create zip")
 
   dir_start = os.getcwd()
-  os.chdir(sourcepath)
-  # clean up path name
-  sourcepath = os.getcwd()
-  idx_trim = len(sourcepath) + 1
 
-  zopen = ZipFile(filepath, "w")
-  for ROOT, DIRS, FILES in os.walk(sourcepath):
+  # normalize path to archive
+  a_basename = os.path.basename(archive)
+  a_dirname = os.path.dirname(archive)
+  if a_dirname:
+    os.chdir(a_dirname)
+  a_dirname = os.getcwd()
+  archive = os.path.join(a_dirname, a_basename)
+  os.chdir(dir_start)
+
+  # clean up path name
+  os.chdir(sourcedir)
+  dir_abs = os.getcwd()
+  idx_trim = len(dir_abs) + 1
+  if incroot:
+    os.chdir(dir_start)
+    idx_trim = len(dir_start) + 1
+
+  zopen = ZipFile(archive, "a" if amend else "w")
+  z_count_start = len(zopen.namelist())
+  for ROOT, DIRS, FILES in os.walk(dir_abs):
     for f in FILES:
       f = os.path.join(ROOT, f)[idx_trim:]
-      zopen.write(f)
+      packFile(f, zopen, True, verbose)
+  z_count_end = len(zopen.namelist())
   zopen.close()
 
   os.chdir(dir_start)
-  if verbose:
-    print("packed archive: {}".format(filepath))
+  if z_count_end == 0:
+    printWarning("no files compressed, archive empty: {}".format(archive))
+    deleteFile(archive, verbose)
+  elif verbose:
+    z_count_diff = z_count_end - z_count_start
+    if z_count_diff == 0:
+      print("archive unchanged: {}".format(archive))
+    else:
+      print("added {} files into archive: {}".format(z_count_diff, archive))
 
-def unpackZip(filepath, dir_target=None, verbose=True):
+def unpack(filepath, dir_target=None, verbose=True):
   if not os.path.isfile(filepath):
     exitWithError("cannot extract zip, file not found: {}".format(filepath), errno.ENOENT)
 
