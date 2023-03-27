@@ -541,8 +541,9 @@ def distDesktop(_dir, verbose=False):
   print("\ncreating desktop app distribution ...")
 
   dir_start = os.getcwd()
-  dir_app = os.path.join(_dir, "build", "desktop")
-  dir_dist = os.path.join(dir_app, "dist")
+  dir_build = os.path.join(_dir, "build")
+  dir_app = os.path.join(dir_build, "desktop")
+  dir_dist_temp = os.path.join(dir_app, "dist")
 
   try:
     os.chdir(dir_app)
@@ -550,7 +551,7 @@ def distDesktop(_dir, verbose=False):
   except subprocess.CalledProcessError:
     exitWithError("npm process returned error when creating desktop app distribution files")
 
-  os.chdir(dir_dist)
+  os.chdir(dir_dist_temp)
   if verbose:
     print("packaging Linux binaries ...")
   for arch in ("arm64", "armhf", "x64"):
@@ -563,8 +564,16 @@ def distDesktop(_dir, verbose=False):
     print("packaging Windows binaries ...")
   _packageDist("win_x64", ".exe", verbose)
 
+  dir_dist = os.path.join(dir_build, "dist")
+  if not os.path.isdir(dir_dist):
+    makeDir(dir_dist, verbose)
+  for obj in os.listdir(dir_dist_temp):
+    objpath = os.path.join(dir_dist_temp, obj)
+    if os.path.isfile(objpath):
+      moveFile(objpath, dir_dist, obj, verbose)
+
   os.chdir(dir_start)
-  deleteDir(os.path.join(dir_dist, "chargen"), verbose)
+  deleteDir(dir_dist_temp, verbose)
 
 
 def main(_dir, argv):
