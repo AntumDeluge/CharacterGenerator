@@ -10,6 +10,7 @@
 
 
 export const config = {
+  "version": "0.2",
   "git-repo": "https://github.com/AntumDeluge/chargen",
   "asset-info": "https://github.com/AntumDeluge/chargen/blob/master/assets/README.md"
 };
