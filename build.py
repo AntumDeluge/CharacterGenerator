@@ -31,7 +31,7 @@ dir_root = os.getcwd()
 file_conf = os.path.join(dir_root, "build.conf")
 
 options = {
-  "commands": ("clean", "stage-web", "stage-desktop", "run-desktop", "dist-desktop")
+  "commands": ("clean", "stage-web", "dist-web", "stage-desktop", "run-desktop", "dist-desktop")
 }
 
 
@@ -400,6 +400,21 @@ def stageWeb(_dir, verbose=False):
       if ".xcf" in f:
         deleteFile(file_staged, verbose)
 
+def distWeb(_dir, verbose=False):
+  stageWeb(_dir, verbose)
+
+  print("\ncreating web distribution ...")
+
+  app_ver = getConfig("version")
+  dir_build = os.path.join(_dir, "build")
+  dir_web = os.path.join(dir_build, "web")
+  dir_dist = os.path.join(dir_build, "dist")
+  file_dist = os.path.join(dir_dist, "chargen_{}_web.zip".format(app_ver))
+  if not os.path.exists(dir_dist):
+    makeDir(dir_dist, verbose)
+  packDir(dir_web, file_dist, False, False, verbose)
+  packFile("README.md", file_dist, True, verbose)
+
 def stageDesktop(_dir, verbose=False):
   stageWeb(_dir, verbose)
 
@@ -523,7 +538,7 @@ def _packageDist(distname, ext="", verbose=False):
 def distDesktop(_dir, verbose=False):
   stageDesktop(_dir, verbose)
 
-  print("\ncreating desktop app distribution files ...")
+  print("\ncreating desktop app distribution ...")
 
   dir_start = os.getcwd()
   dir_app = os.path.join(_dir, "build", "desktop")
@@ -572,6 +587,8 @@ def main(_dir, argv):
     clean(_dir, verbose)
   elif "stage-web" == command:
     stageWeb(_dir, verbose)
+  elif "dist-web" == command:
+    distWeb(_dir, verbose)
   elif "stage-desktop" == command:
     stageDesktop(_dir, verbose)
   elif "run-desktop" == command:
