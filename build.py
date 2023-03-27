@@ -25,7 +25,7 @@ except ModuleNotFoundError:
 
 
 options = {
-  "commands": ("clean", "stage", "desktop", "run-desktop")
+  "commands": ("clean", "stage", "desktop", "desktop-run")
 }
 
 
@@ -499,7 +499,7 @@ def main(_dir, argv):
     stage(_dir)
   elif "desktop" == command:
     buildDesktop(_dir)
-  elif "run-desktop" == command:
+  elif "desktop-run" == command:
     runDesktop(_dir)
 
   time_end = time.time()
