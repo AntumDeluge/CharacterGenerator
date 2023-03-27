@@ -635,7 +635,7 @@ def _packageDist(distname, ext="", verbose=False):
       dir_temp, "WebView2Loader.dll", verbose
     )
   copyDir(
-    os.path.normpath("../doc"),
+    os.path.normpath("../resources/doc"),
     dir_temp, "doc", verbose
   )
   for filename in ("LICENSE.txt", "LICENSE-neutralinojs.txt"):
