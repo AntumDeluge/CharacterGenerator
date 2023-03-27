@@ -30,16 +30,43 @@ os.chdir(dir_root)
 dir_root = os.getcwd()
 file_conf = os.path.join(dir_root, "build.conf")
 
-options = {
-  "commands": ("clean", "stage-web", "dist-web", "stage-desktop", "run-desktop", "dist-desktop")
-}
+class Targets:
+  names = []
+  actions = {}
+  completed = []
 
+  def getNames(self):
+    return self.names
+
+  def add(self, name, action):
+    if not callable(action):
+      exitWithError("action parameter of Targets.add must be a function")
+    if name in self.actions:
+      exitWithError("cannot re-define target: {}".format(name))
+    self.names.append(name)
+    self.actions[name] = action
+
+  def run(self, name, _dir, verbose=False):
+    if name not in self.actions:
+      exitWithError("target not defined: {}".format(name))
+    elif name in self.completed:
+      if verbose:
+        print("\nnot re-running target: {}".format(name))
+      return
+    if name == "clean":
+      # cleaning resets all targets (only first time run)
+      self.completed = []
+    self.actions[name](_dir, verbose)
+    self.completed.append(name)
+
+
+targets = Targets()
 
 # --- UTILITY FUNCTIONS --- #
 
 def printUsage():
   file_exe = os.path.basename(__file__)
-  print("\nUSAGE:\n  {} [-h] [-v] {}".format(file_exe, "|".join(options["commands"])))
+  print("\nUSAGE:\n  {} [-h] [-v] {}".format(file_exe, "|".join(targets.getNames())))
 
 def printWarning(msg):
   print("\nWARNING: " + msg)
@@ -401,7 +428,7 @@ def stageWeb(_dir, verbose=False):
         deleteFile(file_staged, verbose)
 
 def distWeb(_dir, verbose=False):
-  stageWeb(_dir, verbose)
+  targets.run("stage-web", _dir, verbose)
 
   print("\ncreating web distribution ...")
 
@@ -416,7 +443,7 @@ def distWeb(_dir, verbose=False):
   packFile("README.md", file_dist, True, verbose)
 
 def stageDesktop(_dir, verbose=False):
-  stageWeb(_dir, verbose)
+  targets.run("stage-web", _dir, verbose)
 
   print("\nstaging desktop files ...")
 
@@ -486,7 +513,7 @@ def stageDesktop(_dir, verbose=False):
     writeFile(file_index, lines)
 
 def runDesktop(_dir, verbose=False):
-  stageDesktop(_dir, verbose)
+  targets.run("stage-desktop", _dir, verbose)
 
   print("\nrunning desktop app ...")
 
@@ -536,7 +563,7 @@ def _packageDist(distname, ext="", verbose=False):
   deleteDir(dir_temp, verbose)
 
 def distDesktop(_dir, verbose=False):
-  stageDesktop(_dir, verbose)
+  targets.run("stage-desktop", _dir, verbose)
 
   print("\ncreating desktop app distribution ...")
 
@@ -576,6 +603,13 @@ def distDesktop(_dir, verbose=False):
   deleteDir(dir_dist_temp, verbose)
 
 
+targets.add("clean", clean)
+targets.add("stage-web", stageWeb)
+targets.add("dist-web", distWeb)
+targets.add("stage-desktop", stageDesktop)
+targets.add("run-desktop", runDesktop)
+targets.add("dist-desktop", distDesktop)
+
 def main(_dir, argv):
   if "-h" in argv or "--help" in argv:
     printUsage()
@@ -587,27 +621,17 @@ def main(_dir, argv):
 
   if len(argv) == 0:
     exitWithError("missing command parameter", usage=True)
-  elif len(argv) > 1:
-    exitWithError("too many commands", usage=True)
 
-  command = argv[0]
-  if command not in options["commands"]:
-    exitWithError("unknown command: {}".format(command), usage=True)
+  # check commands before starting
+  command_list = targets.getNames()
+  for command in argv:
+    if command not in command_list:
+      exitWithError("unknown command: {}".format(command), usage=True)
 
   time_start = time.time()
 
-  if "clean" == command:
-    clean(_dir, verbose)
-  elif "stage-web" == command:
-    stageWeb(_dir, verbose)
-  elif "dist-web" == command:
-    distWeb(_dir, verbose)
-  elif "stage-desktop" == command:
-    stageDesktop(_dir, verbose)
-  elif "run-desktop" == command:
-    runDesktop(_dir, verbose)
-  elif "dist-desktop" == command:
-    distDesktop(_dir, verbose)
+  for command in argv:
+    targets.run(command, _dir, verbose)
 
   time_end = time.time()
   time_diff = time_end - time_start
