@@ -83,7 +83,8 @@ templates["html-head"] = "<html>\n\
 templates["html-tail"] = "</body>\n</html>"
 templates["favicon-data"] = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAJ1BMVEVHcEzytYYAAABhPAA2Njbkhnb/2rCYWUE9GwD6+voskrrX19cedpDJqZNvAAAAAXRSTlMAQObYZgAAAFRJREFUCNdjYIADJiUlCEPFxQnCVAIBBbCUCpThqKQkAma4CSmmgBmCQABiMEs0SjQagBjRB2W2ghmRy7KmghmlYonhIAaDeaBoMdgOZmNjAwYsAACaGQ2gK4O7gQAAAABJRU5ErkJggg=="
 templates["favicon"] = "<link rel=\"icon\" href=\"{}\">".format(templates["favicon-data"])
-templates["button-uplevel"] = "<a class=\"button\" href=\"../\"><span class=\"button\">Back</span></a>"
+templates["button-uplevel"] = "<a class=\"button\" href=\"../\" name=\"top\"><span class=\"button\">Back</span></a>"
+templates["button-totop"] = "<a class=\"button\" href=\"#top\"><span class=\"button\">Back to Top</span></a>"
 
 
 # --- UTILITY FUNCTIONS --- #
@@ -506,12 +507,9 @@ def stageWeb(_dir, verbose=False):
     "<script type=\"module\" src=\"../script/nav.js\"></script>"
   ]
   html_head = re.sub(r"^{{head}}$", "\n  ".join(html_head), templates["html-head"], 1, re.M)
-  html = "\n".join((html_head, templates["button-uplevel"], html, templates["html-tail"]))
+  html = "\n".join((html_head, templates["button-uplevel"], html, templates["button-totop"],
+      templates["html-tail"]))
   writeFile(file_readme + ".html", html)
-
-  # DEBUG:
-  # ~ print("README:")
-  # ~ print(html)
 
   print("\ncleaning web files ...")
   for ROOT, DIRS, FILES in os.walk(dir_assets):
