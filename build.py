@@ -552,11 +552,6 @@ def stageDesktop(_dir, verbose=False):
   deleteDir(dir_app, verbose)
   makeDir(dir_app, verbose)
   copyDir(dir_web, dir_app, "resources", verbose)
-  moveDir(
-    os.path.join(dir_app, "resources", "doc"),
-    dir_doc,
-    None, verbose
-  )
   copyFile(
     os.path.join(dir_neu, "LICENSE"),
     dir_app,
