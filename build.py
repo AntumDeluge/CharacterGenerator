@@ -66,7 +66,7 @@ targets = Targets()
 
 def printUsage():
   file_exe = os.path.basename(__file__)
-  print("\nUSAGE:\n  {} [-h] [-v] {}".format(file_exe, "|".join(targets.getNames())))
+  print("\nUSAGE:\n  {} [-h] [-v|-q] {}".format(file_exe, "|".join(targets.getNames())))
 
 def printWarning(msg):
   print("\nWARNING: " + msg)
@@ -602,6 +602,23 @@ def distDesktop(_dir, verbose=False):
   os.chdir(dir_start)
   deleteDir(dir_dist_temp, verbose)
 
+def printChanges(_dir, verbose=False):
+  changelog = getConfig("changelog")
+  if not changelog:
+    exitWithError("cannot parse changelog, 'changelog' not configured in build.conf")
+  changelog = os.path.join(dir_root, os.path.normpath(changelog))
+  if not os.path.isfile(changelog):
+    exitWithError("cannot parse changelog, file not found: {}".format(changelog), errno.ENOENT)
+  lines = []
+  started = False
+  for li in readFile(changelog).split("\n"):
+    if started and not li:
+      break
+    if not started and li and not li.startswith("-"):
+      started = True
+    elif started and li:
+      lines.append(li)
+  print("\n".join(lines))
 
 targets.add("clean", clean)
 targets.add("stage-web", stageWeb)
@@ -609,6 +626,7 @@ targets.add("dist-web", distWeb)
 targets.add("stage-desktop", stageDesktop)
 targets.add("run-desktop", runDesktop)
 targets.add("dist-desktop", distDesktop)
+targets.add("print-changes", printChanges)
 
 def main(_dir, argv):
   if "-h" in argv or "--help" in argv:
@@ -618,6 +636,11 @@ def main(_dir, argv):
   verbose = "-v" in argv
   if verbose:
     argv.pop(argv.index("-v"))
+  silent = "-q" in argv
+  if silent:
+    argv.pop(argv.index("-q"))
+    # silent overrides verbose
+    verbose = False
 
   if len(argv) == 0:
     exitWithError("missing command parameter", usage=True)
@@ -645,7 +668,8 @@ def main(_dir, argv):
     duration += ".{}ms".format(ms)
   if mins > 0:
     duration = "{}m:".format(mins) + duration
-  print("\nduration: {}".format(duration));
+  if not silent:
+    print("\nduration: {}".format(duration));
 
 
 if __name__ == "__main__":
