@@ -8,7 +8,7 @@
 # ****************************************************
 
 
-import codecs, errno, math, os, shutil, subprocess, sys, time
+import codecs, errno, math, os, re, shutil, subprocess, sys, time
 
 from urllib.error import HTTPError
 from zipfile import ZipFile
@@ -393,7 +393,33 @@ def clean(_dir, verbose=False):
     return
   print("no files to remove")
 
+def updateVersion(_dir, verbose=False):
+  app_ver = getConfig("version")
+
+  print("\nchargen version {}".format(app_ver))
+
+  file_config_js = os.path.join(_dir, "script", "config.js")
+  contents = readFile(file_config_js)
+  changes = re.sub(
+    r"^config\[\"version\"\] = .*;$",
+    "config[\"version\"] = \"{}\";".format(app_ver),
+    contents, 1, re.M)
+  if changes != contents:
+    writeFile(file_config_js, changes)
+    if verbose:
+      print("updated file '{}'".format(file_config_js))
+
+  file_changelog = os.path.join(_dir, "doc", "changelog.txt")
+  contents = readFile(file_changelog)
+  changes = re.sub(r"^next$", app_ver, contents, 1, re.M)
+  if changes != contents:
+    writeFile(file_changelog, changes)
+    if verbose:
+      print("updated file '{}'".format(file_changelog))
+
 def stageWeb(_dir, verbose=False):
+  targets.run("update-version", _dir, verbose)
+
   print("\nstaging web files ...")
 
   dir_web = os.path.join(_dir, "build", "web")
@@ -621,6 +647,7 @@ def printChanges(_dir, verbose=False):
   print("\n".join(lines))
 
 targets.add("clean", clean)
+targets.add("update-version", updateVersion)
 targets.add("stage-web", stageWeb)
 targets.add("dist-web", distWeb)
 targets.add("stage-desktop", stageDesktop)

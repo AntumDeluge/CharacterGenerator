@@ -35,7 +35,7 @@ jobs:
       - name: Stage
         run: |
           python3 build.py stage-web
-          sed -i -e "s/\"asset-info\":\(.*\?\)\/master\//\"asset-info\":\1\/v${{ env.ver }}\//" build/web/script/config.js
+          sed -i -e "s/^config\[\"asset-info\"\] = \(.*\?\)\/master\//config\[\"asset-info\"\] = \1\/v${{ env.ver }}\//" build/web/script/config.js
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
