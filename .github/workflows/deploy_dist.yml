@@ -1,5 +1,5 @@
 
-name: Build Distribution Packages
+name: Distribution Packages
 
 on:
   push:
@@ -20,6 +20,26 @@ jobs:
 
       - name: Configure
         run: |
-          version=$(echo ${{ github.ref_name }} | sed 's/^v//')
-          # DEBUG:
-          echo "Version: ${version}"
+          version=$(echo ${{ github.ref_name }})
+          if [[ "${version}" =~ ^v[0-9] ]]; then
+            echo "using GitHub ref version ..."
+            version=$(echo ${version} | sed 's/^v//')
+            sed -i -e "s/^version = .*$/version = ${version}/" build.conf
+          fi
+          version=$(grep "^version = " build.conf | sed -e 's/^version = //')
+          echo "configuring character generator version ${version} ..."
+
+      - name: Prepare Node.js
+        run: |
+          sudo snap install --classic node
+          npm install
+
+      - name: Package Web
+        run: |
+          version=$(grep "^version = " build.conf | sed -e 's/^version = //')
+          python3 build.py dist-web
+
+      - name: Package Desktop
+        run: |
+          version=$(grep "^version = " build.conf | sed -e 's/^version = //')
+          python3 build.py dist-desktop
