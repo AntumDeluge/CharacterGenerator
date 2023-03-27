@@ -13,15 +13,23 @@ import codecs, errno, math, os, re, shutil, subprocess, sys, time
 from urllib.error import HTTPError
 from zipfile import ZipFile
 
-try:
-  import wget
-except ModuleNotFoundError:
-  print("\ninstalling wget Python module ...")
-  subprocess.run(("python", "-m", "pip", "install", "wget"))
+modules = {}
+
+def installModule(mod, pkg=None):
+  if mod in modules:
+    print("\nWARNING: module '{}' already imported".format(mod))
+    return
+
+  pkg = mod if not pkg else pkg
   try:
-    import wget
+    modules[mod] = __import__(mod)
   except ModuleNotFoundError:
-    print("\nWARNING: could not install 'wget' module, downloads will fail")
+    print("\ninstalling {} module ...".format(mod))
+    subprocess.run((sys.executable, "-m", "pip", "install", pkg))
+    try:
+      modules[mod] = __import__(mod)
+    except ModuleNotFoundError:
+      print("\nWARNING: failed to install '{}' module".format(mod))
 
 
 # set up environment
@@ -295,7 +303,7 @@ def downloadFile(url, filename, verbose=False):
     return
 
   try:
-    wget.download(url, file_target)
+    modules["wget"].download(url, file_target)
   except HTTPError:
     exitWithError("could not download file from: {}".format(url))
 
@@ -658,6 +666,10 @@ def printChanges(_dir, verbose=False):
       lines.append(li)
   print("\n".join(lines))
 
+def init(_dir, verbose=False):
+  installModule("wget")
+
+targets.add("init", init)
 targets.add("clean", clean)
 targets.add("update-version", updateVersion)
 targets.add("stage-web", stageWeb)
