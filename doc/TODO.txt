@@ -1,0 +1,34 @@
+
+TODO:
+- add option to convert to SWEN format
+- simulate hyperlink behavior with custom div button elements
+- use browser session storage to preserve selections
+- add more eyes for 24x32 sizes
+- add options to change colors for:
+  - skin
+  - eyes
+  - eyebrows
+  - hair
+- use Scale2x algorithm for upscaling
+- add optional rear layer for hair
+- unify values for all sizes in layers.json
+- add flag for drawing certain hair layers over ears
+- format for small screens
+- allow torso layers to be mapped by arm type
+- offset detail layer for body types
+- hair should be drawn above clothes layers
+- touch up scaled down layers
+- fix buggy animated preview
+  - not always showing
+  - sometimes uses wrong base image
+- separate torso, legs, & shoes layers:
+  - prison jumpsuit
+  - tuxedo
+- scale down hats
+- add option for rear hat layers
+- add wedding gown & tuxedo
+- find correct attribution for panama hat
+- find originals for:
+  - 24x32 hat 10 (panama)
+  - 24x32 hat 13 (fedora)
+- package non-Windows dist files in tarballs

@@ -1,0 +1,172 @@
+{
+  "48x64": {
+    "base": {
+      "head": 3,
+      "ears": 3,
+      "eyes": 32,
+      "body": {
+        "standard": {
+          "body": 3,
+          "arms": 2
+        },
+        "heavy": {
+          "body": 2,
+          "arms": 3
+        },
+        "tall": {
+          "body": 3,
+          "arms": 2
+        },
+        "child": {
+          "body": 1,
+          "arms": 2
+        },
+        "elder": {
+          "body": 1,
+          "arms": 2
+        },
+        "dwarf": {
+          "body": 1,
+          "arms": 1
+        }
+      }
+    },
+    "outfit": {
+      "shoes": 1,
+      "legs": {
+        "indexes": 2,
+        "bodymap": {
+          "1-standard-2": 1,
+          "2-standard-2": null,
+          "2-standard-3": null
+        }
+      },
+      "torso": {
+        "indexes": 6,
+        "bodymap": {
+          "1-standard-2": 1,
+          "2-standard-2": 1,
+          "3-standard-1": 3,
+          "3-standard-2": 3,
+          "4-standard-2": null,
+          "4-standard-3": null,
+          "5-standard-1": null,
+          "5-standard-2": 3,
+          "6-standard-1": null,
+          "6-standard-2": 3
+        }
+      },
+      "mask": 1,
+      "hair": 33,
+      "hat": 23,
+      "detail": 1
+    }
+  },
+  "24x32": {
+    "base": {
+      "head": 2,
+      "ears": 3,
+      "eyes": 1,
+      "body": {
+        "standard": {
+          "body": 3,
+          "arms": 2
+        },
+        "heavy": {
+          "body": 2,
+          "arms": 3
+        },
+        "tall": {
+          "body": 3,
+          "arms": 3
+        },
+        "child": {
+          "body": 1,
+          "arms": 2
+        },
+        "elder": {
+          "body": 1,
+          "arms": 2
+        },
+        "dwarf": {
+          "body": 1,
+          "arms": 1
+        }
+      }
+    },
+    "outfit": {
+      "shoes": 1,
+      "legs": {
+        "indexes": 2,
+        "bodymap": {
+          "1-standard-2": 1,
+          "2-standard-2": null,
+          "2-standard-3": null
+        }
+      },
+      "torso": {
+        "indexes": 6,
+        "bodymap": {
+          "1-standard-2": 1,
+          "2-standard-2": 1,
+          "3-standard-1": 3,
+          "3-standard-2": 3,
+          "4-standard-2": null,
+          "4-standard-3": null,
+          "5-standard-1": null,
+          "5-standard-2": 3,
+          "6-standard-1": null,
+          "6-standard-2": 3
+        }
+      },
+      "mask": 1,
+      "hair": 7,
+      "hat": 23,
+      "detail": 1
+    }
+  },
+  "labels": {
+    "hair": {
+      "9": "cornrows",
+      "26": "mohawk"
+    },
+    "hat": {
+      "1": "stetson",
+      "2": "beret",
+      "3": "turban",
+      "4": "sailor cap",
+      "5": "wedding veil",
+      "6": "prison hat",
+      "7": "baseball cap",
+      "8": "peaked cap",
+      "9": "Robin's hat",
+      "10": "disabled",
+      "11": "hood",
+      "12": "bowler",
+      "13": "fedora",
+      "14": "crown",
+      "15": "Santa hat",
+      "16": "backward cap",
+      "17": "boggin",
+      "18": "goggles",
+      "19": "fedora",
+      "20": "helmet",
+      "21": "helmet",
+      "22": "helmet",
+      "23": "samurai amigasa"
+    },
+    "legs": {
+      "2": "swim trunks"
+    },
+    "mask": {
+      "1": "glasses"
+    },
+    "torso": {
+      "2": "prison jumpsuit",
+      "3": "wedding gown",
+      "4": "tuxedo",
+      "5": "bathing suit",
+      "6": "bathing suit"
+    }
+  }
+}
