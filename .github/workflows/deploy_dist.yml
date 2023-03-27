@@ -10,6 +10,8 @@ on:
 jobs:
   dist-packages:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     defaults:
       run:
         shell: bash
