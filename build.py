@@ -530,7 +530,7 @@ def stageWeb(_dir, verbose=False):
   if options["web-dist"]:
     contents = changes
     changes = re.sub(
-      r"^config\[\"web-dist\"\] = false$",
+      r"^config\[\"web-dist\"\] = false",
       "config[\"web-dist\"] = true",
       contents, 1, re.M
     )
@@ -615,6 +615,17 @@ def stageDesktop(_dir, verbose=False):
       break
   if lines != lines_orig:
     writeFile(file_index, lines)
+  file_config_js = os.path.join(dir_res, "script", "config.js")
+  content = readFile(file_config_js)
+  changes = re.sub(
+    r"^config\[\"desktop\"\] = false",
+    "config[\"desktop\"] = true",
+    content, 1, re.M
+  )
+  if changes != content:
+    writeFile(file_config_js, changes)
+    if verbose:
+      print("updated file '{}'".format(file_config_js))
 
 def runDesktop(_dir, verbose=False):
   targets.run("stage-desktop", _dir, verbose)

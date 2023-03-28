@@ -30,6 +30,13 @@ const formatLinks = function() {
     if (anchor.id && typeof(config[anchor.id]) !== "undefined") {
       anchor.href = config[anchor.id];
     }
+    if (config["desktop"] && anchor.classList.contains("extern")) {
+      anchor.onclick = function(evt) {
+        evt.preventDefault();
+        // open external links in system browser
+        Neutralino.os.open(anchor.href);
+      }
+    }
   }
 }
 
