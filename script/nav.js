@@ -12,6 +12,8 @@ import { PreviewGenerator } from "./PreviewGenerator.js";
 import { config } from "./config.js";
 
 
+Neutralino.init()
+
 window.onNavButton = function(href="/") {
   document.location.href = href;
 };
@@ -29,6 +31,13 @@ const formatLinks = function() {
   for (const anchor of document.getElementsByTagName("a")) {
     if (anchor.id && typeof(config[anchor.id]) !== "undefined") {
       anchor.href = config[anchor.id];
+    }
+    if (config["desktop"] && anchor.classList.contains("extern")) {
+      anchor.onclick = function(evt) {
+        evt.preventDefault();
+        // open external links in system browser
+        Neutralino.os.open(anchor.href);
+      }
     }
   }
 }

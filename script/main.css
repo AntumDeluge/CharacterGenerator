@@ -94,6 +94,10 @@ span.button:hover {
   background-color: #ffffffff;
 }
 
+a.button:visited, a:hover, a:active {
+  color: inherit;
+}
+
 canvas.preview {
   margin: auto;
 }

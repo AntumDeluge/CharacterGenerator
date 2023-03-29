@@ -18,16 +18,23 @@
   </div>
 
   <div id="description">
-    <p>A character sprite generator inspired by <a href="https://stendhalgame.org/">Stendhal</a>,
-    <a href="https://lpc.opengameart.org/">Liberated Pixel Cup</a>, &amp; <a href="https://opengameart.org/users/cabbit">Cabbit</a>.</p>
-
     <p>
-      For licensing, attribution, and sources information of assets provided here, see the
-      <a id="asset-info" href="">accompanying README</a>.
+      A character sprite generator inspired by
+      <a class="button extern" href="https://stendhalgame.org/">
+        <span class="button">Stendhal</span></a> ,
+      <a class="button extern" href="https://lpc.opengameart.org/">
+        <span class="button">Liberated Pixel Cup</span></a> , &amp;
+      <a class="button extern" href="https://opengameart.org/users/cabbit">
+        <span class="button">Cabbit</span></a>.
     </p>
 
     <p>
-      Please <span id="button-info" class="button" onclick="onNavButton('info.html')">read this</span> before using assets.
+      For licensing, attribution, and sources information of assets provided here, see the
+      accompanying <a class="button" id="asset-info"><span class="button">README</span></a>.
+    </p>
+
+    <p>
+      Please <a class="button" href="info.html"><span id="button-info" class="button">read this</span></a> before using assets.
     </p>
   </div>
 
@@ -136,9 +143,11 @@
         <canvas class="preview" id="preview"></canvas>
       </div>
 
+      <a class="button" onclick="onDownload()">
       <div class="button-container">
-        <span id="button-download" class="button" onclick="onDownload()">Download</span>
+        <span id="button-download" class="button">Download</span>
       </div>
+      </a>
     </div> <!-- output -->
   </div> <!-- container -->
 
@@ -147,7 +156,7 @@
     <p>background image by Kimmo Rundelin licensed under
     <a href="doc/licenses/CC-BY-SA-3.0.txt">Creative Commons Attribution-ShareAlike 3.0</a></p>
     <p>this software is a work-in-progress</p>
-    <p>source code available on <a id="git-repo">GitHub</a></p>
+    <p>source code available on <a class="button extern" id="git-repo"><span class="button">GitHub</span></a></p>
     <p id="desktop-download"></p>
   </div>
 </body>

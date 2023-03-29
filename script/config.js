@@ -10,7 +10,8 @@
 
 
 export const config = {};
-config["version"] = "0.2-beta12";
+config["version"] = "0.2-beta13";
 config["git-repo"] = "https://github.com/AntumDeluge/chargen";
 config["asset-info"] = "assets/README.html"
-config["web-dist"] = true
+config["web-dist"] = true;
+config["desktop"] = false;
