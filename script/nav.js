@@ -12,6 +12,8 @@ import { PreviewGenerator } from "./PreviewGenerator.js";
 import { config } from "./config.js";
 
 
+Neutralino.init()
+
 window.onNavButton = function(href="/") {
   document.location.href = href;
 };
