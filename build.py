@@ -653,11 +653,11 @@ def _packageDist(distname, ext="", verbose=False):
     os.path.normpath("chargen/resources.neu"),
     dir_temp, "resources.neu", verbose
   )
-  if ext == ".exe":
-    copyFile(
-      os.path.normpath("chargen/WebView2Loader.dll"),
-      dir_temp, "WebView2Loader.dll", verbose
-    )
+  # ~ if ext == ".exe":
+    # ~ copyFile(
+      # ~ os.path.normpath("chargen/WebView2Loader.dll"),
+      # ~ dir_temp, "WebView2Loader.dll", verbose
+    # ~ )
   copyDir(
     os.path.normpath("../resources/doc"),
     dir_temp, "doc", verbose

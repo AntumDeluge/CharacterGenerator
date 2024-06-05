@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/AntumDeluge/chargen#readme",
   "dependencies": {
-    "@neutralinojs/neu": "^9.5.0"
+    "@neutralinojs/neu": "^9.8.0"
   }
 }
